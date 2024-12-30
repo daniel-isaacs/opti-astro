@@ -36,7 +36,8 @@ const isPageType = types?.includes('_Page') && isExperienceType === false
 <script src="/communicationinjector.js" is:inline></script>
 <script>
   function contentSaved(event: any) {
-    window.location = event.detail.previewUrl
+    console.log("save event previewUrl: ", event.detail.previewUrl);
+    window.location = event.detail.previewUrl;
     //window.location.reload();
   }
 

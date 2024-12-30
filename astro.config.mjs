@@ -22,6 +22,19 @@ export default defineConfig({
     ],
   },
 
+  i18n: {
+    // locales: ["es", "en", "pt-br"],
+    locales: ["en", "es"],
+    defaultLocale: "en",
+    routing: "manual",
+    // routing: {
+    //     prefixDefaultLocale: true
+    // }
+    fallback: {
+      es: "en"
+    },
+  },
+
   output: "server",
 
   adapter: node({

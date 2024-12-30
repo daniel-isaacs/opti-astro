@@ -3200,7 +3200,8 @@ export type LinkWhereInput = {
 export enum Locales {
   All = 'ALL',
   Neutral = 'NEUTRAL',
-  En = 'en'
+  En = 'en',
+  Es = 'es'
 }
 
 export type MediaMetadata = IContentMetadata & IInstanceMetadata & IMediaMetadata & {
