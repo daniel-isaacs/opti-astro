@@ -10,25 +10,30 @@ export interface Props {
   displaySettings: DisplaySettingsFragment[];
   contentPayload: ContentPayload;
 }
-const { data } = Astro.props as Props
+const { data, contentPayload } = Astro.props as Props
 const videoUrl = data.Video?.url.default || null
 const imageUrl = data.Image?.url.default || null
 const hasVideo = videoUrl !== null
+const editMode = contentPayload.ctx === "edit"
+const heroHeight = editMode ? "h-[40vh]" : "min-h-screen"
 ---
 <!--
   Heads up! 👋
 
   This component comes with some `rtl` classes. Please remove them if they are not needed in your project.
 -->
+
+
+<!--
 <section class="relative h-[50vh] w-full overflow-hidden text-white">
-  <!-- Video Background -->
+
   {hasVideo &&
     <video autoplay muted loop class="absolute inset-0 w-full object-cover">
       <source src={videoUrl} type="video/mp4">
       Your browser does not support the video tag.
     </video>}
 
-  <!-- Image Background -->
+    
   {imageUrl && !hasVideo &&
     <Image
       alt="Hero"
@@ -36,10 +41,10 @@ const hasVideo = videoUrl !== null
       class="absolute inset-0 w-full object-cover"
       inferSize={true}
     />}
-  <!-- Overlay -->
+    
   <div class="absolute inset-0 bg-black bg-opacity-50"></div>
 
-  <!-- Content Overlay -->
+  
   <div class="relative flex flex-col items-center justify-center text-center p-16 z-10">
     {data.Heading && <h1 class="text-4xl md:text-6xl font-bold mb-4">{data.Heading}</h1>}
     {data.SubHeading && <p class="text-lg md:text-xl max-w-2xl mb-8">
@@ -55,3 +60,53 @@ const hasVideo = videoUrl !== null
     }
   </div>
 </section>
+
+-->
+
+<div
+  class=`hero ${heroHeight}`
+  style=`background-image: url(${imageUrl});`>
+  <div class="hero-overlay"></div>
+    {hasVideo &&
+      <div class="video-docker absolute top-0 left-0 w-full h-full overflow-hidden">
+        <video autoplay muted loop class="w-full min-h-full absolute object-cover">
+          <source src={videoUrl} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+    </div>}
+  <div class="hero-content text-neutral-content text-center">
+    <div class="max-w-md">
+      {data.Heading && <h1 class="text-4xl md:text-6xl font-bold mb-4">{data.Heading}</h1>}
+      {data.SubHeading && <p class="text-lg md:text-xl max-w-2xl mb-8">
+        {data.SubHeading}
+      </p>}
+      {data.RichText &&
+        <div class="text-sm max-w-2xl mb-8" set:html={data.RichText.html} />}
+      {data.CallToAction.url &&
+        <a role="button" class="btn bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-lg transition duration-300"
+          href={data.CallToAction.url.default}>{data.CallToAction.text}</a>
+      }
+    </div>
+  </div>
+</div>
+
+{hasVideo && 
+  <style>
+      .video-docker video {
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+      }
+
+      .video-docker::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          background: rgba(0, 0, 0, 0.2);
+          z-index: 0;
+      }
+  </style>
+}
