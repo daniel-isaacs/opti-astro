@@ -15,7 +15,7 @@ const styles = getRowStyles(rowNode)
 ---
 <!--<h2>this is a row</h2>-->
 {displayTemplateKey !== 'CarouselRow' &&
-<div class="p-1 flex-1 flex flex-row flex-nowrap justify-start vb:row"
+<div class="p-0 flex-1 flex flex-row flex-nowrap justify-start vb:row"
      class:list={styles}
      data-epi-block-id={row.key}>
   {row.columns?.map((column: any) => (
