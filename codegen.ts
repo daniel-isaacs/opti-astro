@@ -1,11 +1,8 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
-import { loadEnv } from 'vite';
+import 'dotenv/config'
 
-const { OPTIMIZELY_GRAPH_SINGLE_KEY, OPTIMIZELY_GRAPH_GATEWAY } = loadEnv(
-    process.env.NODE_ENV || 'development',
-    process.cwd(),
-    ''
-);
+const OPTIMIZELY_GRAPH_GATEWAY=import.meta.env.OPTIMIZELY_GRAPH_GATEWAY;
+const OPTIMIZELY_GRAPH_SINGLE_KEY=import.meta.env.OPTIMIZELY_GRAPH_SINGLE_KEY;
 
 const config: CodegenConfig = {
     overwrite: true,
