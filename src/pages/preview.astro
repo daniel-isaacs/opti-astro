@@ -1,7 +1,10 @@
 ---
 import qs from 'query-string';
 
-const OPTIMIZELY_CMS_URL = import.meta.env.OPTIMIZELY_CMS_URL;
+// import { OPTIMIZELY_CMS_URL } from 'astro:env/client';
+// const OPTIMIZELY_CMS_URL = import.meta.env.OPTIMIZELY_CMS_URL;
+const OPTIMIZELY_CMS_URL = "https://app-epsadi202508r1sjt001.cms.optimizely.com/";
+
 import type { Locales } from 'astro';
 import Component from '../cms/components/_Component.astro';
 import Experiences from '../cms/experiences/_Experiences.astro';
@@ -40,7 +43,6 @@ const isPageType = types?.includes('_Page') && isExperienceType === false;
 </>
 <script src=`${cmsScript}` is:inline></script>
 <script>
-
     function contentSaved(event: any) {
         window.location = event.detail.previewUrl;
         //window.location.reload();

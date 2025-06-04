@@ -60,39 +60,39 @@ export default defineConfig({
     },
     integrations: [alpinejs(), pageInsight()],
 
-    env: {
-        schema: {
-            OPTIMIZELY_CMS_URL: envField.string({
-                context: 'client',
-                access: 'public',
-                optional: true,
-            }),
-            OPTIMIZELY_GRAPH_SECRET: envField.string({
-                context: 'server',
-                access: 'secret',
-                optional: false,
-            }),
-            OPTIMIZELY_GRAPH_APP_KEY: envField.string({
-                context: 'client',
-                access: 'public',
-                optional: false,
-            }),
-            OPTIMIZELY_GRAPH_SINGLE_KEY: envField.string({
-                context: 'client',
-                access: 'public',
-                optional: false,
-            }),
-            OPTIMIZELY_GRAPH_GATEWAY: envField.string({
-                context: 'client',
-                access: 'public',
-                optional: false,
-            }),
-            PREVIEW_DELAY: envField.number({
-                context: 'client',
-                access: 'public',
-                optional: true,
-                default: 0,
-            }),
-        },
-    },
+    // env: {
+    //     schema: {
+    //         OPTIMIZELY_CMS_URL: envField.string({
+    //             context: 'client',
+    //             access: 'public',
+    //             optional: true,
+    //         }),
+    //         OPTIMIZELY_GRAPH_SECRET: envField.string({
+    //             context: 'server',
+    //             access: 'secret',
+    //             optional: false,
+    //         }),
+    //         OPTIMIZELY_GRAPH_APP_KEY: envField.string({
+    //             context: 'client',
+    //             access: 'public',
+    //             optional: false,
+    //         }),
+    //         OPTIMIZELY_GRAPH_SINGLE_KEY: envField.string({
+    //             context: 'client',
+    //             access: 'public',
+    //             optional: false,
+    //         }),
+    //         OPTIMIZELY_GRAPH_GATEWAY: envField.string({
+    //             context: 'client',
+    //             access: 'public',
+    //             optional: false,
+    //         }),
+    //         PREVIEW_DELAY: envField.number({
+    //             context: 'client',
+    //             access: 'public',
+    //             optional: true,
+    //             default: 0,
+    //         }),
+    //     },
+    // },
 });
