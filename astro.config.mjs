@@ -8,7 +8,7 @@ import awsAmplify from 'astro-aws-amplify';
 import alpinejs from '@astrojs/alpinejs';
 import tailwindcss from '@tailwindcss/vite';
 
-import pageInsight from 'astro-page-insight';
+// import pageInsight from 'astro-page-insight';
 
 // https://astro.build/config
 export default defineConfig({
@@ -58,7 +58,8 @@ export default defineConfig({
         },
         plugins: [mkcert(), tailwindcss()],
     },
-    integrations: [alpinejs(), pageInsight()],
+    // integrations: [alpinejs(), pageInsight()],
+    integrations: [alpinejs()],
 
     // env: {
     //     schema: {
