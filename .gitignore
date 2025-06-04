@@ -36,5 +36,6 @@ utils/**/temp/
 .yarn/*
 .netlify/*
 .vercel/*
+.amplify-hosting/*
 
 .pnp.*

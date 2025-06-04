@@ -3,6 +3,7 @@ import { defineConfig, envField } from 'astro/config';
 import mkcert from 'vite-plugin-mkcert';
 
 import node from '@astrojs/node';
+import awsAmplify from 'astro-aws-amplify';
 
 import alpinejs from '@astrojs/alpinejs';
 import tailwindcss from '@tailwindcss/vite';
@@ -44,9 +45,11 @@ export default defineConfig({
 
     output: 'server',
 
-    adapter: node({
-        mode: 'standalone',
-    }),
+    adapter: awsAmplify(),
+
+    // adapter: node({
+    //     mode: 'standalone',
+    // }),
 
     server: { port: 4321 },
     vite: {
