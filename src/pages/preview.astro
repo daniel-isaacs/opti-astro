@@ -3,7 +3,8 @@ import qs from 'query-string';
 
 // import { OPTIMIZELY_CMS_URL } from 'astro:env/client';
 // const OPTIMIZELY_CMS_URL = import.meta.env.OPTIMIZELY_CMS_URL;
-const OPTIMIZELY_CMS_URL = "https://app-epsadi202508r1sjt001.cms.optimizely.com/";
+// const OPTIMIZELY_CMS_URL = "https://app-epsadi202508r1sjt001.cms.optimizely.com/";
+const OPTIMIZELY_CMS_URL = process.env.OPTIMIZELY_CMS_URL;
 
 import type { Locales } from 'astro';
 import Component from '../cms/components/_Component.astro';
