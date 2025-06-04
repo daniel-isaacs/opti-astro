@@ -41,7 +41,8 @@ const isPageType = types?.includes('_Page') && isExperienceType === false;
 </>
 <script src=`${cmsScript}` is:inline></script>
 <script>
-    import { PREVIEW_DELAY } from 'astro:env/client';
+    // import { PREVIEW_DELAY } from 'astro:env/client';
+    const PREVIEW_DELAY = import.meta.env.PREVIEW_DELAY || 0;
 
     function contentSaved(event: any) {
         window.location = event.detail.previewUrl;
