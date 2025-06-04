@@ -6,10 +6,13 @@ import {
     type Requester,
 } from '../../__generated/sdk';
 
-import {
-    OPTIMIZELY_GRAPH_GATEWAY,
-    OPTIMIZELY_GRAPH_SINGLE_KEY,
-} from 'astro:env/client';
+// import {
+//     OPTIMIZELY_GRAPH_GATEWAY,
+//     OPTIMIZELY_GRAPH_SINGLE_KEY,
+// } from 'astro:env/client';
+
+const OPTIMIZELY_GRAPH_GATEWAY = import.meta.env.OPTIMIZELY_GRAPH_GATEWAY;
+const OPTIMIZELY_GRAPH_SINGLE_KEY = import.meta.env.OPTIMIZELY_GRAPH_SINGLE_KEY;
 
 import type { ContentPayload } from '../graphql/shared/ContentPayload.ts';
 

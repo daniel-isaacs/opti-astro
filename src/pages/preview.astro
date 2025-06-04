@@ -1,7 +1,8 @@
 ---
 import qs from 'query-string';
 
-import { OPTIMIZELY_CMS_URL } from 'astro:env/client';
+// import { OPTIMIZELY_CMS_URL } from 'astro:env/client';
+const OPTIMIZELY_CMS_URL = import.meta.env.OPTIMIZELY_CMS_URL;
 import type { Locales } from 'astro';
 import Component from '../cms/components/_Component.astro';
 import Experiences from '../cms/experiences/_Experiences.astro';
