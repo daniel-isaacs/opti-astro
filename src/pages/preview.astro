@@ -1,7 +1,6 @@
 ---
 import qs from 'query-string';
 
-// import { OPTIMIZELY_CMS_URL } from 'astro:env/client';
 const OPTIMIZELY_CMS_URL = import.meta.env.OPTIMIZELY_CMS_URL;
 import type { Locales } from 'astro';
 import Component from '../cms/components/_Component.astro';
@@ -41,7 +40,6 @@ const isPageType = types?.includes('_Page') && isExperienceType === false;
 </>
 <script src=`${cmsScript}` is:inline></script>
 <script>
-    const PREVIEW_DELAY = import.meta.env.PREVIEW_DELAY || 0;
 
     function contentSaved(event: any) {
         window.location = event.detail.previewUrl;
@@ -51,6 +49,6 @@ const isPageType = types?.includes('_Page') && isExperienceType === false;
     window.addEventListener('optimizely:cms:contentSaved', (event) =>
         setTimeout(() => {
             contentSaved(event);
-        }, PREVIEW_DELAY)
+        }, 0)
     );
 </script>
