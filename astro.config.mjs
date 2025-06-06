@@ -7,6 +7,8 @@ import node from '@astrojs/node';
 import alpinejs from '@astrojs/alpinejs';
 import tailwindcss from '@tailwindcss/vite';
 
+import vercel from '@astrojs/vercel';
+
 // https://astro.build/config
 export default defineConfig({
     devToolbar: {
@@ -42,9 +44,7 @@ export default defineConfig({
 
     output: 'server',
 
-    adapter: node({
-        mode: 'standalone',
-    }),
+    adapter: vercel(),
 
     server: { port: 4321 },
     vite: {
