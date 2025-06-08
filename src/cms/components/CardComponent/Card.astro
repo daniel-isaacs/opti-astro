@@ -1,10 +1,11 @@
 ---
 import type {
-CardFragment,
-DisplaySettingsFragment,
+    CardFragment,
+    DisplaySettingsFragment,
 } from '../../../../__generated/sdk';
 
 import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import { getDictionaryFromDisplaySettings } from '../../../graphql/shared/displaySettingsHelpers';
 import Asset from './Asset.astro';
 import Content from './Content.astro';
 import Wrapper from './Wrapper.astro';
@@ -16,6 +17,9 @@ export interface Props {
 }
 const { data, displaySettings, displayTemplateKey, contentPayload } =
     Astro.props as Props;
+
+const dictionary = getDictionaryFromDisplaySettings(displaySettings);
+const { backgroundColor } = dictionary;
 const { DisplayAs } = data;
 ---
 
