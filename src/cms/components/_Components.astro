@@ -7,6 +7,7 @@ import CallToAction from './CallToActionComponent/CallToAction.astro';
 import Card from './CardComponent/Card.astro';
 import Carousel from './CarouselComponent/Carousel.astro';
 import Collapse from './CollapseComponent/Collapse.astro';
+import DemoPDP from './DemoPDPComponent/DemoPDP.astro';
 import Grid from './GridComponent/Grid.astro';
 import Hero from './HeroComponent/Hero.astro';
 import Iframe from './IframeComponent/Iframe.astro';
@@ -164,6 +165,16 @@ const componentType = component._metadata.types[0];
         <ArticlePageCard
             contentPayload={contentPayload}
             data={component}
+        />
+    )
+}
+
+{
+    componentType === 'DemoPDP' && (
+        <DemoPDP
+            contentPayload={contentPayload}
+            data={component}
+            displaySettings={displaySettings}
         />
     )
 }

@@ -1,0 +1,412 @@
+---
+import type {
+    CallToActionFragment,
+    DemoPdpFragment,
+    DisplaySettingsFragment,
+} from '../../../../__generated/sdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+
+export interface Props {
+    data: DemoPdpFragment;
+    displaySettings: DisplaySettingsFragment[];
+    contentPayload: ContentPayload;
+}
+const { data } = Astro.props as Props;
+---
+
+<!-- Product Detail Page with Plain JavaScript -->
+<div class="bg-gray-50" id="product-container">
+    <!-- Main Product Container -->
+    <div class="container mx-auto px-4 py-6">
+        <div class="grid gap-8 md:grid-cols-2">
+            <!-- Left Column - Product Images -->
+            <div>
+                <!-- Main Product Image -->
+                <div
+                    class="mb-4 flex items-center justify-center rounded-lg border border-gray-200 bg-white p-4"
+                >
+                    <img
+                        src={data.MainImage?.url?.default}
+                        alt="N-Ferno 6878 Winter Hard Hat Liner"
+                        id="main-image"
+                        class="max-h-96 object-contain"
+                    />
+                </div>
+
+                <!-- Thumbnail Gallery -->
+                <div class="grid grid-cols-5 gap-2" id="thumbnail-gallery">
+                    {
+                        data.ThumbnailGallery?.map((thumbnail) => (
+                            <div
+                                class="thumbnail-item cursor-pointer rounded-md border border-gray-200 bg-white p-2 hover:border-red-600"
+                                data-image={thumbnail?.url?.default}
+                            >
+                                <img
+                                    src={thumbnail?.url?.default}
+                                    alt="Thumbnail"
+                                    class="h-16 w-full object-contain"
+                                />
+                            </div>
+                        ))
+                    }
+                </div>
+            </div>
+
+            <!-- Right Column - Product Information -->
+            <div>
+                <!-- Product Details -->
+                <div class="mb-6">
+                    <div
+                        class="mb-4 flex flex-col md:flex-row md:items-start md:justify-between"
+                    >
+                        <div class="flex-1">
+                            <p class="mb-1 text-sm text-gray-600">
+                                Model#: <span id="model-number"
+                                    >{data.ModelNumber}</span
+                                >
+                            </p>
+                            <p class="mb-1 text-sm text-gray-600">
+                                Stock#: <span id="stock-number"
+                                    >{data.StockNumber}</span
+                                >
+                            </p>
+                            <p class="mb-1 text-sm text-gray-600">
+                                UPC/GTIN/EIN: <span id="upc">{data.UPC}</span>
+                            </p>
+                            <h1
+                                class="mb-2 text-2xl font-semibold"
+                                id="product-name"
+                            >
+                                {data.ProductName}
+                            </h1>
+                        </div>
+                        <div class="mt-3 md:mt-0">
+                            <img
+                                src={data.BrandLogo?.url?.default}
+                                alt="Ergodyne"
+                                id="brand-logo"
+                                class="h-24 object-contain"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Ratings -->
+                    <div class="mb-4">
+                        <div class="flex items-center">
+                            <div class="flex">
+                                <svg
+                                    class="h-4 w-4 text-gray-300"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                                    ></path>
+                                </svg>
+                                <svg
+                                    class="h-4 w-4 text-gray-300"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                                    ></path>
+                                </svg>
+                                <svg
+                                    class="h-4 w-4 text-gray-300"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                                    ></path>
+                                </svg>
+                                <svg
+                                    class="h-4 w-4 text-gray-300"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                                    ></path>
+                                </svg>
+                                <svg
+                                    class="h-4 w-4 text-gray-300"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                                    ></path>
+                                </svg>
+                            </div>
+                            <p class="ml-2 text-sm text-gray-600">
+                                0 Reviews | <a
+                                    href="#"
+                                    class="text-gray-700 hover:text-red-600"
+                                    >Write a review</a
+                                >
+                            </p>
+                        </div>
+                        <a
+                            href="#"
+                            class="mt-1 inline-block text-sm text-gray-600 hover:text-red-600"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="mr-1 inline h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                ></path>
+                            </svg>
+                            Ask a question
+                        </a>
+                    </div>
+
+                    <!-- Price and Purchase -->
+                    <div class="mb-6">
+                        <p class="mb-2 text-2xl font-bold">
+                            <span id="price">{data.Price}</span>
+                        </p>
+                        <p class="mb-4 text-sm text-green-600">
+                            FREE SHIPPING OVER $75!
+                        </p>
+
+                        <!-- Quick Ship Info -->
+                        <div class="mb-6 flex items-center text-sm">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="mr-2 h-5 w-5 text-green-600"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <p>
+                                <span class="font-semibold text-green-600"
+                                    >QUICK SHIP</span
+                                >
+                                <span id="delivery-estimate"
+                                    >Get it By Apr 08</span
+                                >
+                            </p>
+                        </div>
+
+                        <!-- Add to Cart -->
+                        <div class="flex items-center">
+                            <div class="mr-4 flex items-center rounded border">
+                                <button
+                                    class="border-r px-3 py-1 text-xl focus:outline-none"
+                                    id="decrease-quantity"
+                                    aria-label="Decrease quantity"
+                                >
+                                    –
+                                </button>
+                                <input
+                                    type="number"
+                                    id="quantity"
+                                    value="1"
+                                    class="w-12 py-1 text-center focus:outline-none"
+                                    aria-label="Product quantity"
+                                />
+                                <button
+                                    class="border-l px-3 py-1 text-xl focus:outline-none"
+                                    id="increase-quantity"
+                                    aria-label="Increase quantity"
+                                >
+                                    +
+                                </button>
+                            </div>
+                            <button
+                                id="add-to-cart-button"
+                                class="flex items-center rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="mr-2 h-5 w-5"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                                    ></path>
+                                </svg>
+                                Add to cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description Accordion -->
+                <div class="mb-4 rounded border border-gray-200">
+                    <button
+                        id="description-toggle"
+                        class="flex w-full items-center justify-between bg-gray-50 px-4 py-3 text-left hover:bg-gray-100"
+                    >
+                        <h2 class="text-lg font-medium">Description</h2>
+                        <svg
+                            id="description-icon"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 transform transition-transform duration-200"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div
+                        id="description-content"
+                        class="hidden bg-white px-4 py-3"
+                    >
+                        <div
+                            class="prose max-w-none"
+                            set:html={data.Description?.html}
+                        />
+                    </div>
+                </div>
+
+                <!-- Specifications Accordion -->
+                <div class="mb-4 rounded border border-gray-200">
+                    <button
+                        id="specifications-toggle"
+                        class="flex w-full items-center justify-between bg-gray-50 px-4 py-3 text-left hover:bg-gray-100"
+                    >
+                        <h2 class="text-lg font-medium">Specs</h2>
+                        <svg
+                            id="specifications-icon"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 transform transition-transform duration-200"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div
+                        id="specifications-content"
+                        set:html={data.Specifications?.html}
+                        class="prose hidden max-w-none bg-white px-4 py-3"
+                    />
+                </div>
+
+                <!-- Warning Information -->
+                <div
+                    class="mt-4 flex items-start rounded-md border border-gray-200 bg-gray-50 p-4"
+                    set:html={data.WarningInfo?.html}
+                />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Plain JavaScript for interactivity -->
+<script is:inline>
+    // Wait for the DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        // Quantity selector
+        const quantityInput = document.getElementById('quantity');
+        const decreaseButton = document.getElementById('decrease-quantity');
+        const increaseButton = document.getElementById('increase-quantity');
+
+        decreaseButton.addEventListener('click', function () {
+            const currentValue = parseInt(quantityInput.value);
+            if (currentValue > 1) {
+                quantityInput.value = currentValue - 1;
+            }
+        });
+
+        increaseButton.addEventListener('click', function () {
+            const currentValue = parseInt(quantityInput.value);
+            quantityInput.value = currentValue + 1;
+        });
+
+        // Image gallery
+        const mainImage = document.getElementById('main-image');
+        const thumbnails = document.querySelectorAll('.thumbnail-item');
+
+        thumbnails.forEach((thumbnail) => {
+            thumbnail.addEventListener('click', function () {
+                // Update main image
+                const newImageSrc = this.getAttribute('data-image');
+                mainImage.src = newImageSrc;
+
+                // Update active state
+                thumbnails.forEach((t) =>
+                    t.classList.remove('active', 'border-red-600')
+                );
+                thumbnails.forEach((t) => t.classList.add('border-gray-200'));
+                this.classList.add('active', 'border-red-600');
+                this.classList.remove('border-gray-200');
+            });
+        });
+
+        // Accordion functionality for Description
+        const descriptionToggle = document.getElementById('description-toggle');
+        const descriptionContent = document.getElementById(
+            'description-content'
+        );
+        const descriptionIcon = document.getElementById('description-icon');
+
+        descriptionToggle.addEventListener('click', function () {
+            descriptionContent.classList.toggle('hidden');
+            descriptionIcon.classList.toggle('rotate-180');
+        });
+
+        // Accordion functionality for Specifications
+        const specificationsToggle = document.getElementById(
+            'specifications-toggle'
+        );
+        const specificationsContent = document.getElementById(
+            'specifications-content'
+        );
+        const specificationsIcon = document.getElementById(
+            'specifications-icon'
+        );
+
+        specificationsToggle.addEventListener('click', function () {
+            specificationsContent.classList.toggle('hidden');
+            specificationsIcon.classList.toggle('rotate-180');
+        });
+
+        // Add to cart functionality
+        const addToCartButton = document.getElementById('add-to-cart-button');
+
+        addToCartButton.addEventListener('click', function () {
+            const quantity = parseInt(quantityInput.value);
+            console.log(`Added ${quantity} item(s) to cart`);
+            // Here you would typically implement cart functionality
+            alert(`Added ${quantity} item(s) to cart`);
+        });
+    });
+</script>

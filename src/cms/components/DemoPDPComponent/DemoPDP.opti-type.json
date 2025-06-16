@@ -1,0 +1,208 @@
+{
+	"key": "DemoPDP",
+	"displayName": "Demo PDP",
+	"description": "Product Detail Page for e-commerce products",
+	"baseType": "component",
+	"sortOrder": 0,
+	"mayContainTypes": [],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [
+		"sectionEnabled",
+		"elementEnabled"
+	],
+	"properties": {
+		"ProductName": {
+			"type": "string",
+			"displayName": "Product Name/Title",
+			"description": "The name or title of the product",
+			"localized": true,
+			"required": true,
+			"group": "Information",
+			"sortOrder": -100,
+			"editorSettings": {}
+		},
+		"ModelNumber": {
+			"type": "string",
+			"displayName": "Model Number",
+			"description": "Product model number",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": -90,
+			"editorSettings": {}
+		},
+		"StockNumber": {
+			"type": "string",
+			"displayName": "Stock/SKU Number",
+			"description": "Product stock or SKU number",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": -80,
+			"editorSettings": {}
+		},
+		"UPC": {
+			"type": "string",
+			"displayName": "UPC/GTIN/EIN",
+			"description": "Universal Product Code or other identifying number",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": -70,
+			"editorSettings": {}
+		},
+		"Manufacturer": {
+			"type": "string",
+			"displayName": "Manufacturer/Brand",
+			"description": "Name of the product manufacturer or brand",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": -60,
+			"editorSettings": {}
+		},
+		"Price": {
+			"type": "string",
+			"displayName": "Price",
+			"description": "Product price",
+			"localized": false,
+			"required": true,
+			"group": "Information",
+			"sortOrder": -50,
+			"editorSettings": {}
+		},
+		"Weight": {
+			"type": "string",
+			"displayName": "Weight",
+			"description": "Product weight",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": -40,
+			"editorSettings": {}
+		},
+		"MainImage": {
+			"type": "contentReference",
+			"displayName": "Main Product Image",
+			"description": "Primary image of the product",
+			"localized": false,
+			"required": true,
+			"group": "Information",
+			"sortOrder": -30,
+			"editorSettings": {},
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
+		"ThumbnailGallery": {
+			"type": "array",
+			"format": "LinkCollection",
+			"displayName": "Thumbnail Gallery",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": -20,
+			"editorSettings": {},
+			"items": {
+				"type": "component",
+				"contentType": "link"
+			}
+		},
+		"BrandLogo": {
+			"type": "contentReference",
+			"displayName": "Brand Logo",
+			"description": "Logo of the product brand",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": -10,
+			"editorSettings": {},
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
+		"Description": {
+			"type": "string",
+			"format": "html",
+			"displayName": "Main Description",
+			"description": "Detailed product description",
+			"localized": true,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 0,
+			"editorSettings": {}
+		},
+		"Specifications": {
+			"type": "string",
+			"format": "html",
+			"displayName": "Specifications",
+			"description": "Technical specifications of the product",
+			"localized": true,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 10,
+			"editorSettings": {}
+		},
+		"ShippingInfo": {
+			"type": "string",
+			"format": "html",
+			"displayName": "Shipping Information",
+			"description": "Information about shipping options and costs",
+			"localized": true,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 20,
+			"editorSettings": {}
+		},
+		"DeliveryEstimate": {
+			"type": "string",
+			"displayName": "Delivery Estimates",
+			"description": "Estimated delivery timeframe",
+			"localized": true,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 30,
+			"editorSettings": {}
+		},
+		"AddToCartButton": {
+			"type": "string",
+			"displayName": "Add to Cart Button Text",
+			"description": "Text displayed on the Add to Cart button",
+			"localized": true,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 40,
+			"editorSettings": {}
+		},
+		"QuantitySelector": {
+			"type": "boolean",
+			"displayName": "Enable Quantity Selector",
+			"description": "Enable or disable the quantity selector",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 50,
+			"editorSettings": {}
+		},
+		"WarningInfo": {
+			"type": "string",
+			"format": "html",
+			"displayName": "Warning Information",
+			"description": "Product warnings (e.g., P65 warnings)",
+			"localized": true,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 60,
+			"editorSettings": {}
+		},
+		"PromoInfo": {
+			"type": "string",
+			"displayName": "Promotional Information",
+			"description": "Promotional messages (e.g., free shipping offers)",
+			"localized": true,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 70,
+			"editorSettings": {}
+		}
+	}
+}
