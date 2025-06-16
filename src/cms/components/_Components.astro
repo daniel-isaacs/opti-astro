@@ -8,6 +8,7 @@ import Card from './CardComponent/Card.astro';
 import Carousel from './CarouselComponent/Carousel.astro';
 import Divider from './DividerComponent/Divider.astro';
 import Collapse from './CollapseComponent/Collapse.astro';
+import DemoPDP from './DemoPDPComponent/DemoPDP.astro';
 import Grid from './GridComponent/Grid.astro';
 import Hero from './HeroComponent/Hero.astro';
 import Iframe from './IframeComponent/Iframe.astro';
@@ -172,6 +173,16 @@ const componentType = component._metadata.types[0];
 {
     componentType === 'Divider' && (
         <Divider
+            contentPayload={contentPayload}
+            data={component}
+            displaySettings={displaySettings}
+        />
+    )
+}
+
+{
+    componentType === 'DemoPDP' && (
+        <DemoPDP
             contentPayload={contentPayload}
             data={component}
             displaySettings={displaySettings}
