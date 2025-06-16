@@ -139,6 +139,10 @@
                 "red": {
                     "displayName": "Red",
                     "sortOrder": 40
+                },
+                "gray": {
+                    "displayName": "Gray",
+                    "sortOrder": 50
                 }
             }
         }

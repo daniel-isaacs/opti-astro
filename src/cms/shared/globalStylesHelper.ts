@@ -36,6 +36,9 @@ export function getGlobalStyles(component:
         case 'red':
             cssClasses.push('bg-red-500');
             break;
+        case 'gray':
+            cssClasses.push('bg-gray-300');
+            break;
 
 
 
