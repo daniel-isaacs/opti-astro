@@ -2,12 +2,13 @@
 import { Image as AstroImage } from 'astro:assets';
 import { randomBytes } from 'crypto';
 import type {
-ArticleListFragment,
-ArticlePageExcerptFragment,
-DisplaySettingsFragment,
+    ArticleListFragment,
+    ArticlePageExcerptFragment,
+    DisplaySettingsFragment,
 } from '../../../../__generated/sdk';
 import { getOptimizelySdk } from '../../../graphql/getSdk';
 import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import { getArticleListStyleConfig } from './ArticleListStyling';
 import LinkButton from '../ButtonComponent/LinkButton.astro';
 
 export interface Props {
@@ -15,45 +16,197 @@ export interface Props {
     displaySettings: DisplaySettingsFragment[];
     contentPayload: ContentPayload;
 }
-const { data, contentPayload } = Astro.props as Props;
+const { data, displaySettings, contentPayload } = Astro.props as Props;
+
+const articleListStyles = getArticleListStyleConfig(displaySettings);
+const bentoGridType = articleListStyles.bento_grid_type;
+console.log('bentoGridType', bentoGridType);
+
 const currentSite = Astro.url.origin;
+
+let articleCount = data.NumberOfArticles || 1;
+switch (bentoGridType) {
+    case 'one_big_two_small':
+        articleCount = 3;
+        break;
+    case 'one_big_four_small':
+        articleCount = 5;
+        break;
+    case 'one_tall_eight_small':
+        articleCount = 9;
+        break;
+    default:
+        articleCount = data.NumberOfArticles || 1;
+        break;
+}
 const articlesList = await getOptimizelySdk(contentPayload).getArticles({
     //@ts-ignore
     loc: contentPayload.loc,
     site: currentSite,
-    limit: data.NumberOfArticles || 1,
+    limit: articleCount,
 });
 const glideId = randomBytes(5).toString('hex');
 const items = articlesList.ArticlePage?.items || null;
 ---
 
 <h1 class="w-full basis-full">{data?.Title}</h1>
-<div class="mt-4 mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-    {
-        //@ts-ignore
-        items?.map((item: ArticlePageExcerptFragment, i) => {
-            return (
-                <div class="card bg-base-100 shadow-sm flex flex-col">      
-                    <figure>
-                        <AstroImage
-                            class="aspect-3/2 object-cover"
-                            src={((item.PromoImage as any)?.item?.Url || item.PromoImage?.url?.default) ?? '/placeholder.png'}
-                            alt={item.PromoImage?.item?.AltText || item.PromoImage?.item?._metadata?.displayName || `Promo image for ${item.Heading}` || 'Article promo image'}
-                            width={600}
-                            height={400}
-                        />
-                    </figure>
-                    <div class="card-body">
-                        <h2 class="card-title">{item.Heading}</h2>
-                        { item.Body?.html && 
-                            <div set:html={item.Body.html.replace(/<[^>]*>/g, '').split(' ').slice(0, 30).join(' ') + "..."} />
-                        }
-                        <div class="card-actions justify-end mt-auto">
-                          <LinkButton cssClasses="btn-primary" link={item._metadata?.url?.hierarchical}>Read more</LinkButton>
+
+{ !bentoGridType && 
+    <div class="mt-4 mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        {
+            //@ts-ignore
+            items?.map((item: ArticlePageExcerptFragment, i) => {
+                return (
+                    <div class="card bg-base-100 shadow-sm flex flex-col">      
+                        <figure>
+                            <AstroImage
+                                class="aspect-3/2 object-cover"
+                                src={((item.PromoImage as any)?.item?.Url || item.PromoImage?.url?.default) ?? '/placeholder.png'}
+                                alt={(item.PromoImage as any)?.item?.AltText || (item.PromoImage as any).item?._metadata?.displayName || `Promo image for ${item.Heading}` || 'Article promo image'}
+                                width={600}
+                                height={400}
+                            />
+                        </figure>
+                        <div class="card-body">
+                            <h2 class="card-title">{item.Heading}</h2>
+                            { item.Body?.html && 
+                                <div set:html={item.Body.html.replace(/<[^>]*>/g, '').split(' ').slice(0, 30).join(' ') + "..."} />
+                            }
+                            <div class="card-actions justify-end mt-auto">
+                            <LinkButton cssClasses="btn-primary" link={item._metadata?.url?.hierarchical}>Read more</LinkButton>
+                            </div>
                         </div>
                     </div>
-                </div>
-            );
-        })
-    }
-</div>
+                );
+            })
+        }
+    </div>
+}
+
+{ bentoGridType == 'one_big_two_small' && 
+    <div class="flex h-full w-full items-center justify-center">
+        <div class="grid h-full w-full gap-4 p-2 sm:grid-cols-2 lg:grid-cols-3 grid-rows-2 rounded-lg shadow-md">
+        {
+            //@ts-ignore
+            items?.map((item: ArticlePageExcerptFragment, i) => {
+                let wrapperClass = "";
+                if (i === 0) {
+                    wrapperClass = "col-span-2 row-span-2 bg-gray-200 rounded-lg shadow-md flex items-center justify-center items-stretch";
+                } else if (i === 1 || i === 2) {
+                    wrapperClass = "col-span-1 row-span-1 bg-gray-200 rounded-lg shadow-md flex items-center justify-center items-stretch";
+                } else {
+                    return null;
+                }
+                return (
+                    <div class={wrapperClass}>
+                        <div class="card bg-base-100 shadow-sm items-stretch">      
+                            <figure>
+                                <AstroImage
+                                    class="aspect-3/2 object-cover"
+                                    src={((item.PromoImage as any)?.item?.Url || item.PromoImage?.url?.default) ?? '/placeholder.png'}
+                                    alt={(item.PromoImage as any)?.item?.AltText || (item.PromoImage as any).item?._metadata?.displayName || `Promo image for ${item.Heading}` || 'Article promo image'}
+                                    width={1200}
+                                    height={800}
+                                />
+                            </figure>
+                            <div class="card-body">
+                                <h2 class="card-title">{item.Heading}</h2>
+                                { item.Body?.html && 
+                                    <div set:html={item.Body.html.replace(/<[^>]*>/g, '').split(' ').slice(0, 30).join(' ') + "..."} />
+                                }
+                                <div class="card-actions justify-end mt-auto">
+                                    <LinkButton cssClasses="btn-primary" link={item._metadata?.url?.hierarchical}>Read more</LinkButton>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })
+        }
+        </div>
+    </div>
+}
+
+{ bentoGridType == 'one_big_four_small' && 
+    <div class="flex h-full w-full items-center justify-center">
+        <div class="grid h-full w-full gap-4 p-2 sm:grid-cols-2 lg:grid-cols-4 grid-rows-2 rounded-lg shadow-md ">
+        {
+            //@ts-ignore
+            items?.map((item: ArticlePageExcerptFragment, i) => {
+                let wrapperClass = "";
+                if (i === 0) {
+                    wrapperClass = "col-span-2 row-span-2 bg-gray-200 rounded-lg shadow-md flex items-center justify-center items-stretch";
+                } else {
+                    wrapperClass = "col-span-1 row-span-1 bg-gray-200 rounded-lg shadow-md flex items-center justify-center items-stretch";
+                }
+                return (
+                    <div class={wrapperClass}>
+                        <div class="card bg-base-100 shadow-sm flex flex-col ">      
+                            <figure>
+                                <AstroImage
+                                    class="aspect-3/2 object-cover"
+                                    src={((item.PromoImage as any)?.item?.Url || item.PromoImage?.url?.default) ?? '/placeholder.png'}
+                                    alt={(item.PromoImage as any)?.item?.AltText || (item.PromoImage as any).item?._metadata?.displayName || `Promo image for ${item.Heading}` || 'Article promo image'}
+                                    width={1200}
+                                    height={800}
+                                />
+                            </figure>
+                            <div class="card-body">
+                                <h2 class="card-title">{item.Heading}</h2>
+                                { item.Body?.html && 
+                                    <div set:html={item.Body.html.replace(/<[^>]*>/g, '').split(' ').slice(0, 30).join(' ') + "..."} />
+                                }
+                                <div class="card-actions justify-end mt-auto">
+                                    <LinkButton cssClasses="btn-primary" link={item._metadata?.url?.hierarchical}>Read more</LinkButton>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })
+        }
+        </div>
+    </div>
+}
+
+{ bentoGridType == 'one_tall_eight_small' && 
+    <div class="flex h-full w-full items-center justify-center">
+        <div class="grid h-full w-full gap-4 p-2 sm:grid-cols-2 lg:grid-cols-4 grid-rows-2 rounded-lg shadow-md">
+        {
+            //@ts-ignore
+            items?.map((item: ArticlePageExcerptFragment, i) => {
+                let wrapperClass = "";
+                if (i === 0) {
+                    wrapperClass = "col-span-2 row-span-2 bg-gray-200 rounded-lg shadow-md flex items-center justify-center items-stretch";
+                } else {
+                    wrapperClass = "col-span-1 row-span-1 bg-gray-200 rounded-lg shadow-md flex items-center justify-center items-stretch";
+                }
+                return (
+                    <div class={wrapperClass}>
+                        <div class="card bg-base-100 shadow-sm flex flex-col">      
+                            <figure>
+                                <AstroImage
+                                    class="aspect-3/2 object-cover"
+                                    src={((item.PromoImage as any)?.item?.Url || item.PromoImage?.url?.default) ?? '/placeholder.png'}
+                                    alt={(item.PromoImage as any)?.item?.AltText || (item.PromoImage as any).item?._metadata?.displayName || `Promo image for ${item.Heading}` || 'Article promo image'}
+                                    width={1200}
+                                    height={800}
+                                />
+                            </figure>
+                            <div class="card-body">
+                                <h2 class="card-title">{item.Heading}</h2>
+                                { item.Body?.html && 
+                                    <div set:html={item.Body.html.replace(/<[^>]*>/g, '').split(' ').slice(0, 30).join(' ') + "..."} />
+                                }
+                                <div class="card-actions justify-end mt-auto">
+                                    <LinkButton cssClasses="btn-primary" link={item._metadata?.url?.hierarchical}>Read more</LinkButton>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })
+        }
+        </div>
+    </div>
+}

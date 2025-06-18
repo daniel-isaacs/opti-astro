@@ -1,0 +1,27 @@
+{
+	"key": "BentoGridArticleList",
+	"displayName": "Bento Grid Article List",
+	"contentType": "ArticleList",
+	"isDefault": false,
+	"settings": {
+		"bento_grid_type": {
+			"displayName": "Bento Grid Type",
+			"editor": "",
+			"sortOrder": 10,
+			"choices": {
+				"one_big_two_small": {
+					"displayName": "One Big, Two Small",
+					"sortOrder": 10
+				},
+				"one_big_four_small": {
+					"displayName": "One Big, Four Small",
+					"sortOrder": 20
+				},
+				"one_tall_eight_small": {
+					"displayName": "One Tall, Eight Small",
+					"sortOrder": 30
+				}
+			}
+		}
+	}
+}
