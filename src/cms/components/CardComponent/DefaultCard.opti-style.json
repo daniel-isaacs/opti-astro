@@ -4,10 +4,56 @@
 	"contentType": "Card",
 	"isDefault": true,
 	"settings": {
+		"textAlign": {
+			"displayName": "Text align",
+			"editor": "",
+			"sortOrder": 5,
+			"choices": {
+				"left": {
+					"displayName": "Left",
+					"sortOrder": 10
+				},
+				"center": {
+					"displayName": "Center",
+					"sortOrder": 20
+				},
+				"right": {
+					"displayName": "Right",
+					"sortOrder": 30
+				},
+				"justify": {
+					"displayName": "Justify",
+					"sortOrder": 40
+				}
+			}
+		},
+		"transformHeader": {
+			"displayName": "Header Text transform",
+			"editor": "",
+			"sortOrder": 10,
+			"choices": {
+				"keep": {
+					"displayName": "As entered",
+					"sortOrder": 10
+				},
+				"uppercase": {
+					"displayName": "Uppercase",
+					"sortOrder": 20
+				},
+				"lowercase": {
+					"displayName": "Lowercase",
+					"sortOrder": 30
+				},
+				"capitalize": {
+					"displayName": "Capitalize",
+					"sortOrder": 40
+				}
+			}
+		},
 		"transform": {
 			"displayName": "Button Text Transform",
 			"editor": "",
-			"sortOrder": 5,
+			"sortOrder": 15,
 			"choices": {
 				"keep": {
 					"displayName": "As entered",
