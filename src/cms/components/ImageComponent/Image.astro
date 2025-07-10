@@ -13,11 +13,73 @@ export interface Props {
     contentPayload: ContentPayload;
 }
 const { data, displaySettings } = Astro.props as Props;
+let imageUrl = (data.Image as any)?.item?.Url || data.Image?.url?.default || null;
 
-const imageUrl = (data.Image as any)?.item?.Url || data.Image?.url?.default || null;
+const isDamImage = (data.Image as any)?.item?.Url?.includes('cmp.optimizely.com') || false;
+
+let selectedRendition = 'default';
+let renditionInstagramUrl = null;
+let renditionLogoSmartFocalPointUrl = null;
+if (isDamImage) {
+    const renditions = (data.Image as any)?.item?.Renditions || [];
+    selectedRendition = data?.DamImageRendition || 'default';
+
+    switch (selectedRendition) {
+        case 'default':
+            break;
+        case 'responsive':
+            var renditionInstagram = renditions.find((rendition: any) => rendition.Name === "Instagram");
+            renditionInstagramUrl = renditionInstagram?.Url;
+            var renditionLogoSmartFocalPoint = renditions.find((rendition: any) => rendition.Name === "Logo Smart Focal Point");
+            renditionLogoSmartFocalPointUrl = renditionLogoSmartFocalPoint?.Url;
+            break;
+        case 'Banner Height Crop':
+            const renditionBannerHeightCrop = renditions.find((rendition: any) => rendition.Name === "Banner Height Crop");
+            imageUrl = renditionBannerHeightCrop?.Url;
+            break;
+        case 'Instagram':
+            var renditionInstagram = renditions.find((rendition: any) => rendition.Name === "Instagram");
+            imageUrl = renditionInstagram?.Url;
+            break;
+        case 'Logo Smart Focal Point':
+            var renditionLogoSmartFocalPoint = renditions.find((rendition: any) => rendition.Name === "Logo Smart Focal Point");
+            imageUrl = renditionLogoSmartFocalPoint?.Url;
+            break;
+        case 'Small Square':
+            var renditionSmallSquare = renditions.find((rendition: any) => rendition.Name === "Small Square");
+            imageUrl = renditionSmallSquare?.Url;
+            break;
+        default:
+            break;
+    }
+}
+
 ---
 
-{imageUrl && 
+{imageUrl && !isDamImage &&
+    <AstroImage
+        class:list={getImageElementStyles(displaySettings)}
+        src={imageUrl || ''}
+        alt={data.AltText || ''}
+        inferSize={true}
+    />
+}
+
+{imageUrl && isDamImage && (selectedRendition === 'responsive') &&
+    <picture>
+        <source media="(max-width: 768px)" srcset={renditionLogoSmartFocalPointUrl} />
+        <source media="(max-width: 1280px)" srcset={renditionInstagramUrl} />
+        <AstroImage
+            class:list={getImageElementStyles(displaySettings)}
+            src={imageUrl || ''}
+            alt={data.AltText || ''}
+            loading="lazy"
+            inferSize={true}
+        />
+    </picture>
+}
+
+{imageUrl && isDamImage && (selectedRendition !== 'responsive') &&
     <AstroImage
         class:list={getImageElementStyles(displaySettings)}
         src={imageUrl || ''}
