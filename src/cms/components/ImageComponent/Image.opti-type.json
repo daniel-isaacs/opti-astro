@@ -35,6 +35,45 @@
 				"Image"
 			],
 			"restrictedTypes": []
+		},
+		"DamImageRendition": {
+			"type": "string",
+			"format": "selectOne",
+			"displayName": "DAM Image Rendition",
+			"description": "Select the version of the DAM image to be displayed. (NOTE: only applies to images from Optimizely DAM.)",
+			"localized": false,
+			"required": true,
+			"group": "Information",
+			"sortOrder": 20,
+			"editorSettings": {},
+			"enum": {
+				"values": [
+					{
+						"displayName": "Default (selected image)",
+						"value": "default"
+					},
+					{
+						"displayName": "Responsive",
+						"value": "responsive"
+					},
+					{
+						"displayName": "Banner Height Crop",
+						"value": "Banner Height Crop"
+					},
+					{
+						"displayName": "Instagram",
+						"value": "Instagram"
+					},
+					{
+						"displayName": "Logo Smart Focal Point",
+						"value": "Logo Smart Focal Point"
+					},
+					{
+						"displayName": "Small Square",
+						"value": "Small Square"
+					}
+				]
+			}
 		}
 	}
 }
