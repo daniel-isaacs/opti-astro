@@ -1,4 +1,12 @@
 fragment PublicImageAsset on cmp_PublicImageAsset {
     AltText
+    Title
     Url
+    Width
+    Height
+    Renditions {
+        Name
+        Id
+        Url
+    }
 }
