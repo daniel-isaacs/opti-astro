@@ -1,0 +1,70 @@
+query formById($key: String, $version: String) {
+    OptiFormsDIContainerData(
+        where: {
+            _metadata: { key: { eq: $key } }
+            _or: { _metadata: { version: { eq: $version } } }
+        }
+    ) {
+        items {
+            composition {
+                grids: nodes {
+                    key
+                    displayName
+                    displayTemplateKey
+                    displaySettings {
+                        ...DisplaySettings
+                    }
+                    nodeType
+                    type
+                    ... on CompositionStructureNode {
+                        key
+                        __typename
+                        displayName
+                        nodeType
+                        layoutType
+                        component {
+                            ...AllComponents
+                        }
+                        nodes: nodes {
+                            ... on CompositionStructureNode {
+                                key
+                                __typename
+                                displayName
+                                nodeType
+                                layoutType
+                                nodes: nodes {
+                                    ... on CompositionStructureNode {
+                                        key
+                                        __typename
+                                        displayName
+                                        nodeType
+                                        layoutType
+                                        nodes: nodes {
+                                            ... on CompositionComponentNode {
+                                                key
+                                                displayTemplateKey
+                                                displaySettings {
+                                                    ...DisplaySettings
+                                                }
+                                                component {
+                                                    _metadata {
+                                                        types
+                                                    }
+                                                    ...AllFormComponents
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            _metadata {
+                key
+                version
+            }
+        }
+    }
+}

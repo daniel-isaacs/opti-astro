@@ -1,0 +1,6 @@
+fragment textareaElement on OptiFormsDITextareaElement {
+    Label
+    Tooltip
+    Placeholder
+    AutoComplete
+}
