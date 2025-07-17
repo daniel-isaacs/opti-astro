@@ -1,4 +1,5 @@
 
+import type { Locales } from '../../../__generated/sdk';
 import { getOptimizelySdk } from '../../graphql/getSdk';
 import type { ContentPayload } from '../../graphql/shared/ContentPayload';
 import { EXTERNAL_PREVIEW_TOKEN } from 'astro:env/server';
@@ -71,6 +72,21 @@ export async function isExternalPreviewEnabled(contentVersion: string): Promise<
     }
 
     return isExtPreviewEnabled;
+}
+
+// Check if the current requested content version has a redirect defined
+export async function getPageRedirect(contentPayload: ContentPayload): Promise<string> {
+    const redirectValue = await getOptimizelySdk(
+        contentPayload
+    ).redirectById({
+        key: contentPayload.key || '',
+        ver: contentPayload.ver || '',
+        loc: contentPayload.loc as Locales,
+    });
+
+    const redirectUrl = redirectValue?._Page?.item?.PageAdminSettings?.Redirect?.url?.default || '';
+
+    return redirectUrl;
 }
 
 // Generate external preview token
