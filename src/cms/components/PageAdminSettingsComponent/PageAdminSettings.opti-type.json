@@ -17,6 +17,17 @@
 			"group": "Information",
 			"sortOrder": 10,
 			"editorSettings": {}
+		},
+		"Redirect": {
+			"type": "component",
+			"contentType": "link",
+			"displayName": "Redirect",
+			"description": "If a redirect value is set, this page will automatically redirect to that URL.",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 20,
+			"editorSettings": {}
 		}
 	}
 }

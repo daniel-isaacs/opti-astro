@@ -3,6 +3,7 @@ import { Locales } from '../../__generated/sdk';
 import Components from '../cms/components/_Components.astro';
 import Experiences from '../cms/experiences/_Experiences.astro';
 import Pages from '../cms/pages/_Pages.astro';
+import { getPageRedirect } from '../cms/shared/utils';
 import { getOptimizelySdk } from '../graphql/getSdk';
 import type { ContentPayload } from '../graphql/shared/ContentPayload';
 
@@ -58,10 +59,20 @@ contentPayload = {
         (contentByIdResponse?._Content?.item?._metadata?.types as string[]) ||
         [],
 };
+
+console.log("...[page] contentByIdResponse", JSON.stringify(contentByIdResponse, null, 2));
+
 const isComponentType = contentPayload.types.includes('_Component');
 const isExperienceType = contentPayload.types.includes('_Experience');
 const isPageType =
     contentPayload.types.includes('_Page') && isExperienceType === false;
+
+const redirectUrl = (isExperienceType || isPageType) && await getPageRedirect(contentPayload);
+if (redirectUrl) {
+    return Astro.redirect(redirectUrl, 301);
+}
+
+
 ---
 
 <>

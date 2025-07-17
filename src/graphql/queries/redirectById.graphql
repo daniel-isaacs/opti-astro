@@ -1,0 +1,30 @@
+query redirectById($key: [String], $loc: [Locales], $ver: String) {
+    _Page(
+        ids: $key
+        locale: $loc
+        where: { _metadata: { version: { eq: $ver } } }
+        variation: { include: ALL }
+    ) {
+        item {
+            ... on ArticlePage {
+                PageAdminSettings {
+                    Redirect {
+                        target
+                        url {
+                            default
+                        }
+                    }
+                }
+            }
+            ... on BlankExperience {
+                PageAdminSettings {
+                    Redirect {
+                        url {
+                            default
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
