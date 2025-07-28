@@ -236,3 +236,5 @@ export type daisyColors =
     | "--color-base-300/20"
     | "--color-base-300/10"
     | "--color-transparent"
+
+    | "text-accent/60"
