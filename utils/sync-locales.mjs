@@ -52,7 +52,7 @@ function extractLocalesFromSDK() {
 }
 
 function generateFallbackConfig(locales) {
-  const defaultLocale = 'en';
+  const defaultLocale = 'fr';
   const fallback = {};
   
   locales.forEach(locale => {
