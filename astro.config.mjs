@@ -36,7 +36,7 @@ export default defineConfig({
        'en' 
         // DYNAMIC_LOCALES_END
         ],
-        defaultLocale: 'en',
+        defaultLocale: 'fr',
         routing: {
             prefixDefaultLocale: false,
             fallbackType: 'rewrite',
