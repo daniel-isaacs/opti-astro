@@ -44,6 +44,47 @@ export function getBackgroundColorClass(dictionary: Record<string, string>): str
     }
 }
 
+/**
+ * Get text color class based on style setting
+ * Supports both 'textColor' and 'fontColor' keys
+ */
+export function getTextColorClass(dictionary: Record<string, string>): string {
+    // Check both possible keys for text color
+    const colorValue = dictionary['textColor'] || dictionary['fontColor'];
+
+    if (colorValue === 'default') {
+        const bgColorValue = dictionary['backgroundColor'] || dictionary['sectionColor'];
+        return (bgColorValue === 'transparent' || !bgColorValue) ? '' : 'text-' + bgColorValue + '-content';
+    }
+
+    switch (colorValue) {
+        case 'base_100':
+            return 'text-base-100';
+        case 'base_200':
+            return 'text-base-200';
+        case 'base_300':
+            return 'text-base-300';
+        case 'primary':
+            return 'text-primary-content';
+        case 'secondary':
+            return 'text-secondary-content';
+        case 'accent':
+            return 'text-accent-content';
+        case 'neutral':
+            return 'text-neutral-content';
+        case 'info':
+            return 'text-info-content';
+        case 'success':
+            return 'text-success-content';
+        case 'warning':
+            return 'text-warning-content';
+        case 'error':
+            return 'text-error-content';
+        default:
+            return ''; // No text color applied
+    }
+}
+
 export function getGlobalStyles(component: 
         | Maybe<Maybe<DisplaySettingsFragment>>[]
         | CompositionStructureNode
@@ -65,6 +106,12 @@ export function getGlobalStyles(component:
     const backgroundColorClass = getBackgroundColorClass(dictionary);
     if (backgroundColorClass) {
         cssClasses.push(backgroundColorClass);
+    }
+
+    // Add text color using the centralized function
+    const textColorClass = getTextColorClass(dictionary);
+    if (textColorClass) {
+        cssClasses.push(textColorClass);
     }
 
     return cssClasses;
