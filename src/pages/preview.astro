@@ -17,11 +17,13 @@ const cmsScript =
         : `/communicationinjector.js`;
 
 const previewPayload = qs.parse(Astro.url.search) as unknown as ContentPayload;
-previewPayload.loc = localeToSdkLocale(previewPayload.loc);
+// previewPayload.loc = localeToSdkLocale(previewPayload.loc);
 
 const optiResponse = await getOptimizelySdk(previewPayload).contentById({
     key: previewPayload.key,
-    loc: previewPayload.loc as Locales,
+    //@ts-ignore
+    loc: previewPayload.loc as unknown as Locales,
+    // loc: previewPayload.loc as Locales,
     ver: previewPayload.ver,
 });
 const types = optiResponse?._Content?.item?._metadata?.types;
