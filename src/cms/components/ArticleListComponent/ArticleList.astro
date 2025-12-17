@@ -159,7 +159,7 @@ const componentClass = 'component-articlelist';
                                     <div set:html={item.Body.html.replace(/<[^>]*>/g, '').split(' ').slice(0, 30).join(' ') + "..."} />
                                 }
                                 <div class:list={["card-actions mt-auto", buttonClasses]}>
-                                    <LinkButton cssClasses="btn-primary" link={item._metadata?.url?.hierarchical}>Read more</LinkButton>
+                                    <LinkButton cssClasses="btn-outline btn-neutral" link={item._metadata?.url?.hierarchical}>Read more</LinkButton>
                                 </div>
                             </div>
                         </div>
