@@ -11,4 +11,9 @@ fragment ArticlePageExcerpt on ArticlePage {
     Body {
         html
     }
+    SeoSettings {
+        SharingImage {
+            ...ContentUrl
+        }
+    }
 }
