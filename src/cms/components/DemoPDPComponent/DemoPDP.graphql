@@ -1,0 +1,83 @@
+fragment DemoPDP on DemoPDP {
+    _id
+    _metadata {
+        key
+        locale
+        displayName
+        version
+        url {
+            type
+            default
+            hierarchical
+            internal
+            graph
+            base
+        }
+        types
+        published
+        status
+        created
+        lastModified
+    }
+    ProductName
+    ModelNumber
+    StockNumber
+    UPC
+    Manufacturer
+    Price
+    Weight
+    MainImage {
+        key
+        url {
+            type
+            default
+            hierarchical
+            internal
+            graph
+            base
+        }
+    }
+    ThumbnailGallery {
+        url {
+            type
+            default
+            hierarchical
+            internal
+            graph
+            base
+        }
+        title
+        text
+        target
+    }
+    BrandLogo {
+        key
+        url {
+            type
+            default
+            hierarchical
+            internal
+            graph
+            base
+        }
+    }
+    ProductDescription: Description {
+        html
+    }
+    Specifications {
+        html
+        json
+    }
+    ShippingInfo {
+        html
+        json
+    }
+    DeliveryEstimate
+    AddToCartButton
+    QuantitySelector
+    WarningInfo {
+        html
+        json
+    }
+    PromoInfo
+}

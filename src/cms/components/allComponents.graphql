@@ -19,5 +19,7 @@ fragment AllComponentsExceptGrid on _IComponent {
     ...VideoExternal
     ...Divider
     ...OdpForm
+    ...DemoPDP
+    ...SS_PDPDemo
     ...FacetedSearch
 }

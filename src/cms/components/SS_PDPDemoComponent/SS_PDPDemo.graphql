@@ -1,0 +1,56 @@
+fragment SS_PDPDemo on SS_PDPDemo {
+    _id
+    _metadata {
+        key
+        locale
+        displayName
+        version
+        url {
+            type
+            default
+            hierarchical
+            internal
+            graph
+            base
+        }
+        types
+        published
+        status
+        created
+        lastModified
+    }
+    CourseTitle
+    CourseAudience
+    CourseLength
+    IncludesAssessment
+    EarnsBadge
+    CourseImage {
+        key
+        url {
+            type
+            default
+            hierarchical
+            internal
+            graph
+            base
+        }
+    }
+    CourseDescription {
+        html
+        json
+    }
+    CourseChannels {
+        url {
+            type
+            default
+            hierarchical
+            internal
+            graph
+            base
+        }
+        title
+        text
+        target
+    }
+    CourseRating
+}

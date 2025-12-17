@@ -1,0 +1,119 @@
+{
+	"key": "SS_PDPDemo",
+	"displayName": "Skillsoft PDP",
+	"description": "Course Product",
+	"baseType": "component",
+	"sortOrder": 100,
+	"mayContainTypes": [],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [
+		"sectionEnabled",
+		"elementEnabled"
+	],
+	"properties": {
+		"CourseTitle": {
+			"type": "string",
+			"format": "shortString",
+			"displayName": "Course Title",
+			"description": "",
+			"localized": true,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 10,
+			"editorSettings": {}
+		},
+		"CourseAudience": {
+			"type": "string",
+			"format": "shortString",
+			"displayName": "Course Audience",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 20,
+			"editorSettings": {}
+		},
+		"CourseLength": {
+			"type": "string",
+			"format": "shortString",
+			"displayName": "Course Length",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 30,
+			"editorSettings": {}
+		},
+		"IncludesAssessment": {
+			"type": "boolean",
+			"displayName": "Includes Assessment",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 40,
+			"editorSettings": {}
+		},
+		"EarnsBadge": {
+			"type": "boolean",
+			"displayName": "Earns a Badge",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 50,
+			"editorSettings": {}
+		},
+		"CourseImage": {
+			"type": "contentReference",
+			"displayName": "Course Image",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 60,
+			"editorSettings": {},
+			"allowedTypes": [
+				"Media"
+			],
+			"restrictedTypes": []
+		},
+		"CourseDescription": {
+			"type": "string",
+			"format": "html",
+			"displayName": "Course Description",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 70,
+			"editorSettings": {}
+		},
+		"CourseChannels": {
+			"type": "array",
+			"format": "LinkCollection",
+			"displayName": "Course Channels",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 80,
+			"editorSettings": {},
+			"items": {
+				"type": "component",
+				"contentType": "link"
+			}
+		},
+		"CourseRating": {
+			"type": "float",
+			"displayName": "Course Rating",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 90,
+			"editorSettings": {},
+			"maximum": 5
+		}
+	}
+}
