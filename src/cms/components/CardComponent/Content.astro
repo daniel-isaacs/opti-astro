@@ -149,7 +149,6 @@ const contentClasses = isFullSplit
                             data.Links?.map((link, i) => {                              
                                 // console.log('Rendering card link:', link);  
                                 const buttonLink = getLink(link as ButtonLinkData, currentDomain);
-                                console.log('Rendering card Button Link:', buttonLink);
                                 const newWindow = link?.target === '_blank';
                                 const buttonType = ['', getButtonType(i)];
                                 return (
@@ -183,7 +182,6 @@ const contentClasses = isFullSplit
                         data.Links.map((link, i) => {            
                             // console.log('Rendering card link:', link);  
                             const buttonLink = getLink(link as ButtonLinkData, currentDomain);
-                            console.log('Rendering card Button Link:', buttonLink);
                             const newWindow = link?.target === '_blank';
                             const buttonType = ['', getButtonType(i)];
                             return (
