@@ -1,0 +1,45 @@
+---
+import type {
+    ApartmentListFragment,
+    DisplaySettingsFragment,
+} from '../../../../__generated/sdk';
+import { getOptimizelySdk } from '../../../graphql/getSdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import { isEditContext } from '../../shared/utils.ts';
+import ApartmentListFilter from './ApartmentListFilter.svelte';
+
+const isCmsEdit = isEditContext(Astro.url);
+
+export interface Props {
+    key: string;
+    data: ApartmentListFragment;
+    displaySettings: DisplaySettingsFragment[];
+    displayTemplateKey: string;
+    contentPayload: ContentPayload;
+}
+
+const { key, data, displaySettings, displayTemplateKey, contentPayload } = Astro.props as Props;
+
+const limit = data.NumberOfApartments || 10;
+
+// Fetch initial data server-side (includes facets for filter dropdowns)
+const result = await getOptimizelySdk(contentPayload).getApartments({ limit });
+const initialItems = result?.Apartments?.items || [];
+const initialTotal = result?.Apartments?.total || 0;
+const initialFacets = {
+    cities: (result?.Apartments?.facets?.apartment_city || []).filter((f) => f?.name),
+    states: (result?.Apartments?.facets?.apartment_state || []).filter((f) => f?.name),
+    communities: (result?.Apartments?.facets?.apartment_community_name || []).filter((f) => f?.name),
+    parkingTypes: (result?.Apartments?.facets?.apartment_parking_type || []).filter((f) => f?.name),
+};
+---
+
+<div data-epi-block-id={isCmsEdit && key || undefined} class="component-apartmentlist">
+    <ApartmentListFilter
+        client:load
+        limit={limit}
+        initialItems={initialItems}
+        initialTotal={initialTotal}
+        initialFacets={initialFacets}
+    />
+</div>

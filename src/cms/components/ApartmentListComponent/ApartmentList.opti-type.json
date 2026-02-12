@@ -1,0 +1,24 @@
+{
+	"key": "ApartmentList",
+	"displayName": "Apartment List",
+	"description": "Display list of apartments",
+	"baseType": "component",
+	"sortOrder": 0,
+	"mayContainTypes": [],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [],
+	"properties": {
+		"NumberOfApartments": {
+			"type": "integer",
+			"displayName": "Number of Apartments",
+			"description": "Number of Apartments to display",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 10,
+			"editorSettings": {},
+			"minimum": 1,
+			"maximum": 100
+		}
+	}
+}

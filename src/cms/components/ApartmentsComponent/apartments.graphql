@@ -1,0 +1,15 @@
+fragment Apartments on Apartments {
+    apartment_display_name
+    apartment_city
+    apartment_state
+    apartment_community_name
+    apartment_unit
+    apartment_beds
+    apartment_baths
+    apartment_footage
+    apartment_rent_base
+    apartment_parking_type
+    apartment_parking_price
+    apartment_rent_pet
+    _modified
+}

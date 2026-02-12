@@ -1,0 +1,29 @@
+query getApartments(
+    $limit: Int! = 10
+    $where: ApartmentsWhereInput
+) {
+    Apartments(limit: $limit, where: $where) {
+        total
+        items {
+            ...Apartments
+        }
+        facets {
+            apartment_city(limit: 50, orderBy: ASC, orderType: VALUE) {
+                name
+                count
+            }
+            apartment_state(limit: 50, orderBy: ASC, orderType: VALUE) {
+                name
+                count
+            }
+            apartment_community_name(limit: 50, orderBy: ASC, orderType: VALUE) {
+                name
+                count
+            }
+            apartment_parking_type(limit: 20, orderBy: ASC, orderType: VALUE) {
+                name
+                count
+            }
+        }
+    }
+}
