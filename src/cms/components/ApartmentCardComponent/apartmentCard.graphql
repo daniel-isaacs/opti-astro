@@ -1,0 +1,6 @@
+fragment ApartmentCard on ApartmentCard {
+    CommunityName
+    City
+    State
+    Rent
+}

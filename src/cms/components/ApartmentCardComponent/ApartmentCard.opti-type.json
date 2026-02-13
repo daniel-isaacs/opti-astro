@@ -1,0 +1,55 @@
+{
+	"key": "ApartmentCard",
+	"displayName": "Apartment Card",
+	"description": "Apartment details for use as a card",
+	"baseType": "component",
+	"sortOrder": 0,
+	"mayContainTypes": [],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [
+		"sectionEnabled",
+		"elementEnabled"
+	],
+	"properties": {
+		"CommunityName": {
+			"type": "string",
+			"displayName": "Community Name",
+			"description": "Apartment community name",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 10,
+			"editorSettings": {}
+		},
+		"City": {
+			"type": "string",
+			"displayName": "City",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 20,
+			"editorSettings": {}
+		},
+		"State": {
+			"type": "string",
+			"displayName": "State",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 30,
+			"editorSettings": {}
+		},
+		"Rent": {
+			"type": "float",
+			"displayName": "Rent",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 40,
+			"editorSettings": {}
+		}
+	}
+}
