@@ -5,7 +5,7 @@ import type { ContentPayload } from '../../graphql/shared/ContentPayload';
 
 export const GET: APIRoute = async ({ url }) => {
 	try {
-		const limit = parseInt(url.searchParams.get('limit') || '10');
+		const limit = parseInt(url.searchParams.get('limit') || '0'); // 0 = return all
 		const city = url.searchParams.get('city') || null;
 		const state = url.searchParams.get('state') || null;
 		const community = url.searchParams.get('community') || null;
@@ -30,18 +30,42 @@ export const GET: APIRoute = async ({ url }) => {
 		};
 
 		const sdk = getOptimizelySdk(contentPayload);
-		const result = await sdk.getApartments({
-			limit,
-			where: Object.keys(where).length > 0 ? where : undefined,
-		});
+		const whereInput = Object.keys(where).length > 0 ? where : undefined;
 
-		const items = result?.Apartments?.items || [];
-		const total = result?.Apartments?.total || 0;
+		// Fetch in batches of 100 (Graph max limit)
+		const PAGE_SIZE = 100;
+		const allItems: any[] = [];
+
+		const firstPage = await sdk.getApartments({
+			limit: Math.min(PAGE_SIZE, limit || PAGE_SIZE),
+			where: whereInput,
+		});
+		const total = firstPage?.Apartments?.total || 0;
+		allItems.push(...(firstPage?.Apartments?.items || []));
+
+		const target = limit || total; // 0 = all
+		if (target > allItems.length && total > allItems.length) {
+			const remaining = Math.ceil((Math.min(target, total) - allItems.length) / PAGE_SIZE);
+			const pages = await Promise.all(
+				Array.from({ length: remaining }, (_, i) =>
+					sdk.getApartments({
+						limit: PAGE_SIZE,
+						skip: (i + 1) * PAGE_SIZE,
+						where: whereInput,
+					})
+				)
+			);
+			for (const page of pages) {
+				allItems.push(...(page?.Apartments?.items || []));
+			}
+		}
+
+		const items = limit ? allItems.slice(0, limit) : allItems;
 		const facets = {
-			cities: (result?.Apartments?.facets?.apartment_city || []).filter((f) => f?.name),
-			states: (result?.Apartments?.facets?.apartment_state || []).filter((f) => f?.name),
-			communities: (result?.Apartments?.facets?.apartment_community_name || []).filter((f) => f?.name),
-			parkingTypes: (result?.Apartments?.facets?.apartment_parking_type || []).filter((f) => f?.name),
+			cities: (firstPage?.Apartments?.facets?.apartment_city || []).filter((f: any) => f?.name),
+			states: (firstPage?.Apartments?.facets?.apartment_state || []).filter((f: any) => f?.name),
+			communities: (firstPage?.Apartments?.facets?.apartment_community_name || []).filter((f: any) => f?.name),
+			parkingTypes: (firstPage?.Apartments?.facets?.apartment_parking_type || []).filter((f: any) => f?.name),
 		};
 
 		return new Response(
