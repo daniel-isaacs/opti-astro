@@ -1,0 +1,89 @@
+---
+import type {
+    ApartmentBrowserFragment,
+    DisplaySettingsFragment,
+} from '../../../../__generated/sdk';
+import { getOptimizelySdk } from '../../../graphql/getSdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import { isEditContext } from '../../shared/utils.ts';
+import ApartmentBrowserSvelte from './ApartmentBrowser.svelte';
+
+const isCmsEdit = isEditContext(Astro.url);
+
+export interface Props {
+    key: string;
+    data: ApartmentBrowserFragment;
+    displaySettings: DisplaySettingsFragment[];
+    displayTemplateKey: string;
+    contentPayload: ContentPayload;
+}
+
+const { key, data, displaySettings, displayTemplateKey, contentPayload } = Astro.props as Props;
+
+// Fetch all apartments in batches of 100 (Graph max limit)
+const sdk = getOptimizelySdk(contentPayload);
+const PAGE_SIZE = 100;
+const allItems: any[] = [];
+
+const firstPage = await sdk.getApartments({ limit: PAGE_SIZE, skip: 0 });
+const total = firstPage?.Apartments?.total || 0;
+allItems.push(...(firstPage?.Apartments?.items || []));
+
+// Fetch remaining pages in parallel
+if (total > PAGE_SIZE) {
+    const remaining = Math.ceil((total - PAGE_SIZE) / PAGE_SIZE);
+    const pages = await Promise.all(
+        Array.from({ length: remaining }, (_, i) =>
+            sdk.getApartments({ limit: PAGE_SIZE, skip: (i + 1) * PAGE_SIZE })
+        )
+    );
+    for (const page of pages) {
+        allItems.push(...(page?.Apartments?.items || []));
+    }
+}
+
+const items = allItems;
+
+// Build state → city → community tree
+const stateMap = new Map<string, Map<string, Map<string, number>>>();
+
+for (const apt of items) {
+    const state = apt?.apartment_state;
+    const city = apt?.apartment_city;
+    const community = apt?.apartment_community_name;
+    if (!state || !city || !community) continue;
+
+    if (!stateMap.has(state)) stateMap.set(state, new Map());
+    const cityMap = stateMap.get(state)!;
+
+    if (!cityMap.has(city)) cityMap.set(city, new Map());
+    const communityMap = cityMap.get(city)!;
+
+    communityMap.set(community, (communityMap.get(community) || 0) + 1);
+}
+
+const initialLocations = Array.from(stateMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([stateName, cityMap]) => ({
+        name: stateName,
+        cities: Array.from(cityMap.entries())
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([cityName, communityMap]) => ({
+                name: cityName,
+                communities: Array.from(communityMap.entries())
+                    .sort(([a], [b]) => a.localeCompare(b))
+                    .map(([communityName, count]) => ({
+                        name: communityName,
+                        count,
+                    })),
+            })),
+    }));
+---
+
+<div data-epi-block-id={isCmsEdit && key || undefined} class="component-apartmentbrowser">
+    {data.Title && <h2 class="text-2xl font-bold mb-6">{data.Title}</h2>}
+    <ApartmentBrowserSvelte
+        client:load
+        initialLocations={initialLocations}
+    />
+</div>

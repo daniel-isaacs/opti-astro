@@ -1,8 +1,9 @@
 query getApartments(
     $limit: Int! = 10
+    $skip: Int! = 0
     $where: ApartmentsWhereInput
 ) {
-    Apartments(limit: $limit, where: $where) {
+    Apartments(limit: $limit, skip: $skip, where: $where) {
         total
         items {
             ...Apartments

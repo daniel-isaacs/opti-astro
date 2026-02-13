@@ -22,4 +22,5 @@ fragment AllComponentsExceptGrid on _IComponent {
     ...FacetedSearch
     ...ApartmentList
     ...ApartmentCard
+    ...ApartmentBrowser
 }

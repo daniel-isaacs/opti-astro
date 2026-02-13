@@ -1,0 +1,25 @@
+{
+	"key": "ApartmentBrowser",
+	"displayName": "Apartment Browser",
+	"description": "Browse apartments by state, city, and community",
+	"baseType": "component",
+	"sortOrder": 0,
+	"mayContainTypes": [],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [
+		"sectionEnabled",
+		"elementEnabled"
+	],
+	"properties": {
+		"Title": {
+			"type": "string",
+			"displayName": "Title",
+			"description": "Heading displayed above the browser",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 10,
+			"editorSettings": {}
+		}
+	}
+}

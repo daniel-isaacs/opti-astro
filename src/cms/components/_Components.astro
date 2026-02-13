@@ -20,6 +20,7 @@ import Video from './VideoComponent/Video.astro';
 import VideoExternal from './VideoExternalComponent/VideoExternal.astro';
 import ApartmentCard from './ApartmentCardComponent/ApartmentCard.astro';
 import ApartmentList from './ApartmentListComponent/ApartmentList.astro';
+import ApartmentBrowser from './ApartmentBrowserComponent/ApartmentBrowser.astro';
 import OptiForm from '../forms/base/OptiFormsContainerDataComponent/OptiForm.astro';
 
 interface Props {
@@ -238,6 +239,18 @@ const componentType = component._metadata.types[0];
 {
     componentType === 'ApartmentList' && (
         <ApartmentList
+            key={data?.key}
+            contentPayload={contentPayload}
+            data={component}
+            displaySettings={displaySettings}
+            displayTemplateKey={displayTemplateKey}
+        />
+    )
+}
+
+{
+    componentType === 'ApartmentBrowser' && (
+        <ApartmentBrowser
             key={data?.key}
             contentPayload={contentPayload}
             data={component}
