@@ -47,7 +47,7 @@ const hasDiscount = data.SalePrice != null && data.SalePrice > 0;
             <div class="mt-auto pt-2">
                 {hasDiscount ? (
                     <div class="flex items-baseline gap-2">
-                        <span class="text-xl font-bold text-error">${data.SalePrice!.toFixed(2)}</span>
+                        <span class="text-xl font-bold text-success">${data.SalePrice!.toFixed(2)}</span>
                         <span class="text-sm text-base-content/40 line-through">${data.Price?.toFixed(2)}</span>
                     </div>
                 ) : data.Price != null && (

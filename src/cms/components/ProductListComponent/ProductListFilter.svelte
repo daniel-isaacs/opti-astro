@@ -91,6 +91,10 @@
         includeInactive = false;
         fetchProducts();
     }
+
+    function formatPrice(value: number): string {
+        return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
 </script>
 
 <div class="product-list-filter">
@@ -170,7 +174,7 @@
     <!-- Product cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {#each items as product}
-            <div class="card bg-base-200 shadow-md hover:shadow-lg transition-shadow">
+            <div class="card bg-base-200 shadow-md hover:shadow-lg transition-shadow relative overflow-hidden">
                 <div class="card-body p-4 gap-2">
                     {#if !product.is_active}
                         <span class="badge badge-warning badge-sm">Inactive</span>
@@ -182,26 +186,31 @@
                         <p class="text-sm text-base-content/70">{product.brand}</p>
                     {/if}
 
-                    <div class="flex flex-wrap gap-x-2 text-xs text-base-content/50">
-                        {#if product.category}<span class="badge badge-ghost badge-xs">{product.category}</span>{/if}
-                        {#if product.subcategory}<span class="badge badge-ghost badge-xs">{product.subcategory}</span>{/if}
-                    </div>
+                    {#if product.category || product.subcategory}
+                        <p class="text-xs text-base-content/50">
+                            {product.category}{#if product.category && product.subcategory} &nbsp;&rsaquo;&nbsp; {/if}{product.subcategory}
+                        </p>
+                    {/if}
 
                     {#if product.sku}
                         <p class="text-xs text-base-content/40">SKU: {product.sku}</p>
                     {/if}
 
                     <div class="mt-auto pt-2">
-                        {#if product.sale_price && product.sale_price > 0}
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-xl font-bold text-error">${product.sale_price.toFixed(2)}</span>
-                                <span class="text-sm text-base-content/40 line-through">${product.price?.toFixed(2)}</span>
-                            </div>
-                        {:else if product.price != null}
-                            <p class="text-xl font-bold text-primary">${product.price.toFixed(2)}</p>
-                        {/if}
+                        <p class="text-xl font-bold" class:text-success={product.sale_price && product.sale_price > 0} class:text-primary={!product.sale_price || product.sale_price <= 0}>
+                            {#if product.sale_price && product.sale_price > 0}
+                                ${formatPrice(product.sale_price)}
+                                <span class="text-sm font-normal text-base-content/40 line-through ml-2">${formatPrice(product.price ?? 0)}</span>
+                            {:else if product.price != null}
+                                ${formatPrice(product.price)}
+                            {/if}
+                        </p>
                     </div>
                 </div>
+
+                {#if product.sale_price && product.sale_price > 0}
+                    <span class="absolute bottom-2 right-2 badge badge-success badge-sm text-white">Sale!</span>
+                {/if}
             </div>
         {/each}
     </div>
