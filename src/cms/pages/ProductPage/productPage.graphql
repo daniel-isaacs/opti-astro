@@ -1,0 +1,15 @@
+fragment ProductPage on ProductPage {
+    ProductOcp {
+        item {
+            ...Product
+        }
+    }
+    ProductDescription {
+        html
+    }
+    ProductImage {
+        url {
+            default
+        }
+    }
+}

@@ -1,0 +1,134 @@
+---
+import { Image as AstroImage } from 'astro:assets';
+import type { Locales } from 'astro';
+import type { ProductPageFragment } from '../../../../__generated/sdk';
+import { getOptimizelySdk } from '../../../graphql/getSdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import Layout from '../../../layouts/Layout.astro';
+import { isEditContext } from '../../shared/utils.ts';
+
+const isCmsEdit = isEditContext(Astro.url);
+
+export interface Props {
+    contentPayload: ContentPayload;
+}
+const { contentPayload } = Astro.props as Props;
+
+const optiResponse = await getOptimizelySdk(contentPayload).pageById({
+    key: contentPayload.key,
+    //@ts-ignore
+    loc: contentPayload.loc as Locales,
+    ver: contentPayload.ver,
+});
+const page = optiResponse?._Page?.item as ProductPageFragment;
+
+// OCP product data (snake_case fields)
+const ocp = page.ProductOcp?.item;
+
+// CMS-managed fields
+const imageUrl = page.ProductImage?.url?.default || null;
+const descriptionHtml = page.ProductDescription?.html || null;
+
+// Derived from OCP
+const hasDiscount = ocp?.sale_price != null && ocp.sale_price > 0;
+const categoryPath = [ocp?.category, ocp?.subcategory].filter(Boolean).join(' \u203A ');
+
+function formatPrice(value: number): string {
+    return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+const defaultUrl = page?._metadata?.url?.default || '';
+const hierarchicalUrl = page?._metadata?.url?.type === "SIMPLE" || page?._metadata?.url?.base !== Astro.url.origin ? page?._metadata?.url?.hierarchical : '';
+---
+
+<Layout
+    title={ocp?.product_name ?? page?._metadata?.displayName ?? 'Product'}
+    description={ocp?.product_name ?? ''}
+    contentPayload={contentPayload}
+    defaultUrl={defaultUrl}
+    hierarchicalUrl={hierarchicalUrl ?? ''}
+>
+    <div class="max-w-screen-xl mx-auto px-4 2xl:px-0 py-8 md:py-12">
+        <!-- Breadcrumb -->
+        {categoryPath && (
+            <div class="text-sm breadcrumbs mb-6">
+                <ul>
+                    <li class="text-base-content/50">Products</li>
+                    {ocp?.category && <li class="text-base-content/50">{ocp.category}</li>}
+                    {ocp?.subcategory && <li class="text-base-content/50">{ocp.subcategory}</li>}
+                </ul>
+            </div>
+        )}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+            <!-- Product Image (CMS-managed) -->
+            <div
+                class="flex items-center justify-center bg-base-200 rounded-2xl p-8 min-h-[300px] md:min-h-[400px]"
+                data-epi-edit={isCmsEdit ? "ProductImage" : undefined}
+            >
+                {imageUrl ? (
+                    <AstroImage
+                        src={imageUrl}
+                        alt={ocp?.product_name || 'Product image'}
+                        class="max-w-full max-h-[500px] object-contain"
+                        inferSize={true}
+                    />
+                ) : (
+                    <div class="text-base-content/20 text-6xl">&#128247;</div>
+                )}
+            </div>
+
+            <!-- Product Details -->
+            <div class="flex flex-col gap-4">
+                {ocp?.is_active === false && (
+                    <span class="badge badge-warning">Inactive Product</span>
+                )}
+
+                <h1 class="text-3xl lg:text-4xl font-bold">
+                    {ocp?.product_name}
+                </h1>
+
+                {ocp?.brand && (
+                    <p class="text-lg text-base-content/70">{ocp.brand}</p>
+                )}
+
+                {categoryPath && (
+                    <p class="text-sm text-base-content/50">{categoryPath}</p>
+                )}
+
+                <!-- Price (from OCP) -->
+                <div class="mt-2">
+                    {hasDiscount ? (
+                        <div class="flex items-baseline gap-3">
+                            <span class="text-3xl lg:text-4xl font-bold text-success">
+                                ${formatPrice(ocp!.sale_price!)}
+                            </span>
+                            <span class="text-xl text-base-content/40 line-through">
+                                ${formatPrice(ocp?.price ?? 0)}
+                            </span>
+                            <span class="badge badge-success text-white">Sale!</span>
+                        </div>
+                    ) : ocp?.price != null && (
+                        <span class="text-3xl lg:text-4xl font-bold text-primary">
+                            ${formatPrice(ocp.price)}
+                        </span>
+                    )}
+                </div>
+
+                {ocp?.sku && (
+                    <p class="text-sm text-base-content/40">SKU: {ocp.sku}</p>
+                )}
+
+                <!-- Description (CMS-managed) -->
+                {descriptionHtml && (
+                    <div class="divider"></div>
+                    <div
+                        class="prose dark:prose-invert max-w-none"
+                        data-epi-edit={isCmsEdit ? "ProductDescription" : undefined}
+                        set:html={descriptionHtml}
+                    />
+                )}
+            </div>
+        </div>
+    </div>
+</Layout>

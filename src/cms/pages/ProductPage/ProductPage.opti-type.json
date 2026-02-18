@@ -1,0 +1,49 @@
+{
+	"key": "ProductPage",
+	"displayName": "Product Page",
+	"description": "Page for rendering products, with some product details pulled from external content and other fields managed within the CMS.",
+	"baseType": "page",
+	"sortOrder": 0,
+	"mayContainTypes": [
+		"*"
+	],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [],
+	"properties": {
+		"ProductOcp": {
+			"type": "contentReference",
+			"displayName": "Product (via OCP)",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 10,
+			"editorSettings": {},
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
+		"ProductDescription": {
+			"type": "string",
+			"format": "html",
+			"displayName": "Product Description",
+			"description": "Product Description (managed in CMS)",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 20,
+			"editorSettings": {}
+		},
+		"ProductImage": {
+			"type": "contentReference",
+			"displayName": "Product Image",
+			"description": "Product Image (managed in CMS)",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 30,
+			"editorSettings": {},
+			"allowedTypes": [],
+			"restrictedTypes": []
+		}
+	}
+}
