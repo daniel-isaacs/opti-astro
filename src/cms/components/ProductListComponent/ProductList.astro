@@ -59,7 +59,7 @@ const initialFacets = {
     categories: (firstPage?.Product?.facets?.category || []).filter((f: any) => f?.name),
     subcategories: (firstPage?.Product?.facets?.subcategory || []).filter((f: any) => f?.name),
 };
-const limit = requestedLimit || total;
+const limit = requestedLimit; // 0 = no limit; let the API decide based on total
 ---
 
 <div data-epi-block-id={isCmsEdit && key || undefined} class="component-productlist">

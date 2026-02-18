@@ -25,6 +25,7 @@
     let items = $state<Product[]>(initialItems);
     let total = $state(initialTotal);
     let isLoading = $state(false);
+    let facets = $state({ ...initialFacets });
 
     // Filter state
     let selectedBrand = $state('');
@@ -71,6 +72,7 @@
             const data = await response.json();
             items = data.items || [];
             total = data.total || 0;
+            if (data.facets) facets = data.facets;
         } catch (error) {
             console.error('Error fetching products:', error);
         } finally {
@@ -105,7 +107,7 @@
                 <label class="label" for="brand-filter"><span class="label-text">Brand</span></label>
                 <select id="brand-filter" class="select select-bordered select-sm" bind:value={selectedBrand} onchange={handleFilterChange}>
                     <option value="">All brands</option>
-                    {#each initialFacets.brands as facet}
+                    {#each facets.brands as facet}
                         <option value={facet.name}>{facet.name} ({facet.count})</option>
                     {/each}
                 </select>
@@ -115,7 +117,7 @@
                 <label class="label" for="category-filter"><span class="label-text">Category</span></label>
                 <select id="category-filter" class="select select-bordered select-sm" bind:value={selectedCategory} onchange={handleFilterChange}>
                     <option value="">All categories</option>
-                    {#each initialFacets.categories as facet}
+                    {#each facets.categories as facet}
                         <option value={facet.name}>{facet.name} ({facet.count})</option>
                     {/each}
                 </select>
@@ -125,7 +127,7 @@
                 <label class="label" for="subcategory-filter"><span class="label-text">Subcategory</span></label>
                 <select id="subcategory-filter" class="select select-bordered select-sm" bind:value={selectedSubcategory} onchange={handleFilterChange}>
                     <option value="">All subcategories</option>
-                    {#each initialFacets.subcategories as facet}
+                    {#each facets.subcategories as facet}
                         <option value={facet.name}>{facet.name} ({facet.count})</option>
                     {/each}
                 </select>
