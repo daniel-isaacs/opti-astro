@@ -20,6 +20,10 @@ const { key, data, displaySettings, displayTemplateKey, contentPayload } = Astro
 
 const imageUrl = data.ProductImage?.url?.default || null;
 const hasDiscount = data.SalePrice != null && data.SalePrice > 0;
+
+function formatPrice(value: number): string {
+    return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 ---
 
 <div data-epi-block-id={isCmsEdit && key || undefined} class="component-productcard">
@@ -47,11 +51,11 @@ const hasDiscount = data.SalePrice != null && data.SalePrice > 0;
             <div class="mt-auto pt-2">
                 {hasDiscount ? (
                     <div class="flex items-baseline gap-2">
-                        <span class="text-xl font-bold text-success">${data.SalePrice!.toFixed(2)}</span>
-                        <span class="text-sm text-base-content/40 line-through">${data.Price?.toFixed(2)}</span>
+                        <span class="text-xl font-bold text-success">${formatPrice(data.SalePrice!)}</span>
+                        <span class="text-sm text-base-content/40 line-through">${formatPrice(data.Price ?? 0)}</span>
                     </div>
                 ) : data.Price != null && (
-                    <p class="text-xl font-bold text-primary">${data.Price.toFixed(2)}</p>
+                    <p class="text-xl font-bold text-primary">${formatPrice(data.Price)}</p>
                 )}
             </div>
         </div>
