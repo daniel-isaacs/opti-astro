@@ -1,0 +1,85 @@
+{
+	"key": "ProductCard",
+	"displayName": "Product Card",
+	"description": "Card for displaying core product details",
+	"baseType": "component",
+	"sortOrder": 0,
+	"mayContainTypes": [],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [],
+	"properties": {
+		"ProductName": {
+			"type": "string",
+			"displayName": "Product Name",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 10,
+			"editorSettings": {}
+		},
+		"Brand": {
+			"type": "string",
+			"displayName": "Brand",
+			"description": "Product Brand",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 20,
+			"editorSettings": {}
+		},
+		"Sku": {
+			"type": "string",
+			"displayName": "Product SKU",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 30,
+			"editorSettings": {}
+		},
+		"Price": {
+			"type": "float",
+			"displayName": "Price",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 40,
+			"editorSettings": {}
+		},
+		"SalePrice": {
+			"type": "float",
+			"displayName": "Sale Price",
+			"description": "Product sale price (0 = no sale)",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 50,
+			"editorSettings": {}
+		},
+		"ProductDescription": {
+			"type": "string",
+			"format": "html",
+			"displayName": "Product Description",
+			"description": "Product Description (managed in CMS)",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 60,
+			"editorSettings": {}
+		},
+		"ProductImage": {
+			"type": "contentReference",
+			"displayName": "Product Image",
+			"description": "Product Image (managed in CMS)",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 70,
+			"editorSettings": {},
+			"allowedTypes": [],
+			"restrictedTypes": []
+		}
+	}
+}
