@@ -83,6 +83,16 @@
 			"editorSettings": {},
 			"allowedTypes": [],
 			"restrictedTypes": []
+		},
+		"ProductLink": {
+			"type": "url",
+			"displayName": "Product Link",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 80,
+			"editorSettings": {}
 		}
 	}
 }

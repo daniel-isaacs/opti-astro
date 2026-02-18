@@ -20,6 +20,7 @@ const { key, data, displaySettings, displayTemplateKey, contentPayload } = Astro
 
 const imageUrl = data.ProductImage?.url?.default || null;
 const hasDiscount = data.SalePrice != null && data.SalePrice > 0;
+const productLink = data.ProductLink?.default || null;
 
 function formatPrice(value: number): string {
     return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -27,7 +28,10 @@ function formatPrice(value: number): string {
 ---
 
 <div data-epi-block-id={isCmsEdit && key || undefined} class="component-productcard">
-    <div class="card bg-base-200 shadow-md hover:shadow-lg transition-shadow relative overflow-hidden">
+    <a
+        href={!isCmsEdit && productLink ? productLink : undefined}
+        class:list={["card bg-base-200 shadow-md hover:shadow-lg transition-shadow relative overflow-hidden", { "cursor-pointer": !isCmsEdit && productLink }]}
+    >
         {imageUrl && (
             <figure class="flex items-center justify-center bg-base-300 p-4 max-h-64">
                 <img src={imageUrl} alt={data.ProductName || 'Product image'} class="max-w-full max-h-56 object-contain" />
@@ -62,5 +66,5 @@ function formatPrice(value: number): string {
         {hasDiscount && (
             <span class="absolute bottom-2 right-2 badge badge-success badge-sm text-white">Sale!</span>
         )}
-    </div>
+    </a>
 </div>
