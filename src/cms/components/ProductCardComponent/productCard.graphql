@@ -1,0 +1,15 @@
+fragment ProductCard on ProductCard {
+    ProductName
+    Brand
+    Sku
+    Price
+    SalePrice
+    ProductDescription {
+        html
+    }
+    ProductImage {
+        url {
+            default
+        }
+    }
+}

@@ -1,0 +1,26 @@
+query getProducts(
+    $limit: Int! = 10
+    $skip: Int! = 0
+    $where: ProductWhereInput
+) {
+    Product(limit: $limit, skip: $skip, where: $where) {
+        total
+        items {
+            ...Product
+        }
+        facets {
+            brand(limit: 50, orderBy: ASC, orderType: VALUE) {
+                name
+                count
+            }
+            category(limit: 50, orderBy: ASC, orderType: VALUE) {
+                name
+                count
+            }
+            subcategory(limit: 50, orderBy: ASC, orderType: VALUE) {
+                name
+                count
+            }
+        }
+    }
+}

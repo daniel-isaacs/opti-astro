@@ -1,0 +1,59 @@
+---
+import type {
+    ProductCardFragment,
+    DisplaySettingsFragment,
+} from '../../../../__generated/sdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import { isEditContext } from '../../shared/utils.ts';
+
+const isCmsEdit = isEditContext(Astro.url);
+
+export interface Props {
+    key: string;
+    data: ProductCardFragment;
+    displaySettings: DisplaySettingsFragment[];
+    displayTemplateKey: string;
+    contentPayload: ContentPayload;
+}
+
+const { key, data, displaySettings, displayTemplateKey, contentPayload } = Astro.props as Props;
+
+const imageUrl = data.ProductImage?.url?.default || null;
+const hasDiscount = data.SalePrice != null && data.SalePrice > 0;
+---
+
+<div data-epi-block-id={isCmsEdit && key || undefined} class="component-productcard">
+    <div class="card bg-base-200 shadow-md hover:shadow-lg transition-shadow">
+        {imageUrl && (
+            <figure class="flex items-center justify-center bg-base-300 p-4 max-h-64">
+                <img src={imageUrl} alt={data.ProductName || 'Product image'} class="max-w-full max-h-56 object-contain" />
+            </figure>
+        )}
+        <div class="card-body p-4 gap-2">
+            <h2 class="card-title text-lg">{data.ProductName}</h2>
+
+            {data.Brand && (
+                <p class="text-sm text-base-content/70">{data.Brand}</p>
+            )}
+
+            {data.Sku && (
+                <p class="text-xs text-base-content/40">SKU: {data.Sku}</p>
+            )}
+
+            {data.ProductDescription?.html && (
+                <div class="text-sm text-base-content/80 mt-1" set:html={data.ProductDescription.html} />
+            )}
+
+            <div class="mt-auto pt-2">
+                {hasDiscount ? (
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-xl font-bold text-error">${data.SalePrice!.toFixed(2)}</span>
+                        <span class="text-sm text-base-content/40 line-through">${data.Price?.toFixed(2)}</span>
+                    </div>
+                ) : data.Price != null && (
+                    <p class="text-xl font-bold text-primary">${data.Price.toFixed(2)}</p>
+                )}
+            </div>
+        </div>
+    </div>
+</div>

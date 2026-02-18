@@ -1,0 +1,73 @@
+---
+import type {
+    ProductListFragment,
+    DisplaySettingsFragment,
+} from '../../../../__generated/sdk';
+import { getOptimizelySdk } from '../../../graphql/getSdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import { isEditContext } from '../../shared/utils.ts';
+import ProductListFilter from './ProductListFilter.svelte';
+
+const isCmsEdit = isEditContext(Astro.url);
+
+export interface Props {
+    key: string;
+    data: ProductListFragment;
+    displaySettings: DisplaySettingsFragment[];
+    displayTemplateKey: string;
+    contentPayload: ContentPayload;
+}
+
+const { key, data, displaySettings, displayTemplateKey, contentPayload } = Astro.props as Props;
+
+// null/empty = return all products; otherwise use the editor-configured limit
+const requestedLimit = data.NumberOfProducts || 0; // 0 = all
+
+// Fetch in batches of 100 (Graph max limit), default filter: active only
+const sdk = getOptimizelySdk(contentPayload);
+const PAGE_SIZE = 100;
+const allItems: any[] = [];
+
+const firstPage = await sdk.getProducts({
+    limit: Math.min(PAGE_SIZE, requestedLimit || PAGE_SIZE),
+    where: { is_active: { eq: true } },
+});
+const total = firstPage?.Product?.total || 0;
+allItems.push(...(firstPage?.Product?.items || []));
+
+const target = requestedLimit || total;
+if (target > allItems.length && total > allItems.length) {
+    const remaining = Math.ceil((Math.min(target, total) - allItems.length) / PAGE_SIZE);
+    const pages = await Promise.all(
+        Array.from({ length: remaining }, (_, i) =>
+            sdk.getProducts({
+                limit: PAGE_SIZE,
+                skip: (i + 1) * PAGE_SIZE,
+                where: { is_active: { eq: true } },
+            })
+        )
+    );
+    for (const page of pages) {
+        allItems.push(...(page?.Product?.items || []));
+    }
+}
+
+const initialItems = requestedLimit ? allItems.slice(0, requestedLimit) : allItems;
+const initialTotal = total;
+const initialFacets = {
+    brands: (firstPage?.Product?.facets?.brand || []).filter((f: any) => f?.name),
+    categories: (firstPage?.Product?.facets?.category || []).filter((f: any) => f?.name),
+    subcategories: (firstPage?.Product?.facets?.subcategory || []).filter((f: any) => f?.name),
+};
+const limit = requestedLimit || total;
+---
+
+<div data-epi-block-id={isCmsEdit && key || undefined} class="component-productlist">
+    <ProductListFilter
+        client:load
+        limit={limit}
+        initialItems={initialItems}
+        initialTotal={initialTotal}
+        initialFacets={initialFacets}
+    />
+</div>

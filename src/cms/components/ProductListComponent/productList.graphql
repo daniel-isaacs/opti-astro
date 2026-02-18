@@ -1,0 +1,3 @@
+fragment ProductList on ProductList {
+    NumberOfProducts
+}

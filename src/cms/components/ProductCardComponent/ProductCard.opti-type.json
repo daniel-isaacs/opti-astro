@@ -6,7 +6,10 @@
 	"sortOrder": 0,
 	"mayContainTypes": [],
 	"mediaFileExtensions": [],
-	"compositionBehaviors": [],
+	"compositionBehaviors": [
+		"sectionEnabled",
+		"elementEnabled"
+	],
 	"properties": {
 		"ProductName": {
 			"type": "string",

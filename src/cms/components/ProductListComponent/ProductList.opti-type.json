@@ -1,0 +1,27 @@
+{
+	"key": "ProductList",
+	"displayName": "Product List",
+	"description": "Display filterable list of products from OCP",
+	"baseType": "component",
+	"sortOrder": 0,
+	"mayContainTypes": [],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [
+		"sectionEnabled",
+		"elementEnabled"
+	],
+	"properties": {
+		"NumberOfProducts": {
+			"type": "integer",
+			"displayName": "Number of Products",
+			"description": "Number of Products to display (empty = all)",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 10,
+			"editorSettings": {},
+			"minimum": 1,
+			"maximum": 500
+		}
+	}
+}

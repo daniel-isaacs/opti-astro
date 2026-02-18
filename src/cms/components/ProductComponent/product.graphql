@@ -1,0 +1,15 @@
+fragment Product on Product {
+    product_id
+    product_name
+    brand
+    sku
+    currency
+    price
+    sale_price
+    category
+    subcategory
+    slug
+    created_at
+    last_updated
+    is_active
+}
