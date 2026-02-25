@@ -1,0 +1,12 @@
+query getProviders(
+    $limit: Int! = 10
+    $skip: Int! = 0
+    $where: ProvidersWhereInput
+) {
+    Providers(limit: $limit, skip: $skip, where: $where) {
+        total
+        items {
+            ...Providers
+        }
+    }
+}

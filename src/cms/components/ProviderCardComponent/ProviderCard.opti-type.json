@@ -1,0 +1,128 @@
+{
+	"key": "ProviderCard",
+	"displayName": "Provider Card",
+	"description": "Provider Card",
+	"baseType": "component",
+	"sortOrder": 0,
+	"mayContainTypes": [],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [
+		"sectionEnabled",
+		"elementEnabled"
+	],
+	"properties": {
+		"ProviderFirstName": {
+			"type": "string",
+			"displayName": "First Name",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 10,
+			"editorSettings": {}
+		},
+		"ProviderLastName": {
+			"type": "string",
+			"displayName": "Last Name",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 20,
+			"editorSettings": {}
+		},
+		"ProviderSpecialties": {
+			"type": "string",
+			"displayName": "Specialties",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 30,
+			"editorSettings": {}
+		},
+		"ProviderPracticeLocations": {
+			"type": "string",
+			"displayName": "Practice Locations",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 40,
+			"editorSettings": {}
+		},
+		"ProviderAcceptingNewPatients": {
+			"type": "boolean",
+			"displayName": "Accepting New Patients",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 50,
+			"editorSettings": {}
+		},
+		"ProviderNextAvailableAppointment": {
+			"type": "string",
+			"displayName": "Next Available Appointment",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 60,
+			"editorSettings": {}
+		},
+		"ProviderLanguages": {
+			"type": "string",
+			"displayName": "Languages Spoken",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 70,
+			"editorSettings": {}
+		},
+		"ProviderInsurance": {
+			"type": "string",
+			"displayName": "Insurance Accepted",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 80,
+			"editorSettings": {}
+		},
+		"ProviderDescription": {
+			"type": "string",
+			"format": "html",
+			"displayName": "Provider Description",
+			"description": "Provider Description (managed in CMS)",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 90,
+			"editorSettings": {}
+		},
+		"ProviderImage": {
+			"type": "contentReference",
+			"displayName": "Provider Image",
+			"description": "Provider Image (managed in CMS)",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 100,
+			"editorSettings": {},
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
+		"ProviderLink": {
+			"type": "url",
+			"displayName": "Provider Link",
+			"description": "Provider Link (managed in CMS)",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 110,
+			"editorSettings": {}
+		}
+	}
+}

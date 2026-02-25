@@ -1,0 +1,121 @@
+---
+import type {
+    ProviderCardFragment,
+    DisplaySettingsFragment,
+} from '../../../../__generated/sdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import { isEditContext } from '../../shared/utils.ts';
+
+const isCmsEdit = isEditContext(Astro.url);
+
+export interface Props {
+    key: string;
+    data: ProviderCardFragment;
+    displaySettings: DisplaySettingsFragment[];
+    displayTemplateKey: string;
+    contentPayload: ContentPayload;
+}
+
+const { key, data, displaySettings, displayTemplateKey, contentPayload } = Astro.props as Props;
+
+const imageUrl = data.ProviderImage?.url?.default || null;
+const providerLink = data.ProviderLink?.default || null;
+
+function splitPipe(value: string | null | undefined): string[] {
+    if (!value) return [];
+    return value.split(' | ').map(s => s.trim()).filter(Boolean);
+}
+
+function formatDate(value: string | null | undefined): string {
+    if (!value) return '';
+    const ts = parseInt(value);
+    const date = isNaN(ts) ? new Date(value) : new Date(ts * 1000);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+const specialties = splitPipe(data.ProviderSpecialties);
+const locations = splitPipe(data.ProviderPracticeLocations);
+const languages = splitPipe(data.ProviderLanguages);
+const insurance = splitPipe(data.ProviderInsurance);
+const nextAvailable = formatDate(data.ProviderNextAvailableAppointment);
+---
+
+<div data-epi-block-id={isCmsEdit && key || undefined} class="component-providercard">
+    <a
+        href={!isCmsEdit && providerLink ? providerLink : undefined}
+        class:list={["card bg-base-200 shadow-md hover:shadow-lg transition-shadow", { "cursor-pointer": !isCmsEdit && providerLink }]}
+    >
+        {imageUrl && (
+            <figure class="flex items-center justify-center bg-base-300 p-4 max-h-48">
+                <img
+                    src={imageUrl}
+                    alt={`${data.ProviderFirstName} ${data.ProviderLastName}`}
+                    class="max-w-full max-h-40 object-contain rounded-full"
+                />
+            </figure>
+        )}
+        <div class="card-body p-4 gap-3">
+            <!-- Accepting status -->
+            <div>
+                {data.ProviderAcceptingNewPatients ? (
+                    <span class="badge badge-success badge-sm text-white">Accepting New Patients</span>
+                ) : (
+                    <span class="badge badge-ghost badge-sm">Not Accepting New Patients</span>
+                )}
+            </div>
+
+            <!-- Name -->
+            <h3 class="card-title text-lg leading-tight">
+                {data.ProviderFirstName} {data.ProviderLastName}
+            </h3>
+
+            <!-- Specialties -->
+            {specialties.length > 0 && (
+                <div class="flex flex-wrap gap-1">
+                    {specialties.map(s => (
+                        <span class="badge badge-outline badge-sm">{s}</span>
+                    ))}
+                </div>
+            )}
+
+            <!-- Description -->
+            {data.ProviderDescription?.html && (
+                <div
+                    class="text-sm text-base-content/80 prose prose-sm dark:prose-invert max-w-none [&_li]:my-0 [&_li>p]:my-0 [&_li>p]:inline [&_ul]:my-1 [&_ol]:my-1 [&_p]:my-1"
+                    data-epi-edit={isCmsEdit ? "ProviderDescription" : undefined}
+                    set:html={data.ProviderDescription.html}
+                />
+            )}
+
+            <div class="divider my-0"></div>
+
+            <!-- Location -->
+            {locations.length > 0 && (
+                <p class="text-sm text-base-content/70">
+                    📍 {locations.join(' · ')}
+                </p>
+            )}
+
+            <!-- Next available -->
+            {nextAvailable && (
+                <p class="text-sm text-base-content/70">
+                    📅 Next available: {nextAvailable}
+                </p>
+            )}
+
+            <!-- Languages & Insurance -->
+            <div class="flex flex-col gap-1 mt-auto pt-1">
+                {languages.length > 0 && (
+                    <p class="text-xs text-base-content/50">
+                        Languages: {languages.join(', ')}
+                    </p>
+                )}
+                {insurance.length > 0 && (
+                    <p class="text-xs text-base-content/50">
+                        Insurance: {insurance.join(', ')}
+                    </p>
+                )}
+            </div>
+        </div>
+    </a>
+</div>

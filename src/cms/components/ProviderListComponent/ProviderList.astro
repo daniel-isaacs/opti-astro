@@ -1,0 +1,63 @@
+---
+import type {
+    ProviderListFragment,
+    DisplaySettingsFragment,
+} from '../../../../__generated/sdk';
+import { getOptimizelySdk } from '../../../graphql/getSdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import { isEditContext } from '../../shared/utils.ts';
+import ProviderListFilter from './ProviderListFilter.svelte';
+
+const isCmsEdit = isEditContext(Astro.url);
+
+export interface Props {
+    key: string;
+    data: ProviderListFragment;
+    displaySettings: DisplaySettingsFragment[];
+    displayTemplateKey: string;
+    contentPayload: ContentPayload;
+}
+
+const { key, data, displaySettings, displayTemplateKey, contentPayload } = Astro.props as Props;
+
+const requestedLimit = data.NumberOfProviders || 0; // 0 = all
+
+const sdk = getOptimizelySdk(contentPayload);
+const PAGE_SIZE = 100;
+const allItems: any[] = [];
+
+const firstPage = await sdk.getProviders({
+    limit: Math.min(PAGE_SIZE, requestedLimit || PAGE_SIZE),
+});
+const total = firstPage?.Providers?.total || 0;
+allItems.push(...(firstPage?.Providers?.items || []));
+
+const target = requestedLimit || total;
+if (target > allItems.length && total > allItems.length) {
+    const remaining = Math.ceil((Math.min(target, total) - allItems.length) / PAGE_SIZE);
+    const pages = await Promise.all(
+        Array.from({ length: remaining }, (_, i) =>
+            sdk.getProviders({
+                limit: PAGE_SIZE,
+                skip: (i + 1) * PAGE_SIZE,
+            })
+        )
+    );
+    for (const page of pages) {
+        allItems.push(...(page?.Providers?.items || []));
+    }
+}
+
+const initialItems = requestedLimit ? allItems.slice(0, requestedLimit) : allItems;
+const initialTotal = total;
+const limit = requestedLimit;
+---
+
+<div data-epi-block-id={isCmsEdit && key || undefined} class="component-providerlist">
+    <ProviderListFilter
+        client:load
+        limit={limit}
+        initialItems={initialItems}
+        initialTotal={initialTotal}
+    />
+</div>

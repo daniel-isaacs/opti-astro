@@ -1,0 +1,3 @@
+fragment ProviderList on ProviderList {
+    NumberOfProviders
+}

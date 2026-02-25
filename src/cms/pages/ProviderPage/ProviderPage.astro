@@ -1,0 +1,160 @@
+---
+import { Image as AstroImage } from 'astro:assets';
+import type { Locales } from 'astro';
+import type { ProviderPageFragment } from '../../../../__generated/sdk';
+import { getOptimizelySdk } from '../../../graphql/getSdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import Layout from '../../../layouts/Layout.astro';
+import { isEditContext } from '../../shared/utils.ts';
+
+const isCmsEdit = isEditContext(Astro.url);
+
+export interface Props {
+    contentPayload: ContentPayload;
+}
+const { contentPayload } = Astro.props as Props;
+
+const optiResponse = await getOptimizelySdk(contentPayload).pageById({
+    key: contentPayload.key,
+    //@ts-ignore
+    loc: contentPayload.loc as Locales,
+    ver: contentPayload.ver,
+});
+const page = optiResponse?._Page?.item as ProviderPageFragment;
+
+// OCP provider data (snake_case fields)
+const ocp = page.ProviderOcp?.item;
+
+// CMS-managed fields
+const imageUrl = page.ProviderImage?.url?.default || null;
+const descriptionHtml = page.ProviderDescription?.html || null;
+
+function splitPipe(value: string | null | undefined): string[] {
+    if (!value) return [];
+    return value.split(' | ').map(s => s.trim()).filter(Boolean);
+}
+
+function formatDate(value: string | null | undefined): string {
+    if (!value) return '';
+    const ts = parseInt(value);
+    const date = isNaN(ts) ? new Date(value) : new Date(ts * 1000);
+    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+const specialties = splitPipe(ocp?.specialties);
+const locations = splitPipe(ocp?.practice_locations);
+const languages = splitPipe(ocp?.languages_spoken);
+const insurance = splitPipe(ocp?.insurance_accepted);
+
+const defaultUrl = page?._metadata?.url?.default || '';
+const hierarchicalUrl = page?._metadata?.url?.type === "SIMPLE" || page?._metadata?.url?.base !== Astro.url.origin ? page?._metadata?.url?.hierarchical : '';
+---
+
+<Layout
+    title={`${ocp?.first_name ?? ''} ${ocp?.last_name ?? ''}`.trim() || page?._metadata?.displayName || 'Provider'}
+    description={specialties.join(', ')}
+    contentPayload={contentPayload}
+    defaultUrl={defaultUrl}
+    hierarchicalUrl={hierarchicalUrl ?? ''}
+>
+    <div class="max-w-screen-xl mx-auto px-4 2xl:px-0 py-8 md:py-12">
+        <!-- Breadcrumb -->
+        <div class="text-sm breadcrumbs mb-6">
+            <ul>
+                <li class="text-base-content/50">Providers</li>
+                {specialties[0] && <li class="text-base-content/50">{specialties[0]}</li>}
+                {ocp?.first_name && <li class="text-base-content/50">{ocp.first_name} {ocp.last_name}</li>}
+            </ul>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+            <!-- Provider Image (CMS-managed) -->
+            <div
+                class="flex items-center justify-center bg-base-200 rounded-2xl p-8 md:col-span-1 min-h-[250px] self-start"
+                data-epi-edit={isCmsEdit ? "ProviderImage" : undefined}
+            >
+                {imageUrl ? (
+                    <AstroImage
+                        src={imageUrl}
+                        alt={`${ocp?.first_name} ${ocp?.last_name}`}
+                        class="max-w-full max-h-[350px] object-contain rounded-xl"
+                        inferSize={true}
+                    />
+                ) : (
+                    <div class="text-base-content/20 text-8xl">&#128100;</div>
+                )}
+            </div>
+
+            <!-- Provider Details -->
+            <div class="flex flex-col gap-4 md:col-span-2">
+                <!-- Accepting status -->
+                {ocp?.accepting_new_patients ? (
+                    <span class="badge badge-success w-fit">Accepting New Patients</span>
+                ) : (
+                    <span class="badge badge-ghost w-fit">Not Accepting New Patients</span>
+                )}
+
+                <!-- Name -->
+                <h1 class="text-3xl lg:text-4xl font-bold">
+                    {ocp?.first_name} {ocp?.last_name}
+                </h1>
+
+                <!-- Specialties -->
+                {specialties.length > 0 && (
+                    <div class="flex flex-wrap gap-2">
+                        {specialties.map(s => (
+                            <span class="badge badge-outline">{s}</span>
+                        ))}
+                    </div>
+                )}
+
+                <div class="divider my-1"></div>
+
+                <!-- Details grid -->
+                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+                    {locations.length > 0 && (
+                        <div>
+                            <dt class="text-xs text-base-content/50 uppercase tracking-wide mb-1">Practice Locations</dt>
+                            <dd class="text-sm">
+                                {locations.map((l, i) => (
+                                    <span>{l}{i < locations.length - 1 ? <br /> : ''}</span>
+                                ))}
+                            </dd>
+                        </div>
+                    )}
+
+                    {ocp?.next_available_appointment && (
+                        <div>
+                            <dt class="text-xs text-base-content/50 uppercase tracking-wide mb-1">Next Available</dt>
+                            <dd class="text-sm font-medium text-success">{formatDate(ocp.next_available_appointment)}</dd>
+                        </div>
+                    )}
+
+                    {languages.length > 0 && (
+                        <div>
+                            <dt class="text-xs text-base-content/50 uppercase tracking-wide mb-1">Languages Spoken</dt>
+                            <dd class="text-sm">{languages.join(', ')}</dd>
+                        </div>
+                    )}
+
+                    {insurance.length > 0 && (
+                        <div>
+                            <dt class="text-xs text-base-content/50 uppercase tracking-wide mb-1">Insurance Accepted</dt>
+                            <dd class="text-sm">{insurance.join(', ')}</dd>
+                        </div>
+                    )}
+                </dl>
+
+                <!-- CMS-managed description -->
+                {descriptionHtml && (
+                    <div class="divider my-1"></div>
+                    <div
+                        class="prose dark:prose-invert max-w-none [&_li]:my-0 [&_li>p]:my-0 [&_li>p]:inline [&_ul]:my-1 [&_ol]:my-1 [&_p]:my-1"
+                        data-epi-edit={isCmsEdit ? "ProviderDescription" : undefined}
+                        set:html={descriptionHtml}
+                    />
+                )}
+            </div>
+        </div>
+    </div>
+</Layout>

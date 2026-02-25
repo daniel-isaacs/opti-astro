@@ -1,0 +1,21 @@
+fragment ProviderCard on ProviderCard {
+    ProviderFirstName
+    ProviderLastName
+    ProviderSpecialties
+    ProviderPracticeLocations
+    ProviderAcceptingNewPatients
+    ProviderNextAvailableAppointment
+    ProviderLanguages
+    ProviderInsurance
+    ProviderDescription {
+        html
+    }
+    ProviderImage {
+        url {
+            default
+        }
+    }
+    ProviderLink {
+        default
+    }
+}

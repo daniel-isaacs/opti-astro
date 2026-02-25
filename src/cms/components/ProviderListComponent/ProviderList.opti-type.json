@@ -1,0 +1,28 @@
+{
+	"key": "ProviderList",
+	"displayName": "Provider List",
+	"description": "List of providers from OCP, with filters",
+	"baseType": "component",
+	"sortOrder": 0,
+	"mayContainTypes": [],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [
+		"sectionEnabled",
+		"elementEnabled"
+	],
+	"properties": {
+		"NumberOfProviders": {
+			"type": "integer",
+			"displayName": "Number of Providers",
+			"description": "Maximum number of providers to display. Leave empty to show all.",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 10,
+			"editorSettings": {
+				"min": 1,
+				"max": 500
+			}
+		}
+	}
+}

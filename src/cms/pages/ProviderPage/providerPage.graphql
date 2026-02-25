@@ -1,0 +1,15 @@
+fragment ProviderPage on ProviderPage {
+    ProviderOcp {
+        item {
+            ...Providers
+        }
+    }
+    ProviderDescription {
+        html
+    }
+    ProviderImage {
+        url {
+            default
+        }
+    }
+}

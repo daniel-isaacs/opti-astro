@@ -1,0 +1,49 @@
+{
+	"key": "ProviderPage",
+	"displayName": "Provider Page",
+	"description": "",
+	"baseType": "page",
+	"sortOrder": 0,
+	"mayContainTypes": [
+		"*"
+	],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [],
+	"properties": {
+		"ProviderOcp": {
+			"type": "contentReference",
+			"displayName": "Provider (via OCP)",
+			"description": "",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 10,
+			"editorSettings": {},
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
+		"ProviderDescription": {
+			"type": "string",
+			"format": "html",
+			"displayName": "Provider Description",
+			"description": "Provider Description (managed in CMS)",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 20,
+			"editorSettings": {}
+		},
+		"ProviderImage": {
+			"type": "contentReference",
+			"displayName": "Provider Image",
+			"description": "Provider Image (managed in CMS)",
+			"localized": false,
+			"required": false,
+			"group": "Information",
+			"sortOrder": 30,
+			"editorSettings": {},
+			"allowedTypes": [],
+			"restrictedTypes": []
+		}
+	}
+}

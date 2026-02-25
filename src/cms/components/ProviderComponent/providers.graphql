@@ -1,0 +1,12 @@
+fragment Providers on Providers {
+    provider_id
+    slug
+    first_name
+    last_name
+    specialties
+    practice_locations
+    accepting_new_patients
+    next_available_appointment
+    languages_spoken
+    insurance_accepted
+}
