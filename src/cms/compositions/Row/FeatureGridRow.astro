@@ -1,0 +1,166 @@
+---
+import type { CompositionStructureNode } from '../../../../__generated/sdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import Elements from '../../components/_Components.astro';
+import { getFeatureGridRowStyleConfig } from './FeatureGridRowStyling';
+
+export interface Props {
+    row: any;
+    contentPayload: ContentPayload;
+}
+
+const { row, contentPayload } = Astro.props;
+
+// Flatten all items from all columns into a single ordered array,
+// matching the CarouselRow pattern. Column structure is ignored;
+// item position determines grid slot assignment.
+const items: any[] = [];
+row.nodes?.forEach((column: any) => {
+    column.nodes?.forEach((item: any) => {
+        items.push(item);
+    });
+});
+
+const rowNode = row as CompositionStructureNode;
+const { layoutClass, widthClasses, gapClass, verticalSpacingClass } =
+    getFeatureGridRowStyleConfig(rowNode);
+---
+
+<div class:list={['feature-grid-row', layoutClass, widthClasses, gapClass, verticalSpacingClass]}>
+    {
+        items.slice(0, 4).map((item) => (
+            <div class="fgr-item">
+                <Elements contentPayload={contentPayload} data={item} />
+            </div>
+        ))
+    }
+</div>
+
+<style>
+    /* ── Base ── */
+    .feature-grid-row {
+        display: grid;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .fgr-item {
+        /* Prevent overflow in grid cells */
+        min-height: 0;
+        min-width: 0;
+        /* Flex column so children can grow via flex: 1 rather than height: 100%
+           (height: 100% doesn't work on inline elements like <span>) */
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* span.component-card — grows to fill the grid cell */
+    .fgr-item > :global(.component-card) {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* hover/container div inside span — grows to fill the span */
+    .fgr-item > :global(.component-card) > :global(div) {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       Featured Left
+       Slot 1 → tall card, full left column (spans both rows)
+       Slot 2 → wide card, top-right (spans 2 of 3 columns)
+       Slot 3 → small card, bottom-right left
+       Slot 4 → small card, bottom-right right
+       ───────────────────────────────────────────────────────── */
+    .layout-featured-left {
+        grid-template-columns: 5fr 3.5fr 3.5fr;
+    }
+
+    .layout-featured-left > .fgr-item:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+    }
+
+    .layout-featured-left > .fgr-item:nth-child(2) {
+        grid-column: 2 / span 2;
+    }
+
+    .layout-featured-left > .fgr-item:nth-child(3) {
+        grid-column: 2;
+    }
+
+    .layout-featured-left > .fgr-item:nth-child(4) {
+        grid-column: 3;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       Featured Right (mirror of Featured Left)
+       Slot 1 → wide card, top-left (spans 2 of 3 columns)
+       Slot 2 → tall card, full right column (spans both rows)
+       Slot 3 → small card, bottom-left left
+       Slot 4 → small card, bottom-left right
+       ───────────────────────────────────────────────────────── */
+    .layout-featured-right {
+        grid-template-columns: 3.5fr 3.5fr 5fr;
+    }
+
+    .layout-featured-right > .fgr-item:nth-child(1) {
+        grid-column: 1 / span 2;
+    }
+
+    .layout-featured-right > .fgr-item:nth-child(2) {
+        grid-column: 3;
+        grid-row: 1 / span 2;
+    }
+
+    .layout-featured-right > .fgr-item:nth-child(3) {
+        grid-column: 1;
+    }
+
+    .layout-featured-right > .fgr-item:nth-child(4) {
+        grid-column: 2;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       Spotlight Top
+       Slot 1 → wide card, full top row (spans all 3 columns)
+       Slots 2–4 → equal cards across the bottom row
+       ───────────────────────────────────────────────────────── */
+    .layout-spotlight-top {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .layout-spotlight-top > .fgr-item:nth-child(1) {
+        grid-column: 1 / span 3;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       Equal Grid 2×2
+       All 4 slots flow into a standard 2-column grid
+       ───────────────────────────────────────────────────────── */
+    .layout-grid-2x2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* ── Mobile: collapse all layouts to a single column ── */
+    @media (max-width: 767px) {
+        .layout-featured-left,
+        .layout-featured-right,
+        .layout-spotlight-top,
+        .layout-grid-2x2 {
+            grid-template-columns: 1fr;
+        }
+
+        /* Reset explicit placements so items stack in source order */
+        .layout-featured-left > .fgr-item,
+        .layout-featured-right > .fgr-item,
+        .layout-spotlight-top > .fgr-item {
+            grid-column: auto !important;
+            grid-row: auto !important;
+        }
+    }
+</style>

@@ -9,15 +9,15 @@ const { DisplayAs, GlobalStyles, isFullSplit } = Astro.props as Props;
 // CSS classes for default max-w-7xl container
 const defaultClasses = {
     textOnRight:
-        'mx-auto max-w-7xl flex flex-col gap-8 rounded-xl md:flex-row pe-5',
+        'mx-auto max-w-7xl w-full flex flex-col gap-8 rounded-xl md:flex-row pe-5 h-full',
     textOnLeft:
-        'mx-auto max-w-7xl flex flex-col-reverse gap-8 rounded-xl md:flex-row-reverse ps-5',
+        'mx-auto max-w-7xl w-full flex flex-col-reverse gap-8 rounded-xl md:flex-row-reverse ps-5 h-full',
     textAboveCard:
-        'mx-auto max-w-7xl flex flex-col-reverse gap-4 rounded-xl p-5',
+        'mx-auto max-w-7xl w-full flex flex-col-reverse gap-4 rounded-xl p-5 h-full',
     textBelowCard:
-        'mx-auto max-w-7xl flex flex-col gap-8 rounded-xl p-5',
+        'mx-auto max-w-7xl w-full flex flex-col gap-8 rounded-xl p-5 h-full',
     hover:
-        'group relative mx-auto max-w-7xl rounded-xl overflow-hidden h-[400px]',
+        'group relative mx-auto max-w-7xl w-full rounded-xl overflow-hidden h-[400px]',
 };
 
 // CSS classes for full split layout (50/50 with no gaps or padding)
