@@ -1,0 +1,82 @@
+fragment AbmPage on AbmPage {
+    _metadata {
+        ...PageUrl
+        published
+        displayName
+    }
+    CompanyName
+    CompanyLogoUrl {
+        ...ContentUrl
+    }
+    CompanyPrimaryColor
+    HeroHeadline
+    HeroHeadlineEmphasis
+    HeroSubheadline {
+        html
+    }
+    CompanyOverview
+    IndustryContext {
+        html
+    }
+    StrategicRelevance {
+        html
+    }
+    CertName1
+    CertForWhom1
+    CertRationale1
+    CertOutcome1
+    CertName2
+    CertForWhom2
+    CertRationale2
+    CertOutcome2
+    CertName3
+    CertForWhom3
+    CertRationale3
+    CertOutcome3
+    CertName4
+    CertForWhom4
+    CertRationale4
+    CertOutcome4
+    Regulation1
+    Cert1
+    Note1
+    Regulation2
+    Cert2
+    Note2
+    Regulation3
+    Cert3
+    Note3
+    RoiCallouts {
+        html
+    }
+    SocialProofCompany
+    SocialProofIndustry
+    SocialProofQuote
+    SocialProofAttribution
+    ObjectionHandler
+    AccountOwnerName
+    AccountOwnerTitle
+    AccountOwnerPhotoUrl {
+        ...ContentUrl
+    }
+    AccountOwnerEmail
+    AccountOwnerCalendarUrl {
+        ...LinkUrl
+    }
+    CtaHighIntentLabel
+    CtaMidIntentLabel
+    CtaMidIntentAssetUrl {
+        ...LinkUrl
+    }
+    CtaLowIntentLabel
+    CtaLowIntentAssetUrl {
+        ...LinkUrl
+    }
+    UrgencyNote
+    SeoSettings {
+        ...PageSeoSettingsProperty
+    }
+    PageAdminSettings {
+        ...PageAdminSettingsProperty
+    }
+}

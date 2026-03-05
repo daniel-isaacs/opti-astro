@@ -1,0 +1,969 @@
+---
+import type { Locales } from 'astro';
+import type { AbmPageFragment } from '../../../../__generated/sdk';
+import { getOptimizelySdk } from '../../../graphql/getSdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import Layout from '../../../layouts/Layout.astro';
+import { isEditContext, getLink } from '../../shared/utils.ts';
+
+const isCmsEdit = isEditContext(Astro.url);
+
+export interface Props {
+    contentPayload: ContentPayload;
+}
+const { contentPayload } = Astro.props as Props;
+
+const optiResponse = await getOptimizelySdk(contentPayload).pageById({
+    key: contentPayload.key,
+    //@ts-ignore
+    loc: contentPayload.loc as Locales,
+    ver: contentPayload.ver,
+});
+const page = optiResponse?._Page?.item as AbmPageFragment;
+
+// Image URL resolution (DAM path first, legacy fallback)
+const logoUrl = (page.CompanyLogoUrl as any)?.item?.Url || page.CompanyLogoUrl?.url?.default || null;
+const ownerPhotoUrl = (page.AccountOwnerPhotoUrl as any)?.item?.Url || page.AccountOwnerPhotoUrl?.url?.default || null;
+
+// Initials fallback for images
+function getInitials(name: string | null | undefined): string {
+    if (!name) return '?';
+    return name.split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase() ?? '').join('');
+}
+const logoInitials = getInitials(page.CompanyName);
+const ownerInitials = getInitials(page.AccountOwnerName);
+
+// Brand color — inject as CSS variable with rgb breakdown for alpha variants
+const brandColor = page.CompanyPrimaryColor || '#1F6FEB';
+function hexToRgb(hex: string): string {
+    const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return r ? `${parseInt(r[1], 16)}, ${parseInt(r[2], 16)}, ${parseInt(r[3], 16)}` : '31, 111, 235';
+}
+const brandRgb = hexToRgb(brandColor);
+
+// Build cert rows — filter by presence of CertName
+const certs = [
+    { name: page.CertName1, forWhom: page.CertForWhom1, rationale: page.CertRationale1, outcome: page.CertOutcome1 },
+    { name: page.CertName2, forWhom: page.CertForWhom2, rationale: page.CertRationale2, outcome: page.CertOutcome2 },
+    { name: page.CertName3, forWhom: page.CertForWhom3, rationale: page.CertRationale3, outcome: page.CertOutcome3 },
+    { name: page.CertName4, forWhom: page.CertForWhom4, rationale: page.CertRationale4, outcome: page.CertOutcome4 },
+].filter(c => c.name);
+
+// Build compliance rows — filter by presence of Regulation
+const complianceRows = [
+    { regulation: page.Regulation1, cert: page.Cert1, note: page.Note1 },
+    { regulation: page.Regulation2, cert: page.Cert2, note: page.Note2 },
+    { regulation: page.Regulation3, cert: page.Cert3, note: page.Note3 },
+].filter(r => r.regulation);
+
+// Link URL resolution using shared getLink() utility
+const currentDomain = Astro.url.origin;
+const calendarUrl = getLink(page.AccountOwnerCalendarUrl, currentDomain) || null;
+const midIntentUrl = getLink(page.CtaMidIntentAssetUrl, currentDomain) || null;
+const lowIntentUrl = getLink(page.CtaLowIntentAssetUrl, currentDomain) || null;
+
+// SEO / admin
+const defaultUrl = page?._metadata?.url?.default || '';
+const hierarchicalUrl = page?._metadata?.url?.type === 'SIMPLE' || page?._metadata?.url?.base !== Astro.url.origin
+    ? page?._metadata?.url?.hierarchical
+    : '';
+const extPreviewEnabled = page?.PageAdminSettings?.EnableExternalPreview ?? false;
+const graphType = page?.SeoSettings?.GraphType && page?.SeoSettings?.GraphType !== '-'
+    ? page.SeoSettings.GraphType
+    : 'website';
+---
+
+<Layout
+    title={page.SeoSettings?.MetaTitle ?? page.CompanyName ?? page?._metadata?.displayName ?? 'ABM Page'}
+    description={page.SeoSettings?.MetaDescription ?? ''}
+    graphtype={graphType}
+    indexing={page.SeoSettings?.Indexing ?? false}
+    contentPayload={contentPayload}
+    defaultUrl={defaultUrl}
+    hierarchicalUrl={hierarchicalUrl ?? ''}
+    extPreviewEnabled={extPreviewEnabled}
+>
+<div
+    class="abm-page"
+    style={`--brand: ${brandColor}; --brand-rgb: ${brandRgb};`}
+>
+
+<!-- ══ HERO ══════════════════════════════════════════════ -->
+<section class="abm-hero">
+    <div class="abm-wrap">
+
+        <div class="abm-hero-top">
+            <!-- Company logo / initials -->
+            {logoUrl
+                ? <img src={logoUrl} alt={page.CompanyName ?? ''} class="abm-logo-img" data-epi-edit={isCmsEdit ? 'CompanyLogoUrl' : undefined} />
+                : <div class="abm-logo-slot" data-epi-edit={isCmsEdit ? 'CompanyLogoUrl' : undefined}>{logoInitials}</div>
+            }
+            <span class="abm-hero-company-name" data-epi-edit={isCmsEdit ? 'CompanyName' : undefined}>
+                Prepared for <span>{page.CompanyName ?? 'Your Company'}</span>
+            </span>
+        </div>
+
+        <div class="abm-hero-grid">
+            <div>
+                <span class="abm-eyebrow">CompTIA Enterprise Briefing</span>
+
+                <h1 data-epi-edit={isCmsEdit ? 'HeroHeadline' : undefined}>
+                    {page.HeroHeadline ?? ''}
+                    {page.HeroHeadlineEmphasis && <em data-epi-edit={isCmsEdit ? 'HeroHeadlineEmphasis' : undefined}>{page.HeroHeadlineEmphasis}</em>}
+                </h1>
+
+                {page.HeroSubheadline?.html &&
+                    <div
+                        class="abm-hero-sub"
+                        set:html={page.HeroSubheadline.html}
+                        data-epi-edit={isCmsEdit ? 'HeroSubheadline' : undefined}
+                    />
+                }
+
+                <div class="abm-hero-ctas">
+                    {page.CtaHighIntentLabel &&
+                        <a href={calendarUrl ?? '#'} class="abm-btn-primary" data-epi-edit={isCmsEdit ? 'CtaHighIntentLabel' : undefined}>
+                            {page.CtaHighIntentLabel}
+                        </a>
+                    }
+                    {page.CtaMidIntentLabel &&
+                        <a href={midIntentUrl ?? '#'} class="abm-btn-secondary" data-epi-edit={isCmsEdit ? 'CtaMidIntentLabel' : undefined}>
+                            {page.CtaMidIntentLabel}
+                        </a>
+                    }
+                </div>
+            </div>
+
+            {page.CompanyOverview &&
+                <div class="abm-overview-card">
+                    <div class="abm-overview-card-header">Company Overview</div>
+                    <p class="abm-overview-text" data-epi-edit={isCmsEdit ? 'CompanyOverview' : undefined}>
+                        {page.CompanyOverview}
+                    </p>
+                </div>
+            }
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ══ INDUSTRY CONTEXT ══════════════════════════════════ -->
+{page.IndustryContext?.html &&
+    <section class="abm-section-wrap">
+        <div class="abm-wrap">
+            <div class="abm-two-col">
+                <div class="abm-col-label">
+                    <span class="abm-eyebrow">Your world right now</span>
+                    <div class="abm-section-title">The {page.CompanyName ?? 'Industry'} Landscape</div>
+                    <p>Key data points shaping the workforce credentialing conversation in your vertical.</p>
+                </div>
+                <div
+                    class="abm-industry-content"
+                    set:html={page.IndustryContext.html}
+                    data-epi-edit={isCmsEdit ? 'IndustryContext' : undefined}
+                />
+            </div>
+        </div>
+    </section>
+}
+
+
+<!-- ══ STRATEGIC RELEVANCE ═══════════════════════════════ -->
+{page.StrategicRelevance?.html &&
+    <section class="abm-section-wrap abm-section-alt">
+        <div class="abm-wrap">
+            <div class="abm-two-col">
+                <div class="abm-col-label">
+                    <span class="abm-eyebrow">Why this matters</span>
+                    <div class="abm-section-title">The Case for {page.CompanyName ?? 'Your Organization'}</div>
+                </div>
+                <div
+                    class="abm-strategic-content"
+                    set:html={page.StrategicRelevance.html}
+                    data-epi-edit={isCmsEdit ? 'StrategicRelevance' : undefined}
+                />
+            </div>
+        </div>
+    </section>
+}
+
+
+<!-- ══ RECOMMENDED PRODUCTS ══════════════════════════════ -->
+{certs.length > 0 &&
+    <section class="abm-section-wrap">
+        <div class="abm-wrap">
+            <div class="abm-rec-header">
+                <span class="abm-eyebrow">Recommendations</span>
+                <div class="abm-section-title">{certs.length} Certification{certs.length !== 1 ? 's' : ''} Selected for {page.CompanyName ?? 'Your Organization'}</div>
+                <p class="abm-rec-subtitle">
+                    A prioritized prescription — not a catalog. Each is selected based on your compliance environment, role structure, and program obligations.
+                </p>
+            </div>
+            <div class="abm-rec-grid">
+                {certs.map((cert, i) => (
+                    <div class="abm-rec-card">
+                        <div class="abm-rec-index">0{i + 1}</div>
+                        <div class="abm-rec-cert-name">{cert.name}</div>
+                        {cert.forWhom &&
+                            <div class="abm-rec-field">
+                                <div class="abm-rec-field-label">For Whom</div>
+                                <div class="abm-rec-field-value">{cert.forWhom}</div>
+                            </div>
+                        }
+                        {cert.rationale &&
+                            <div class="abm-rec-field">
+                                <div class="abm-rec-field-label">Why Now</div>
+                                <div class="abm-rec-field-value">{cert.rationale}</div>
+                            </div>
+                        }
+                        {cert.outcome &&
+                            <div class="abm-rec-outcome">
+                                <div class="abm-rec-outcome-label">↑ Business Outcome</div>
+                                <div class="abm-rec-outcome-value">{cert.outcome}</div>
+                            </div>
+                        }
+                    </div>
+                ))}
+            </div>
+        </div>
+    </section>
+}
+
+
+<!-- ══ COMPLIANCE MAPPING ════════════════════════════════ -->
+{complianceRows.length > 0 &&
+    <section class="abm-section-wrap abm-section-alt">
+        <div class="abm-wrap">
+            <div class="abm-two-col">
+                <div class="abm-col-label">
+                    <span class="abm-eyebrow">Regulatory Mapping</span>
+                    <div class="abm-section-title">Your Obligations, Mapped</div>
+                    <p>The frameworks {page.CompanyName ?? 'your organization'} is subject to, and the CompTIA credentials that satisfy each.</p>
+                </div>
+                <div>
+                    <table class="abm-compliance-table" data-epi-edit={isCmsEdit ? 'Regulation1' : undefined}>
+                        <thead>
+                            <tr>
+                                <th>Regulation</th>
+                                <th>CompTIA Cert</th>
+                                <th>Obligation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {complianceRows.map(row => (
+                                <tr>
+                                    <td><span class="abm-comp-reg">{row.regulation}</span></td>
+                                    <td><span class="abm-comp-cert">{row.cert}</span></td>
+                                    <td><span class="abm-comp-note">{row.note}</span></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+
+<!-- ══ ROI CALLOUTS ══════════════════════════════════════ -->
+{page.RoiCallouts?.html &&
+    <section class="abm-section-wrap">
+        <div class="abm-wrap">
+            <div class="abm-two-col">
+                <div class="abm-col-label">
+                    <span class="abm-eyebrow">Business Case</span>
+                    <div class="abm-section-title">The Cost of the Gap</div>
+                    <p>ROI angles anchored to {page.CompanyName ?? 'your organization'}'s scale.</p>
+                </div>
+                <div
+                    class="abm-roi-content"
+                    set:html={page.RoiCallouts.html}
+                    data-epi-edit={isCmsEdit ? 'RoiCallouts' : undefined}
+                />
+            </div>
+        </div>
+    </section>
+}
+
+
+<!-- ══ SOCIAL PROOF ═══════════════════════════════════════ -->
+{page.SocialProofQuote &&
+    <section class="abm-section-wrap abm-section-alt">
+        <div class="abm-wrap">
+            <div class="abm-two-col">
+                <div class="abm-col-label">
+                    <span class="abm-eyebrow">Peer Validation</span>
+                    <div class="abm-section-title">From a Peer in Your Space</div>
+                    <p>Matched to your industry, scale, and compliance challenge.</p>
+                </div>
+                <div>
+                    <div class="abm-quote-block">
+                        <span class="abm-quote-mark">"</span>
+                        <p class="abm-quote-text" data-epi-edit={isCmsEdit ? 'SocialProofQuote' : undefined}>
+                            {page.SocialProofQuote}
+                        </p>
+                        <div class="abm-quote-footer">
+                            {page.SocialProofAttribution &&
+                                <span class="abm-quote-attribution" data-epi-edit={isCmsEdit ? 'SocialProofAttribution' : undefined}>
+                                    {page.SocialProofAttribution}
+                                </span>
+                            }
+                            {page.SocialProofIndustry &&
+                                <span class="abm-quote-context" data-epi-edit={isCmsEdit ? 'SocialProofIndustry' : undefined}>
+                                    {page.SocialProofIndustry}
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+
+<!-- ══ OBJECTION HANDLER ══════════════════════════════════ -->
+{page.ObjectionHandler &&
+    <section class="abm-section-wrap">
+        <div class="abm-wrap">
+            <div class="abm-two-col">
+                <div class="abm-col-label">
+                    <span class="abm-eyebrow">A Common Question</span>
+                    <div class="abm-section-title" style="font-size:18px;">Worth addressing upfront</div>
+                </div>
+                <div>
+                    <div class="abm-objection-block" data-epi-edit={isCmsEdit ? 'ObjectionHandler' : undefined}>
+                        {page.ObjectionHandler}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+
+<!-- ══ ACCOUNT OWNER ══════════════════════════════════════ -->
+{page.AccountOwnerName &&
+    <section class="abm-owner-section">
+        <div class="abm-wrap">
+            <div class="abm-two-col">
+                <div class="abm-col-label">
+                    <span class="abm-eyebrow">Your CompTIA Contact</span>
+                    <div class="abm-section-title">This page was built for you</div>
+                </div>
+                <div>
+                    <div class="abm-owner-card">
+                        {ownerPhotoUrl
+                            ? <img src={ownerPhotoUrl} alt={page.AccountOwnerName ?? ''} class="abm-owner-photo-img" data-epi-edit={isCmsEdit ? 'AccountOwnerPhotoUrl' : undefined} />
+                            : <div class="abm-owner-photo" data-epi-edit={isCmsEdit ? 'AccountOwnerPhotoUrl' : undefined}>{ownerInitials}</div>
+                        }
+                        <div class="abm-owner-info">
+                            <div class="abm-owner-name" data-epi-edit={isCmsEdit ? 'AccountOwnerName' : undefined}>
+                                {page.AccountOwnerName}
+                            </div>
+                            {page.AccountOwnerTitle &&
+                                <div class="abm-owner-title" data-epi-edit={isCmsEdit ? 'AccountOwnerTitle' : undefined}>
+                                    {page.AccountOwnerTitle}
+                                </div>
+                            }
+                            <div class="abm-owner-contact">
+                                {page.AccountOwnerEmail &&
+                                    <a href={`mailto:${page.AccountOwnerEmail}`} class="abm-owner-email" data-epi-edit={isCmsEdit ? 'AccountOwnerEmail' : undefined}>
+                                        {page.AccountOwnerEmail}
+                                    </a>
+                                }
+                                {calendarUrl &&
+                                    <a href={calendarUrl} class="abm-btn-secondary" style="font-size:13px;padding:7px 16px;" data-epi-edit={isCmsEdit ? 'AccountOwnerCalendarUrl' : undefined}>
+                                        Schedule time →
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+
+<!-- ══ CTA BLOCK ══════════════════════════════════════════ -->
+<section class="abm-cta-section" id="cta">
+    <div class="abm-wrap">
+        <div class="abm-cta-inner">
+            <span class="abm-eyebrow" style="display:block;text-align:center;">Next Step</span>
+            <h2 class="abm-cta-headline">Ready to close the gap?</h2>
+            <p class="abm-cta-sub">Choose the level of conversation that fits where you are right now.</p>
+
+            <div class="abm-cta-buttons">
+                {page.CtaHighIntentLabel &&
+                    <a href={calendarUrl ?? '#'} class="abm-btn-primary" data-epi-edit={isCmsEdit ? 'CtaHighIntentLabel' : undefined}>
+                        {page.CtaHighIntentLabel}
+                    </a>
+                }
+                {page.CtaMidIntentLabel &&
+                    <a href={midIntentUrl ?? '#'} class="abm-btn-secondary" data-epi-edit={isCmsEdit ? 'CtaMidIntentLabel' : undefined}>
+                        {page.CtaMidIntentLabel}
+                    </a>
+                }
+            </div>
+
+            {page.CtaLowIntentLabel &&
+                <div class="abm-cta-low">
+                    <a href={lowIntentUrl ?? '#'} class="abm-btn-text" data-epi-edit={isCmsEdit ? 'CtaLowIntentLabel' : undefined}>
+                        {page.CtaLowIntentLabel} →
+                    </a>
+                </div>
+            }
+
+            {page.UrgencyNote &&
+                <div style="display:flex;justify-content:center;">
+                    <div class="abm-urgency-bar" data-epi-edit={isCmsEdit ? 'UrgencyNote' : undefined}>
+                        <span class="abm-urgency-dot"></span>
+                        {page.UrgencyNote}
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+</div>
+</Layout>
+
+<style is:global>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Nunito+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+.abm-page {
+    --paper:      #FAF8F5;
+    --paper-mid:  #F2EFE9;
+    --paper-dark: #E8E4DC;
+    --ink:        #1C1A17;
+    --ink-mid:    #4A4640;
+    --ink-faint:  #9A9590;
+    --red:        #C8102E;
+    --red-light:  #FBE9EC;
+    --red-border: rgba(200,16,46,0.2);
+    --brand:      #1F6FEB;
+    --brand-rgb:  31, 111, 235;
+    --brand-bg:   rgba(var(--brand-rgb), 0.07);
+    --brand-bdr:  rgba(var(--brand-rgb), 0.2);
+    --green:      #1A6B45;
+    --green-bg:   rgba(26,107,69,0.07);
+    --border:     rgba(28,26,23,0.1);
+    --border-med: rgba(28,26,23,0.16);
+    --shadow-sm:  0 1px 4px rgba(28,26,23,0.06);
+    --shadow-md:  0 4px 20px rgba(28,26,23,0.08);
+    --font-display: 'Lora', Georgia, serif;
+    --font-body:    'Nunito Sans', system-ui, sans-serif;
+    --font-mono:    'JetBrains Mono', monospace;
+    --max: 1080px;
+    --pad: 40px;
+    --r:   6px;
+
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+.abm-wrap {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 var(--pad);
+}
+
+/* ── TYPE UTILITIES ── */
+.abm-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--red);
+    display: block;
+    margin-bottom: 12px;
+}
+
+.abm-section-title {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 8px;
+}
+
+/* ── HERO ── */
+.abm-hero {
+    padding: 56px 0 52px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(160deg, #fff 0%, var(--paper) 100%);
+}
+
+.abm-hero-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 36px;
+}
+
+.abm-logo-slot {
+    width: 44px; height: 44px;
+    background: var(--brand);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 14px; font-weight: 500;
+    color: white;
+    flex-shrink: 0;
+}
+
+.abm-logo-img {
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.abm-hero-company-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-mid);
+}
+.abm-hero-company-name span { color: var(--brand); font-weight: 500; }
+
+.abm-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 56px;
+    align-items: start;
+}
+
+.abm-page .abm-hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.2vw, 42px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 18px;
+    letter-spacing: -0.01em;
+}
+.abm-page .abm-hero h1 em { font-style: italic; color: var(--red); }
+
+.abm-hero-sub {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--ink-mid);
+    font-weight: 300;
+    margin-bottom: 32px;
+    max-width: 560px;
+}
+.abm-hero-sub strong { color: var(--ink); font-weight: 600; }
+
+.abm-hero-ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.abm-overview-card {
+    background: white;
+    border: 1px solid var(--border-med);
+    border-radius: var(--r);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+}
+.abm-overview-card-header {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+}
+.abm-overview-text {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ink-mid);
+}
+
+/* ── BUTTONS ── */
+.abm-btn-primary {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--red); color: white;
+    font-family: var(--font-body); font-size: 14px; font-weight: 700;
+    padding: 12px 22px; border-radius: var(--r); border: none;
+    cursor: pointer; text-decoration: none;
+    transition: opacity .2s, transform .15s;
+}
+.abm-btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+
+.abm-btn-secondary {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: white; color: var(--ink);
+    font-family: var(--font-body); font-size: 14px; font-weight: 600;
+    padding: 12px 22px; border-radius: var(--r);
+    border: 1px solid var(--border-med);
+    cursor: pointer; text-decoration: none;
+    transition: border-color .2s, box-shadow .2s;
+}
+.abm-btn-secondary:hover { border-color: var(--ink-mid); box-shadow: var(--shadow-sm); }
+
+.abm-btn-text {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: none; border: none;
+    color: var(--ink-mid); font-family: var(--font-body);
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; text-decoration: none;
+    transition: color .2s;
+}
+.abm-btn-text:hover { color: var(--red); }
+
+/* ── TWO-COLUMN SECTION LAYOUT ── */
+.abm-section-wrap {
+    padding: 60px 0;
+    border-bottom: 1px solid var(--border);
+}
+.abm-section-wrap.abm-section-alt { background: white; }
+
+.abm-two-col {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 52px;
+    align-items: start;
+}
+
+.abm-col-label { position: sticky; top: 24px; }
+.abm-col-label .abm-section-title { font-size: 20px; margin-top: 10px; }
+.abm-col-label p { font-size: 13px; color: var(--ink-faint); line-height: 1.55; margin-top: 8px; }
+
+/* ── INDUSTRY CONTEXT (html rendered) ── */
+.abm-industry-content ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0; margin: 0;
+}
+.abm-industry-content li {
+    padding: 20px 24px;
+    background: white;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: var(--r);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-mid);
+    box-shadow: var(--shadow-sm);
+}
+.abm-industry-content li strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+}
+
+/* ── STRATEGIC RELEVANCE (html rendered) ── */
+.abm-strategic-content p {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--ink-mid);
+    font-weight: 300;
+}
+.abm-strategic-content p + p { margin-top: 18px; }
+.abm-strategic-content strong { color: var(--ink); font-weight: 600; }
+
+/* ── RECOMMENDED PRODUCTS ── */
+.abm-rec-header { margin-bottom: 36px; }
+.abm-rec-subtitle {
+    font-size: 14px; color: var(--ink-faint);
+    margin-top: 6px; max-width: 520px;
+}
+
+.abm-rec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.abm-rec-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 28px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow .2s, border-color .2s;
+}
+.abm-rec-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-med); }
+
+.abm-rec-index {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+}
+
+.abm-rec-cert-name {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.abm-rec-field { margin-bottom: 14px; }
+.abm-rec-field-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+}
+.abm-rec-field-value { font-size: 13px; line-height: 1.55; color: var(--ink-mid); }
+
+.abm-rec-outcome {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+.abm-rec-outcome-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 5px;
+}
+.abm-rec-outcome-value { font-size: 13px; line-height: 1.5; color: var(--green); font-weight: 600; }
+
+/* ── COMPLIANCE MAPPING ── */
+.abm-compliance-table { width: 100%; border-collapse: collapse; }
+.abm-compliance-table thead tr { border-bottom: 2px solid var(--border-med); }
+.abm-compliance-table th {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding: 0 0 12px;
+    text-align: left;
+    font-weight: 400;
+}
+.abm-compliance-table th:not(:first-child) { padding-left: 20px; }
+.abm-compliance-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background .12s;
+}
+.abm-compliance-table tbody tr:hover { background: rgba(200,16,46,.025); }
+.abm-compliance-table tbody tr:last-child { border-bottom: none; }
+.abm-compliance-table td { padding: 16px 0; vertical-align: top; font-size: 13px; }
+.abm-compliance-table td:not(:first-child) { padding-left: 20px; }
+
+.abm-comp-reg { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--ink); }
+.abm-comp-cert {
+    display: inline-block;
+    background: var(--red-light);
+    border: 1px solid var(--red-border);
+    color: var(--red);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+.abm-comp-note { font-size: 13px; color: var(--ink-mid); line-height: 1.5; }
+
+/* ── ROI (html rendered) ── */
+.abm-roi-content p {
+    padding: 20px 24px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--ink-mid);
+    box-shadow: var(--shadow-sm);
+}
+.abm-roi-content p + p { margin-top: 12px; }
+.abm-roi-content strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+}
+
+/* ── SOCIAL PROOF ── */
+.abm-quote-block {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 36px;
+    box-shadow: var(--shadow-sm);
+}
+.abm-quote-mark {
+    font-family: var(--font-display);
+    font-size: 64px;
+    line-height: .7;
+    color: var(--red);
+    opacity: .35;
+    display: block;
+    margin-bottom: 16px;
+}
+.abm-quote-text {
+    font-family: var(--font-display);
+    font-size: 19px;
+    line-height: 1.6;
+    font-style: italic;
+    color: var(--ink);
+    margin-bottom: 24px;
+}
+.abm-quote-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+}
+.abm-quote-attribution { font-size: 13px; font-weight: 700; color: var(--ink); }
+.abm-quote-context { font-size: 12px; color: var(--ink-faint); }
+
+/* ── OBJECTION HANDLER ── */
+.abm-objection-block {
+    background: var(--paper-mid);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--ink-mid);
+    border-radius: var(--r);
+    padding: 24px 28px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink-mid);
+    font-style: italic;
+    font-weight: 300;
+}
+.abm-objection-block strong { color: var(--ink); font-style: normal; font-weight: 600; }
+
+/* ── ACCOUNT OWNER ── */
+.abm-owner-section {
+    padding: 60px 0;
+    border-bottom: 1px solid var(--border);
+    background: white;
+}
+.abm-owner-card {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 32px;
+    box-shadow: var(--shadow-sm);
+}
+.abm-owner-photo {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2A5298, var(--brand));
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 24px; font-weight: 700; color: white;
+    flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,.5);
+    box-shadow: 0 2px 12px rgba(var(--brand-rgb), .2);
+}
+.abm-owner-photo-img {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.abm-owner-info { flex: 1; }
+.abm-owner-name {
+    font-family: var(--font-display);
+    font-size: 20px; font-weight: 700;
+    color: var(--ink); margin-bottom: 2px;
+}
+.abm-owner-title { font-size: 13px; color: var(--ink-faint); margin-bottom: 14px; }
+.abm-owner-contact { display: flex; gap: 10px; flex-wrap: wrap; }
+.abm-owner-email {
+    font-family: var(--font-mono);
+    font-size: 12px; color: var(--brand);
+    text-decoration: none;
+    padding: 7px 14px;
+    border: 1px solid var(--brand-bdr);
+    border-radius: var(--r);
+    background: var(--brand-bg);
+    transition: background .2s;
+}
+.abm-owner-email:hover { background: rgba(var(--brand-rgb), .12); }
+
+/* ── CTA BLOCK ── */
+.abm-cta-section { padding: 64px 0; }
+.abm-cta-inner {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 52px;
+    box-shadow: var(--shadow-md);
+    text-align: center;
+}
+.abm-cta-headline {
+    font-family: var(--font-display);
+    font-size: 32px; font-weight: 700;
+    color: var(--ink); line-height: 1.2;
+    margin-bottom: 12px;
+}
+.abm-cta-sub {
+    font-size: 15px; color: var(--ink-mid);
+    font-weight: 300; line-height: 1.6;
+    margin-bottom: 32px;
+    max-width: 480px; margin-left: auto; margin-right: auto;
+}
+.abm-cta-buttons {
+    display: flex; gap: 12px;
+    justify-content: center; flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+.abm-cta-low { display: flex; justify-content: center; margin-top: 4px; }
+
+.abm-urgency-bar {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 24px;
+    background: #FFFBF0;
+    border: 1px solid rgba(201,151,58,.3);
+    border-radius: var(--r);
+    padding: 10px 18px;
+    font-size: 13px;
+    color: #8A6A10;
+    text-align: left;
+}
+.abm-urgency-dot {
+    width: 6px; height: 6px;
+    background: #C9973A; border-radius: 50%;
+    flex-shrink: 0;
+    animation: abm-pulse 2s ease-in-out infinite;
+}
+@keyframes abm-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: .4; transform: scale(.8); }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 840px) {
+    .abm-page { --pad: 20px; }
+    .abm-hero-grid, .abm-two-col { grid-template-columns: 1fr; gap: 28px; }
+    .abm-overview-card { display: none; }
+    .abm-rec-grid { grid-template-columns: 1fr; }
+    .abm-col-label { position: static; }
+    .abm-cta-inner { padding: 32px 24px; }
+}
+</style>
