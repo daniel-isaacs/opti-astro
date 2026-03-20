@@ -3,7 +3,7 @@
 import type { CompositionStructureNode } from '../../../../__generated/sdk.ts';
 import { getDictionaryFromDisplaySettings } from '../../../graphql/shared/displaySettingsHelpers.ts';
 
-export type GridLayout = 'featuredLeft' | 'featuredRight' | 'spotlightTop' | 'grid2x2';
+export type GridLayout = 'featuredLeft' | 'featuredRight' | 'spotlightTop' | 'grid2x2' | 'tallLeft2x2Right';
 
 export interface FeatureGridRowStyleConfig {
     gridLayout: GridLayout;
@@ -18,6 +18,7 @@ const layoutClassMap: Record<GridLayout, string> = {
     featuredRight: 'layout-featured-right',
     spotlightTop: 'layout-spotlight-top',
     grid2x2: 'layout-grid-2x2',
+    tallLeft2x2Right: 'layout-tall-left-2x2-right',
 };
 
 const widthMap: Record<string, string> = {

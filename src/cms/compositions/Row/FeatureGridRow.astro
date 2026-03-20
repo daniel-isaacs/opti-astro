@@ -22,13 +22,14 @@ row.nodes?.forEach((column: any) => {
 });
 
 const rowNode = row as CompositionStructureNode;
-const { layoutClass, widthClasses, gapClass, verticalSpacingClass } =
+const { gridLayout, layoutClass, widthClasses, gapClass, verticalSpacingClass } =
     getFeatureGridRowStyleConfig(rowNode);
+const maxItems = gridLayout === 'tallLeft2x2Right' ? 5 : 4;
 ---
 
 <div class:list={['feature-grid-row', layoutClass, widthClasses, gapClass, verticalSpacingClass]}>
     {
-        items.slice(0, 4).map((item) => (
+        items.slice(0, maxItems).map((item) => (
             <div class="fgr-item">
                 <Elements contentPayload={contentPayload} data={item} />
             </div>
@@ -146,19 +147,37 @@ const { layoutClass, widthClasses, gapClass, verticalSpacingClass } =
         grid-template-columns: repeat(2, 1fr);
     }
 
+    /* ─────────────────────────────────────────────────────────
+       Tall Left, 2×2 Right
+       Slot 1 → tall card, full left column (spans both rows)
+       Slots 2–5 → 2×2 grid filling the right two columns
+       ───────────────────────────────────────────────────────── */
+    .layout-tall-left-2x2-right {
+        grid-template-columns: 5fr 3fr 3fr;
+    }
+
+    .layout-tall-left-2x2-right > .fgr-item:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+    }
+
+    /* Slots 2–5 auto-place into the 2×2 right section */
+
     /* ── Mobile: collapse all layouts to a single column ── */
     @media (max-width: 767px) {
         .layout-featured-left,
         .layout-featured-right,
         .layout-spotlight-top,
-        .layout-grid-2x2 {
+        .layout-grid-2x2,
+        .layout-tall-left-2x2-right {
             grid-template-columns: 1fr;
         }
 
         /* Reset explicit placements so items stack in source order */
         .layout-featured-left > .fgr-item,
         .layout-featured-right > .fgr-item,
-        .layout-spotlight-top > .fgr-item {
+        .layout-spotlight-top > .fgr-item,
+        .layout-tall-left-2x2-right > .fgr-item {
             grid-column: auto !important;
             grid-row: auto !important;
         }
