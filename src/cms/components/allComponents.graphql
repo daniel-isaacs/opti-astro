@@ -23,4 +23,5 @@ fragment AllComponentsExceptGrid on _IComponent {
     ...ApartmentList
     ...ApartmentCard
     ...ApartmentBrowser
+    ...DamAssetList
 }
