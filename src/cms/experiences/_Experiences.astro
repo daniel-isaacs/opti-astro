@@ -6,7 +6,7 @@ import Layout from '../../layouts/Layout.astro';
 import Section from '../compositions/Section/Section.astro';
 const previewPayload = Astro.props.data as ContentPayload;
 
-const optiResponse = await getOptimizelySdk(previewPayload).getExperience({
+const optiResponse = await getOptimizelySdk(previewPayload, Astro.locals.user).getExperience({
     key: previewPayload.key,
     ver: previewPayload.ver,
     loc: previewPayload.loc as Locales,

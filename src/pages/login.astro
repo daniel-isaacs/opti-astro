@@ -1,0 +1,63 @@
+---
+import { FAKE_USERS } from '../lib/fake-auth';
+
+if (Astro.locals.user) {
+    return Astro.redirect('/');
+}
+
+const redirectTo = Astro.url.searchParams.get('redirect') || '/';
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="robots" content="noindex, nofollow" />
+        <title>Sign In</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <style>
+            body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f8fafc; font-family: system-ui, sans-serif; }
+            .card { background: white; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 2.5rem; width: 100%; max-width: 400px; }
+            h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 0.25rem; color: #111; }
+            .subtitle { color: #6b7280; font-size: 0.875rem; margin: 0 0 2rem; }
+            .persona { border: 2px solid #e5e7eb; border-radius: 10px; padding: 1rem 1.25rem; cursor: pointer; display: flex; align-items: center; gap: 1rem; background: white; width: 100%; text-align: left; transition: border-color 0.15s, background 0.15s; }
+            .persona:hover { border-color: #0065bf; background: #f0f7ff; }
+            .avatar { width: 44px; height: 44px; border-radius: 50%; background: #0065bf; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+            .persona-name { font-weight: 600; color: #111; font-size: 0.95rem; }
+            .persona-roles { font-size: 0.75rem; color: #6b7280; margin-top: 2px; }
+            .badge { display: inline-block; background: #dbeafe; color: #1d4ed8; border-radius: 4px; padding: 1px 6px; font-size: 0.7rem; font-weight: 500; }
+            .divider { border: none; border-top: 1px solid #e5e7eb; margin: 1.5rem 0; }
+            .logo { color: #0065bf; font-size: 0.8rem; font-weight: 600; text-align: center; margin-top: 1.5rem; opacity: 0.6; }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h1>Sign In</h1>
+            <p class="subtitle">Select a persona to continue</p>
+
+            {Object.values(FAKE_USERS).map((user) => (
+                <form method="POST" action="/api/auth/login">
+                    <input type="hidden" name="userId" value={user.id} />
+                    <input type="hidden" name="redirect" value={redirectTo} />
+                    <button type="submit" class="persona">
+                        <div class="avatar">
+                            {user.displayName.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <div>
+                            <div class="persona-name">{user.displayName}</div>
+                            <div class="persona-roles">
+                                {user.cgRoles.map(r => (
+                                    <span class="badge">{r}</span>
+                                ))}
+                            </div>
+                        </div>
+                    </button>
+                </form>
+            ))}
+
+            <hr class="divider" />
+            <div class="logo">Optimizely Demo Auth</div>
+        </div>
+    </body>
+</html>

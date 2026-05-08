@@ -15,7 +15,7 @@ export interface Props {
 }
 const { contentPayload } = Astro.props as Props;
 
-const optiResponse = await getOptimizelySdk(contentPayload).pageById({
+const optiResponse = await getOptimizelySdk(contentPayload, Astro.locals.user).pageById({
     key: contentPayload.key,
     //@ts-ignore
     loc: contentPayload.loc as Locales,

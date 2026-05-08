@@ -1,6 +1,7 @@
 import { print } from 'graphql';
 import { GraphQLClient } from 'graphql-request';
-// import { createHmac } from 'crypto';
+import { createHmac, createHash } from 'crypto';
+import type { FakeUser } from '../lib/fake-auth';
 
 import {
     getSdk as getSdkWithClient,
@@ -39,7 +40,7 @@ export function clearGraphQLQueries() {
     currentStore = [];
 }
 
-export function getOptimizelySdk(contentPayload: ContentPayload) {
+export function getOptimizelySdk(contentPayload: ContentPayload, user?: FakeUser | null) {
     const mode = contentPayload.ctx;
     const prevToken = contentPayload.preview_token;
     const extprevToken = Buffer.from(
@@ -48,6 +49,52 @@ export function getOptimizelySdk(contentPayload: ContentPayload) {
 
     var client = new GraphQLClient('');
     const requester: Requester<any> = async (doc: any, vars: any) => {
+        // HMAC auth path: use native fetch so the body we sign === the body we send
+        if (user && mode === 'view') {
+            const endpointUrl = `${OPTIMIZELY_GRAPH_GATEWAY}/content/v2`;
+            const requestBody = JSON.stringify({ query: print(doc), variables: vars });
+
+            if (OPTIMIZELY_DEV_MODE) {
+                const now = Date.now();
+                if (now - lastRequestTime > REQUEST_RESET_THRESHOLD) currentStore = [];
+                lastRequestTime = now;
+                currentStore.push({ query: print(doc), variables: vars, timestamp: new Date(), response: undefined });
+            }
+
+            try {
+                const authHeader = buildHmacHeader('POST', endpointUrl, requestBody);
+                if (import.meta.env.DEV) {
+                    console.log('[HMAC] Sending request as:', user.cgUsername, '| roles:', user.cgRoles.join(','));
+                    console.log('[HMAC] Auth header:', authHeader);
+                }
+                const response = await fetch(endpointUrl, {
+                    method: 'POST',
+                    headers: {
+                        Authorization: authHeader,
+                        'Content-Type': 'application/json',
+                        'cg-username': user.cgUsername,
+                        'cg-roles': user.cgRoles.join(','),
+                    },
+                    body: requestBody,
+                });
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HMAC request failed (${response.status}): ${errorText}`);
+                }
+                const json = await response.json() as any;
+                if (OPTIMIZELY_DEV_MODE && currentStore.length > 0) {
+                    currentStore[currentStore.length - 1].response = json?.data;
+                }
+                if (json?.errors?.length) {
+                    throw new Error(json.errors.map((e: any) => e.message).join('; '));
+                }
+                return json?.data;
+            } catch (err: any) {
+                console.error('[HMAC] GraphQL request error:', err.message ?? err);
+                return undefined;
+            }
+        }
+
         if (mode === 'edit' && prevToken) {
             client = new GraphQLClient(
                 `${OPTIMIZELY_GRAPH_GATEWAY}/content/v2` + `?stored=true`, // enable cached templates
@@ -131,6 +178,21 @@ export function getOptimizelySdk(contentPayload: ContentPayload) {
     };
 
     return getSdkWithClient(requester);
+}
+
+// "epi-hmac {appKey}:{timestamp}:{nonce}:{signature}"
+// Signature = HMAC-SHA256([appKey, method, path, timestamp, nonce, md5(body)].join(''), base64decode(secret))
+function buildHmacHeader(method: string, url: string, body: string): string {
+    const key = OPTIMIZELY_GRAPH_APP_KEY;
+    const secretBuf = Buffer.from(OPTIMIZELY_GRAPH_SECRET, 'base64');
+    const timestamp = new Date().getTime();
+    const nonce = Math.random().toString(36).substring(2, 10);
+    const bodyMd5 = createHash('md5').update(body).digest('base64');
+    const parsed = new URL(url);
+    const uri = parsed.pathname + parsed.search;
+    const message = [key, method.toUpperCase(), uri, timestamp, nonce, bodyMd5].join('');
+    const sig = createHmac('sha256', secretBuf).update(message).digest('base64');
+    return `epi-hmac ${key}:${timestamp}:${nonce}:${sig}`;
 }
 
 // export function getOptimizelyPreviewSdk() {

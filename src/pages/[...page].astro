@@ -35,6 +35,10 @@ const debugInfo = initFXDebugSession(Astro.url.toString(), lang);
 
 const ctx = 'view';
 
+// Bind current user so all SDK calls include HMAC auth + RBAC headers when logged in
+const { user } = Astro.locals;
+const getSdkWithAuth = (payload: ContentPayload) => getOptimizelySdk(payload, user);
+
 var contentPayload: ContentPayload = {
     ctx: ctx,
     key: '',
@@ -51,7 +55,7 @@ const urlBase = Astro.url.origin;
 contentPayload.loc = localeToSdkLocale(lang) as Locales;
 
 const defaultResult = await fetchContentByPath(
-    getOptimizelySdk,
+    getSdkWithAuth,
     contentPayload,
     urlBase,
     urlPath,
@@ -75,7 +79,7 @@ const variantResult = await resolveContentVariant(
     Astro,
     defaultItem,
     contentPayload,
-    getOptimizelySdk,
+    getSdkWithAuth,
     urlBase,
     urlPath,
     lang,
@@ -97,7 +101,7 @@ if (!item?._metadata) {
 }
 
 // Always fetch by ID to get the full content data
-const contentByIdResponse = await getOptimizelySdk(contentPayload).contentById({
+const contentByIdResponse = await getSdkWithAuth(contentPayload).contentById({
     key: item._metadata.key || '',
     ver: item._metadata.version || '',
     loc: localeToSdkLocale(item._metadata.locale) as Locales,

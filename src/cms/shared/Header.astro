@@ -128,7 +128,25 @@ const headerItems = settings?.HeaderLinks as MenuItemType[] | undefined;
             <LocaleSelector contentPayload={contentPayload} />
             <!-- Theme switcher dropdown -->
             <ThemePicker />
-            <a class="btn" href="https://home.optimizely.com/">Log In</a>
+            {Astro.locals.user ? (
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-sm gap-1">
+                        <span class="hidden sm:inline text-sm">{Astro.locals.user.displayName}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                        </svg>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-50 w-36 p-2 shadow">
+                        <li>
+                            <form method="POST" action="/api/auth/logout">
+                                <button type="submit" class="w-full text-left">Sign out</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            ) : (
+                <a class="btn" href="/login" :href="`/login?redirect=${encodeURIComponent(window.location.pathname)}`">Log In</a>
+            )}
             <!-- Drawer Right mode: Hamburger button on ALL breakpoints (RIGHT side, after login) -->
             {isDrawerRight && <HeaderDrawerMenuButton direction="right" />}
         </div>

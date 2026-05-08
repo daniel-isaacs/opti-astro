@@ -5,12 +5,17 @@ import type { ContentPayload } from './graphql/shared/ContentPayload';
 import { localeToSdkLocale } from './lib/locale-helpers';
 import { checkAdminAuth } from './pages/opti-admin/auth-opti-admin';
 import { checkRedirects } from './lib/redirect-utils';
+import { AUTH_COOKIE_NAME, getUserFromCookieValue } from './lib/fake-auth';
 
 // Cache for placeholder data to avoid repeated GraphQL calls
 const placeholderCache = new Map<string, Map<string, string>>();
 const CACHE_DURATION = 60000; // 1 minute
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  // Resolve fake auth session
+  const authCookieValue = context.cookies.get(AUTH_COOKIE_NAME)?.value;
+  context.locals.user = authCookieValue ? getUserFromCookieValue(authCookieValue) : null;
+
   // Check if this is an admin route
   if (context.url.pathname.startsWith('/opti-admin')) {
     const authError = checkAdminAuth(context.request);
