@@ -65,6 +65,7 @@ query getExperience($key: [String]!, $ver: String, $loc: [Locales]) {
                                                 component {
                                                     _metadata {
                                                         types
+                                                        status
                                                     }
                                                     ...AllComponents
                                                     ...formContainerData
@@ -90,6 +91,7 @@ query getExperience($key: [String]!, $ver: String, $loc: [Locales]) {
                                                         component {
                                                             _metadata {
                                                                 types
+                                                                status
                                                             }
                                                             ...AllComponents
                                                             ...AllFormComponents
@@ -113,6 +115,7 @@ query getExperience($key: [String]!, $ver: String, $loc: [Locales]) {
                         component {
                             _metadata {
                                 types
+                                status
                             }
                             ...AllComponents
                         }

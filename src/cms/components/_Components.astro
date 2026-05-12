@@ -29,213 +29,188 @@ interface Props {
 const { contentPayload, data } = Astro.props as Props;
 const { component, displaySettings, displayTemplateKey } = data;
 const componentType = component._metadata.types[0];
+
+const componentStatus: string = component._metadata?.status ?? '';
+const isUnpublished = componentStatus === 'Draft' || componentStatus === 'Scheduled';
+const isEditOrPreview = contentPayload.ctx === 'edit' || contentPayload.ctx === 'preview';
+
+const statusLabel = componentStatus === 'Scheduled' ? 'Scheduled' : 'Draft';
 ---
 
-{
-    componentType === 'Text' && (
-        <Text
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-        />
-    )
-}
-{
-    componentType === 'CallToAction' && (
-        <CallToAction
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displayTemplateKey={displayTemplateKey}
-            displaySettings={displaySettings}
-        />
-    )
-}
-{
-    componentType === 'Image' && (
-        <Image
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-        />
-    )
-}
-{
-    componentType === 'Video' && (
-        <Video
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-        />
-    )
-}
-{
-    componentType === 'Paragraph' && (
-        <Paragraph
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-        />
-    )
-}
-{
-    componentType === 'Card' && (
-        <Card
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-            displayTemplateKey={displayTemplateKey}
-        />
-    )
-}
-{
-    componentType === 'Hero' && (
-        <Hero
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-        />
-    )
-}
-{
-    componentType === 'Carousel' && (
-        <Carousel
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-            displayTemplateKey={displayTemplateKey}
-        />
-    )
-}
-{
-    componentType === 'Collapse' && (
-        <Collapse
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-        />
-    )
-}
-{
-    componentType === 'ArticleList' && (
-        <ArticleList
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-        />
-    )
-}
-{
-    componentType === 'Grid' && (
-        <Grid
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-            displayTemplateKey={displayTemplateKey}
-        />
-    )
-}
-{
-    componentType === 'Button' && (
-        <Button
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-            displayTemplateKey={displayTemplateKey}
-        />
-    )
-}
-
-{
-    componentType === 'Iframe' && (
-        <Iframe
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-            displayTemplateKey={displayTemplateKey}
-        />
-    )
-}
-{
-    componentType === 'VideoExternal' && (
-        <VideoExternal
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-        />
-    )
-}
-
-{
-    componentType === 'ArticlePage' && (
-        <ArticlePageCard
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-        />
-    )
-}
-
-{
-    componentType === 'Divider' && (
-        <Divider
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-        />
-    )
-}
-
-{
-    componentType === 'OdpForm' && (
-        <OdpForm
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-        />
-    )
-}
-
-{
-    componentType === 'FacetedSearch' && (
-        <FacetedSearch
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-        />
-    )
-}
-
-{
-    componentType === 'DamAssetList' && (
-        <DamAssetList
-            key={data?.key}
-            contentPayload={contentPayload}
-            data={component}
-            displaySettings={displaySettings}
-            displayTemplateKey={displayTemplateKey}
-        />
-    )
-}
-
-{
-    componentType === 'OptiFormsContainerData' && (
-        <OptiForm contentPayload={contentPayload} grid={component} />
-    )
-}
+{/* Unpublished on public site: render nothing */}
+{!isUnpublished || isEditOrPreview ? (
+    <div class:list={[isUnpublished ? 'relative' : 'contents']}>
+        {isUnpublished && (
+            <>
+                <div
+                    class="pointer-events-none absolute inset-0 z-10 border-2 border-dashed border-amber-400"
+                    style="background: repeating-linear-gradient(-45deg, transparent, transparent 8px, rgba(251,191,36,0.12) 8px, rgba(251,191,36,0.12) 16px);"
+                />
+                <div class="absolute right-0 top-0 z-20 rounded-bl border-b border-l border-amber-400 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 shadow-sm">
+                    {statusLabel}
+                </div>
+            </>
+        )}
+        {componentType === 'Text' && (
+            <Text
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+            />
+        )}
+        {componentType === 'CallToAction' && (
+            <CallToAction
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displayTemplateKey={displayTemplateKey}
+                displaySettings={displaySettings}
+            />
+        )}
+        {componentType === 'Image' && (
+            <Image
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+            />
+        )}
+        {componentType === 'Video' && (
+            <Video
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+            />
+        )}
+        {componentType === 'Paragraph' && (
+            <Paragraph
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+            />
+        )}
+        {componentType === 'Card' && (
+            <Card
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+                displayTemplateKey={displayTemplateKey}
+            />
+        )}
+        {componentType === 'Hero' && (
+            <Hero
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+            />
+        )}
+        {componentType === 'Carousel' && (
+            <Carousel
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+                displayTemplateKey={displayTemplateKey}
+            />
+        )}
+        {componentType === 'Collapse' && (
+            <Collapse
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+            />
+        )}
+        {componentType === 'ArticleList' && (
+            <ArticleList
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+            />
+        )}
+        {componentType === 'Grid' && (
+            <Grid
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+                displayTemplateKey={displayTemplateKey}
+            />
+        )}
+        {componentType === 'Button' && (
+            <Button
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+                displayTemplateKey={displayTemplateKey}
+            />
+        )}
+        {componentType === 'Iframe' && (
+            <Iframe
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+                displayTemplateKey={displayTemplateKey}
+            />
+        )}
+        {componentType === 'VideoExternal' && (
+            <VideoExternal
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+            />
+        )}
+        {componentType === 'ArticlePage' && (
+            <ArticlePageCard
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+            />
+        )}
+        {componentType === 'Divider' && (
+            <Divider
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+            />
+        )}
+        {componentType === 'OdpForm' && (
+            <OdpForm
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+            />
+        )}
+        {componentType === 'FacetedSearch' && (
+            <FacetedSearch
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+            />
+        )}
+        {componentType === 'DamAssetList' && (
+            <DamAssetList
+                key={data?.key}
+                contentPayload={contentPayload}
+                data={component}
+                displaySettings={displaySettings}
+                displayTemplateKey={displayTemplateKey}
+            />
+        )}
+        {componentType === 'OptiFormsContainerData' && (
+            <OptiForm contentPayload={contentPayload} grid={component} />
+        )}
+    </div>
+) : null}
