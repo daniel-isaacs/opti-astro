@@ -21,6 +21,11 @@ const styles = [...sectionStyles, ...globalStyles];
 
 const sectionAnimationStyles = getAnimationStyles(grid);
 const aosAnimationClass = sectionAnimationStyles.aosAnimationClass;
+
+const sharedBlockStatus: string = isComponent ? (grid.component?._metadata?.status ?? '') : '';
+const isSharedBlockUnpublished = isComponent && (sharedBlockStatus === 'Draft' || sharedBlockStatus === 'Scheduled');
+const isEditOrPreview = contentPayload.ctx === 'edit' || contentPayload.ctx === 'preview';
+const sharedBlockStatusLabel = sharedBlockStatus === 'Scheduled' ? 'Scheduled' : 'Draft';
 ---
 
 <div
@@ -42,11 +47,28 @@ const aosAnimationClass = sectionAnimationStyles.aosAnimationClass;
             <OptiForm contentPayload={contentPayload} grid={grid} />
     }
 
+    {/* Shared Block as Section: published or not needed */}
     {
-        isComponent && (
+        isComponent && !isSharedBlockUnpublished && (
             <div data-epi-block-id={grid.key}>
                 <Components contentPayload={contentPayload} data={grid} />
             </div>
         )
     }
+    {/* Shared Block as Section: unpublished, edit/preview only — show with indicator */}
+    {
+        isComponent && isSharedBlockUnpublished && isEditOrPreview && (
+            <div class="relative" data-epi-block-id={grid.key}>
+                <div
+                    class="pointer-events-none absolute inset-0 z-10 border-2 border-dashed border-amber-400"
+                    style="background: repeating-linear-gradient(-45deg, transparent, transparent 8px, rgba(251,191,36,0.12) 8px, rgba(251,191,36,0.12) 16px);"
+                />
+                <div class="absolute right-0 top-0 z-20 rounded-bl border-b border-l border-amber-400 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 shadow-sm">
+                    {sharedBlockStatusLabel}
+                </div>
+                <Components contentPayload={contentPayload} data={grid} />
+            </div>
+        )
+    }
+    {/* Shared Block as Section: unpublished on public site — renders nothing */}
 </div>
