@@ -75,7 +75,7 @@ const cardContainerClasses = isFullSplit
 const componentClass = 'component-card';
 ---
 
-<span data-epi-block-id={isCmsEdit && key || undefined} class:list={[componentClass, 'block', 'h-full', ...(bgFillClass ? ['group'] : [])]}>
+<span data-epi-block-id={isCmsEdit && key || undefined} class:list={[componentClass, 'block', 'w-full', 'h-full', ...(bgFillClass ? ['group'] : [])]}>
     <div class:list={[...cardContainerClasses, 'h-full', ...(cardLinkUrl ? ['relative'] : [])]}>
         {cardLinkUrl && (
             <a href={cardLinkUrl} class="absolute inset-0 z-[1]" aria-hidden="true" tabindex="-1" />
