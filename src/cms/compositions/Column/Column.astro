@@ -5,14 +5,30 @@ import Elements from '../../components/_Components.astro';
 import { getColumnStyles } from './ColumnHelper';
 import { getGlobalStyles } from '../../shared/globalStylesHelper';
 import { getAnimationStyles } from '../../shared/animationStylesHelper';
+import { getBgFillClasses, getHoverTextColorClass } from '../../components/CardComponent/CardStyling';
+
 export interface Props {
     column: CompositionStructureNode;
     contentPayload: ContentPayload;
 }
 const { column, contentPayload } = Astro.props as Props;
 const styles = getColumnStyles(column);
-const globalStyles = getGlobalStyles(column);
-const allStyles = [...styles, ...globalStyles]
+const rawGlobalStyles = getGlobalStyles(column);
+
+const bgFillClass = getBgFillClasses(column.displaySettings ?? []);
+const hoverTextClass = bgFillClass ? getHoverTextColorClass(column.displaySettings ?? []) : '';
+const globalStyles = bgFillClass
+    ? [
+        ...rawGlobalStyles.filter(cls => !cls.startsWith('bg-') && !cls.startsWith('text-')),
+        ...(hoverTextClass ? [hoverTextClass] : []),
+      ]
+    : rawGlobalStyles;
+
+const allStyles = [
+    ...styles,
+    ...globalStyles,
+    ...(bgFillClass ? ['group', 'isolate', 'overflow-hidden'] : []),
+];
 
 const columnAnimationStyles = getAnimationStyles(column);
 const aosAnimationClass = columnAnimationStyles.aosAnimationClass;
@@ -23,6 +39,9 @@ const aosAnimationClass = columnAnimationStyles.aosAnimationClass;
     class="vb:col flex w-full flex-col p-2 sm:p-3 md:flex-1 md:p-4"
     {...(aosAnimationClass ? { 'data-aos': aosAnimationClass } : {})}
 >
+    {bgFillClass && (
+        <div class={`absolute inset-0 z-[-1] ${bgFillClass}`} aria-hidden="true" />
+    )}
     {
         column.nodes?.map((item: any) => (
             <Elements contentPayload={contentPayload} data={item}/>

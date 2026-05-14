@@ -256,6 +256,37 @@
                 }
             }
         },
+        "backgroundColorHoverEffect": {
+            "displayName": "Background Color Hover Effect",
+            "editor": "select",
+            "sortOrder": 75,
+            "choices": {
+                "always": {
+                    "displayName": "Always Show (Default)",
+                    "sortOrder": 10
+                },
+                "on_hover": {
+                    "displayName": "On Hover",
+                    "sortOrder": 15
+                },
+                "up_left": {
+                    "displayName": "Up-Left",
+                    "sortOrder": 20
+                },
+                "up_right": {
+                    "displayName": "Up-Right",
+                    "sortOrder": 30
+                },
+                "down_right": {
+                    "displayName": "Down-Right",
+                    "sortOrder": 40
+                },
+                "down_left": {
+                    "displayName": "Down-Left",
+                    "sortOrder": 50
+                }
+            }
+        },
         "aosAnimation": {
             "displayName": "Column Animation",
             "editor": "select",
