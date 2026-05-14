@@ -288,13 +288,13 @@
 					"displayName": "Three Fifths (60%)",
 					"sortOrder": 60
 				},
-				"w_3_4": {
-					"displayName": "Three Fourths (75%)",
-					"sortOrder": 70
-				},
 				"w_2_3": {
 					"displayName": "Two Thirds (67%)",
 					"sortOrder": 80
+				},
+				"w_3_4": {
+					"displayName": "Three Fourths (75%)",
+					"sortOrder": 70
 				}
 			}
 		},
@@ -327,13 +327,13 @@
 					"displayName": "Three Fifths (60%)",
 					"sortOrder": 60
 				},
-				"w_3_4": {
-					"displayName": "Three Fourths (75%)",
-					"sortOrder": 70
-				},
 				"w_2_3": {
 					"displayName": "Two Thirds (67%)",
 					"sortOrder": 80
+				},
+				"w_3_4": {
+					"displayName": "Three Fourths (75%)",
+					"sortOrder": 70
 				}
 			}
 		},
