@@ -1,0 +1,9 @@
+query getStandardsProductVariants($productName: String!) {
+    StandardsProductOCP(
+        where: { product_name: { eq: $productName } }
+    ) {
+        items {
+            ...StandardsProductOCP
+        }
+    }
+}

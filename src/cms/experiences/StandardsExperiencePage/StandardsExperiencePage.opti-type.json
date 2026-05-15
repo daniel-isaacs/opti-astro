@@ -1,0 +1,73 @@
+{
+	"key": "StandardsExperiencePage",
+	"displayName": "Standards - Experience Page",
+	"description": "Product Experience Page for Standards products",
+	"baseType": "_experience",
+	"isContract": false,
+	"sortOrder": 0,
+	"mayContainTypes": [
+		"*"
+	],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [],
+	"contracts": [],
+	"createdBy": "daniel.isaacs@optimizely.com",
+	"properties": {
+		"Product": {
+			"type": "contentReference",
+			"contentType": "graph:StandardsProductOCP",
+			"displayName": "Product (via OCP)",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 10,
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
+		"ProductDescription": {
+			"type": "richText",
+			"displayName": "Product Description",
+			"isLocalized": true,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 20,
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
+		"Schema": {
+			"type": "richText",
+			"displayName": "Schema Markup",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 40,
+			"allowedTypes": [],
+			"restrictedTypes": [],
+			"editorSettings": {
+				"preset": "minimal"
+			}
+		},
+		"ExperienceSeoSettings": {
+			"type": "component",
+			"contentType": "PageSeoSettings",
+			"displayName": "SEO Settings",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 50,
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
+		"PageAdminSettings": {
+			"type": "component",
+			"contentType": "PageAdminSettings",
+			"displayName": "Page Admin Settings",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "AdminSettings",
+			"sortOrder": 100,
+			"allowedTypes": [],
+			"restrictedTypes": []
+		}
+	}
+}

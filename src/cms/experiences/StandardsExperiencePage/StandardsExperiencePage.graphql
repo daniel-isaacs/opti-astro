@@ -1,0 +1,19 @@
+fragment StandardsExperiencePageData on StandardsExperiencePage {
+    Product {
+        item {
+            ...StandardsProductOCP
+        }
+    }
+    ProductDescription {
+        html
+    }
+    ExperienceSeoSettings {
+        MetaTitle
+        MetaDescription
+        GraphType
+        Indexing
+    }
+    PageAdminSettings {
+        ...PageAdminSettingsProperty
+    }
+}
