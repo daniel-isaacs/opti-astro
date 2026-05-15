@@ -1,0 +1,75 @@
+---
+import type {
+    StandardsProductFragment,
+    DisplaySettingsFragment,
+} from '../../../../__generated/sdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import { getOptimizelySdk } from '../../../graphql/getSdk';
+import { isEditContext } from '../../shared/utils.ts';
+import { getDictionaryFromDisplaySettings } from '../../../graphql/shared/displaySettingsHelpers.ts';
+
+const isCmsEdit = isEditContext(Astro.url);
+
+export interface Props {
+    key: string;
+    data: StandardsProductFragment;
+    displaySettings: DisplaySettingsFragment[];
+    displayTemplateKey: string;
+    contentPayload: ContentPayload;
+}
+
+const { key, data, displaySettings, contentPayload } = Astro.props as Props;
+
+const settings = getDictionaryFromDisplaySettings(displaySettings);
+const isCompact = (settings['layout'] ?? 'compact') === 'compact';
+
+const experienceKey = data.Product?.key ?? null;
+const pageUrl = data.Product?.url?.default ?? '#';
+
+let product: any = null;
+if (experienceKey) {
+    const response = await getOptimizelySdk(contentPayload).getStandardsExperienceProduct({
+        key: experienceKey,
+    });
+    product = response?.StandardsExperiencePage?.items?.[0]?.Product?.item ?? null;
+}
+
+const componentClass = 'component-standards-product';
+---
+
+<span data-epi-block-id={isCmsEdit && key || undefined} class={`${componentClass} flex flex-col h-full`}>
+    {product ? (
+        <a href={pageUrl} class="flex flex-col flex-1 card bg-base-100 border border-base-300 hover:shadow-md transition-shadow duration-200 no-underline">
+            <div class={`card-body flex-1 ${isCompact ? 'p-4' : 'p-6'}`}>
+                <h3 class={`card-title text-base-content ${isCompact ? 'text-base' : 'text-lg'}`}>
+                    {product.product_name}
+                </h3>
+                <div class="flex flex-wrap gap-2 mt-1">
+                    {product.product_edition && (
+                        <span class="badge badge-outline badge-sm">Edition {product.product_edition}</span>
+                    )}
+                    {product.format && (
+                        <span class="badge badge-ghost badge-sm">{product.format}</span>
+                    )}
+                </div>
+                {!isCompact && product.publisher && (
+                    <p class="text-sm text-base-content/60 mt-1">{product.publisher}</p>
+                )}
+                <div class="card-actions justify-between items-center mt-3">
+                    <span class="text-sm text-base-content/50 font-mono">{product.product_code}</span>
+                    {product.price != null && (
+                        <span class="font-semibold text-base-content">
+                            {product.currency ?? 'USD'} {Number(product.price).toFixed(2)}
+                        </span>
+                    )}
+                </div>
+            </div>
+        </a>
+    ) : (
+        <div class="card bg-base-200 border border-base-300">
+            <div class="card-body p-4">
+                <p class="text-base-content/40 text-sm">No product selected</p>
+            </div>
+        </div>
+    )}
+</span>

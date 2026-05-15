@@ -1,0 +1,23 @@
+{
+    "key": "DefaultStandardsProduct",
+    "displayName": "Standards Product - Default",
+    "contentType": "StandardsProduct",
+    "isDefault": true,
+    "settings": {
+        "layout": {
+            "displayName": "Layout",
+            "editor": "select",
+            "sortOrder": 10,
+            "choices": {
+                "compact": {
+                    "displayName": "Compact",
+                    "sortOrder": 10
+                },
+                "full": {
+                    "displayName": "Full",
+                    "sortOrder": 20
+                }
+            }
+        }
+    }
+}
