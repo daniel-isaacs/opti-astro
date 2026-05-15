@@ -1,0 +1,16 @@
+query getStandardsExperienceProduct($key: String!) {
+    StandardsExperiencePage(
+        where: { _metadata: { key: { eq: $key } } }
+    ) {
+        items {
+            _metadata {
+                url { default }
+            }
+            Product {
+                item {
+                    ...StandardsProductOCP
+                }
+            }
+        }
+    }
+}
