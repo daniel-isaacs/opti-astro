@@ -21,6 +21,16 @@
 			"sortOrder": 10,
 			"allowedTypes": [],
 			"restrictedTypes": []
+		},
+		"IncludeHeaderFooter": {
+			"type": "boolean",
+			"displayName": "Include Header/Footer",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 20,
+			"allowedTypes": [],
+			"restrictedTypes": []
 		}
 	}
 }

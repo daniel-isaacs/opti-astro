@@ -3,6 +3,7 @@ import type { Locales } from 'astro';
 import type { MockupPageFragment } from '../../../../__generated/sdk';
 import { getOptimizelySdk } from '../../../graphql/getSdk';
 import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import Layout from '../../../layouts/Layout.astro';
 
 export interface Props {
     contentPayload: ContentPayload;
@@ -18,13 +19,21 @@ const optiResponse = await getOptimizelySdk(contentPayload).pageById({
 
 const page = optiResponse?._Page?.item as MockupPageFragment;
 const htmlMockup = page?.HtmlMockup ?? '';
-
-console.log('MockupPage', {
-    contentPayload,
-    optiResponse,
-    page,
-    htmlMockup,
-});
+const includeHeaderFooter = page?.IncludeHeaderFooter ?? false;
 ---
 
-<Fragment set:html={htmlMockup} />
+{includeHeaderFooter ? (
+    <Layout
+        title={page?._metadata?.displayName ?? 'Mockup'}
+        description=""
+        contentPayload={contentPayload}
+    >
+        <iframe
+            srcdoc={htmlMockup}
+            style="width: 100%; border: none; display: block;"
+            onload="this.style.height = this.contentWindow.document.body.scrollHeight + 'px'"
+        ></iframe>
+    </Layout>
+) : (
+    <Fragment set:html={htmlMockup} />
+)}
