@@ -193,10 +193,26 @@ export function getDividerElementStyles(
         length_16: 'h-1/6'
     }
     if(settings['dividerLineLength'] && settings['dividerLineLength'] !== 'default' && settings['dividerLineLength'] !== '') {
-        const dividerLineLengthClass = direction === 'horizontal' ? 
-            `mx-auto ${allLengthsHorizontal[settings['dividerLineLength']]}` :
-            `my-auto ${allLengthsVertical[settings['dividerLineLength']]}`;
-        cssClasses.push(`${dividerLineLengthClass}`);
+        const dividerLineLengthClass = direction === 'horizontal' ?
+            allLengthsHorizontal[settings['dividerLineLength']] :
+            allLengthsVertical[settings['dividerLineLength']];
+        cssClasses.push(dividerLineLengthClass);
+    }
+
+    if (direction === 'horizontal') {
+        switch (settings['dividerPosition']) {
+            case 'left':
+                cssClasses.push('mr-auto');
+                break;
+            case 'right':
+                cssClasses.push('ml-auto');
+                break;
+            default:
+                cssClasses.push('mx-auto');
+                break;
+        }
+    } else {
+        cssClasses.push('my-auto');
     }
 
     return cssClasses;

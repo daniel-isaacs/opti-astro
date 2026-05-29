@@ -296,6 +296,25 @@
 					"sortOrder": 120
 				}
 			}
+		},
+		"dividerPosition": {
+			"displayName": "Divider Position",
+			"editor": "select",
+			"sortOrder": 80,
+			"choices": {
+				"center": {
+					"displayName": "Center (Default)",
+					"sortOrder": 10
+				},
+				"left": {
+					"displayName": "Left",
+					"sortOrder": 20
+				},
+				"right": {
+					"displayName": "Right",
+					"sortOrder": 30
+				}
+			}
 		}
 	}
 }
