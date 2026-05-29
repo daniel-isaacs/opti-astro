@@ -37,6 +37,15 @@ export function getDividerElementStyles(
         case 'error':
             cssClasses.push('divider-error');
             break;
+        case 'base100':
+            cssClasses.push('before:bg-base-100 after:bg-base-100');
+            break;
+        case 'base200':
+            cssClasses.push('before:bg-base-200 after:bg-base-200');
+            break;
+        case 'base300':
+            cssClasses.push('before:bg-base-300 after:bg-base-300');
+            break;
         default:
             break;
     }
