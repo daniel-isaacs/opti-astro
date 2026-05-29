@@ -13,33 +13,49 @@
 					"displayName": "Default",
 					"sortOrder": 10
 				},
-				"neutral": {
-					"displayName": "Neutral",
-					"sortOrder": 20
-				},
 				"primary": {
 					"displayName": "Primary",
-					"sortOrder": 30
+					"sortOrder": 20
 				},
 				"secondary": {
 					"displayName": "Secondary",
-					"sortOrder": 40
+					"sortOrder": 30
 				},
 				"accent": {
 					"displayName": "Accent",
+					"sortOrder": 40
+				},
+				"neutral": {
+					"displayName": "Neutral",
 					"sortOrder": 50
 				},
-				"success": {
-					"displayName": "Success",
+				"base100": {
+					"displayName": "Base 100",
 					"sortOrder": 60
 				},
-				"warning": {
-					"displayName": "Warning",
+				"base200": {
+					"displayName": "Base 200",
 					"sortOrder": 70
+				},
+				"base300": {
+					"displayName": "Base 300",
+					"sortOrder": 80
 				},
 				"info": {
 					"displayName": "Info",
-					"sortOrder": 80
+					"sortOrder": 90
+				},
+				"success": {
+					"displayName": "Success",
+					"sortOrder": 100
+				},
+				"warning": {
+					"displayName": "Warning",
+					"sortOrder": 110
+				},
+				"error": {
+					"displayName": "Error",
+					"sortOrder": 120
 				}
 			}
 		},
@@ -52,33 +68,49 @@
 					"displayName": "Default",
 					"sortOrder": 10
 				},
-				"neutral": {
-					"displayName": "Neutral",
-					"sortOrder": 20
-				},
 				"primary": {
 					"displayName": "Primary",
-					"sortOrder": 30
+					"sortOrder": 20
 				},
 				"secondary": {
 					"displayName": "Secondary",
-					"sortOrder": 40
+					"sortOrder": 30
 				},
 				"accent": {
 					"displayName": "Accent",
+					"sortOrder": 40
+				},
+				"neutral": {
+					"displayName": "Neutral",
 					"sortOrder": 50
 				},
-				"success": {
-					"displayName": "Success",
+				"base100": {
+					"displayName": "Base 100",
 					"sortOrder": 60
 				},
-				"warning": {
-					"displayName": "Warning",
+				"base200": {
+					"displayName": "Base 200",
 					"sortOrder": 70
+				},
+				"base300": {
+					"displayName": "Base 300",
+					"sortOrder": 80
 				},
 				"info": {
 					"displayName": "Info",
-					"sortOrder": 80
+					"sortOrder": 90
+				},
+				"success": {
+					"displayName": "Success",
+					"sortOrder": 100
+				},
+				"warning": {
+					"displayName": "Warning",
+					"sortOrder": 110
+				},
+				"error": {
+					"displayName": "Error",
+					"sortOrder": 120
 				}
 			}
 		},

@@ -34,6 +34,9 @@ export function getDividerElementStyles(
         case 'info':
             cssClasses.push('divider-info');
             break;
+        case 'error':
+            cssClasses.push('divider-error');
+            break;
         default:
             break;
     }
@@ -54,14 +57,26 @@ export function getDividerElementStyles(
         case 'accent':
             cssClasses.push('text-accent');
             break;
+        case 'base100':
+            cssClasses.push('text-base-100');
+            break;
+        case 'base200':
+            cssClasses.push('text-base-200');
+            break;
+        case 'base300':
+            cssClasses.push('text-base-300');
+            break;
+        case 'info':
+            cssClasses.push('text-info');
+            break;
         case 'success':
             cssClasses.push('text-success');
             break;
         case 'warning':
             cssClasses.push('text-warning');
             break;
-        case 'info':
-            cssClasses.push('text-info');
+        case 'error':
+            cssClasses.push('text-error');
             break;
         default:
             break;
