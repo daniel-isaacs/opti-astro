@@ -113,7 +113,7 @@ const overlayContentClasses = isHoverMode
 const containerClasses = isFullSplit 
     ? `w-full md:w-1/2 flex flex-col justify-center p-8 md:p-12 lg:p-16 ${cardTextAlignmentStyle} overflow-hidden`
     : isHoverMode
-    ? 'absolute inset-0' // Container for positioning both heading and overlay
+    ? `absolute inset-0${hideLinks ? ' pointer-events-none' : ''}` // Container for positioning both heading and overlay
     : displayAs === 'textBelowCard'
     ? `flex-1 flex flex-col ${cssClassesForSection} ${cardTextAlignmentStyle} pt-4`
     : `${widthClass || 'flex-1'} ${cssClassesForSection} ${cardTextAlignmentStyle} ${verticalAlignClass || 'self-center'}`;
