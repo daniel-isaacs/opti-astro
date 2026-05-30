@@ -4,8 +4,9 @@ interface Props {
     GlobalStyles?: string[];
     isFullSplit?: boolean;
     bgFillClass?: string;
+    cardLinkUrl?: string;
 }
-const { DisplayAs, GlobalStyles, isFullSplit, bgFillClass } = Astro.props as Props;
+const { DisplayAs, GlobalStyles, isFullSplit, bgFillClass, cardLinkUrl } = Astro.props as Props;
 
 // CSS classes for default max-w-7xl container
 const defaultClasses = {
@@ -48,6 +49,9 @@ const wrapperClasses = isFullSplit
 <div class:list={wrapperClasses}>
     {!isFullSplit && bgFillClass && (
         <div aria-hidden="true" class:list={['absolute', 'inset-0', 'z-[-1]', bgFillClass]} />
+    )}
+    {cardLinkUrl && (
+        <a href={cardLinkUrl} class="absolute inset-0 z-[1]" aria-hidden="true" tabindex="-1" />
     )}
     <slot />
 </div>

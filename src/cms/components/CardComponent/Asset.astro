@@ -80,7 +80,7 @@ const finalContainerClasses = [containerClasses];
                 />
                 {/* Image tint overlay (only for hover mode when tint is applied) */}
                 {isHoverMode && imageTintClass && (
-                    <div class={`absolute inset-0 ${imageTintClass} z-5`}></div>
+                    <div class={`absolute inset-0 ${imageTintClass} z-5 pointer-events-none`}></div>
                 )}
             </>
         )

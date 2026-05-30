@@ -76,11 +76,11 @@ const componentClass = 'component-card';
 ---
 
 <span data-epi-block-id={isCmsEdit && key || undefined} class:list={[componentClass, 'block', 'w-full', 'h-full', ...(bgFillClass ? ['group'] : [])]}>
-    <div class:list={[...cardContainerClasses, 'h-full', ...(cardLinkUrl ? ['relative'] : [])]}>
-        {cardLinkUrl && (
+    <div class:list={[...cardContainerClasses, 'h-full', ...(cardLinkUrl && !isHoverOverlayMode ? ['relative'] : [])]}>
+        {cardLinkUrl && !isHoverOverlayMode && (
             <a href={cardLinkUrl} class="absolute inset-0 z-[1]" aria-hidden="true" tabindex="-1" />
         )}
-        <Wrapper DisplayAs={DisplayAs ?? ''} GlobalStyles={globalStyles} isFullSplit={isFullSplit} bgFillClass={bgFillClass ?? undefined}>
+        <Wrapper DisplayAs={DisplayAs ?? ''} GlobalStyles={globalStyles} isFullSplit={isFullSplit} bgFillClass={bgFillClass ?? undefined} cardLinkUrl={isHoverOverlayMode ? cardLinkUrl ?? undefined : undefined}>
             <Asset
                 data={data}
                 displaySettings={displaySettings}
