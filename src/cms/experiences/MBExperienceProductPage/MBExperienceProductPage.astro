@@ -30,8 +30,12 @@ const hierarchicalUrl =
         ? experience._metadata?.url?.hierarchical
         : '';
 
-const product = (page as any).Product?.item;
 const productDetailedDescription = (page as any).ProductDetailedDescription?.html;
+
+const productPageResponse = await getOptimizelySdk(previewPayload).getMBExperienceProduct({
+    key: previewPayload.key,
+});
+const product = productPageResponse?.MBExperienceProductPage?.items?.[0]?.Product?.item ?? null;
 
 let variants: any[] = [];
 if (product?.organism_name) {
