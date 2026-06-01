@@ -261,6 +261,30 @@
                 "error": {
                     "displayName": "Error",
                     "sortOrder": 110
+                },
+                "blue1": {
+                    "displayName": "Blue 1 (Dark Navy)",
+                    "sortOrder": 120
+                },
+                "blue2": {
+                    "displayName": "Blue 2 (Medium Navy)",
+                    "sortOrder": 130
+                },
+                "blue3": {
+                    "displayName": "Blue 3 (Deep Navy)",
+                    "sortOrder": 140
+                },
+                "blue4": {
+                    "displayName": "Blue 4 (Sky Light)",
+                    "sortOrder": 150
+                },
+                "blue5": {
+                    "displayName": "Blue 5 (Sky)",
+                    "sortOrder": 160
+                },
+                "blue6": {
+                    "displayName": "Blue 6 (Sky Soft)",
+                    "sortOrder": 170
                 }
             }
         },

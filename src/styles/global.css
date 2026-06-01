@@ -64,6 +64,13 @@
     --font-size-7xl: 4.5rem;    /* 72px */
     --font-size-8xl: 6rem;      /* 96px */
     --font-size-9xl: 8rem;      /* 128px */
+
+    --color-blue1: #273692;
+    --color-blue2: #4754a2;
+    --color-blue3: #233184;
+    --color-blue4: #8ad6e7;
+    --color-blue5: #60c1d6;
+    --color-blue6: #6dcce1;
 }
 
 @layer base {
