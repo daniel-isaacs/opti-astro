@@ -1,0 +1,17 @@
+{
+    "key": "DefaultMBProduct",
+    "displayName": "Default MB Product",
+    "contentType": "MBProduct",
+    "settings": [
+        {
+            "key": "layout",
+            "displayName": "Layout",
+            "type": "select",
+            "default": "compact",
+            "choices": [
+                { "key": "compact", "displayName": "Compact" },
+                { "key": "full", "displayName": "Full" }
+            ]
+        }
+    ]
+}

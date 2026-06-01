@@ -1,0 +1,81 @@
+---
+import type {
+    MbProductFragment,
+    DisplaySettingsFragment,
+} from '../../../../__generated/sdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import { getOptimizelySdk } from '../../../graphql/getSdk';
+import { isEditContext } from '../../shared/utils.ts';
+import { getDictionaryFromDisplaySettings } from '../../../graphql/shared/displaySettingsHelpers.ts';
+
+const isCmsEdit = isEditContext(Astro.url);
+
+export interface Props {
+    key: string;
+    data: MbProductFragment;
+    displaySettings: DisplaySettingsFragment[];
+    displayTemplateKey: string;
+    contentPayload: ContentPayload;
+}
+
+const { key, data, displaySettings, contentPayload } = Astro.props as Props;
+
+const settings = getDictionaryFromDisplaySettings(displaySettings);
+const isCompact = (settings['layout'] ?? 'compact') === 'compact';
+
+const experienceKey = data.Product?.key ?? null;
+const pageUrl = data.Product?.url?.default ?? '#';
+
+let product: any = null;
+if (experienceKey) {
+    const response = await getOptimizelySdk(contentPayload).getMBExperienceProduct({
+        key: experienceKey,
+    });
+    product = response?.MBExperienceProductPage?.items?.[0]?.Product?.item ?? null;
+}
+---
+
+<span data-epi-block-id={isCmsEdit && key || undefined} class="component-mb-product flex flex-col h-full">
+    {product ? (
+        <a href={pageUrl} class="flex flex-col flex-1 card bg-base-100 border border-base-300 hover:shadow-md transition-shadow duration-200 no-underline">
+            {product.image_url && !isCompact && (
+                <figure class="h-40 overflow-hidden bg-gray-50">
+                    <img src={product.image_url} alt={product.product_name} class="h-full w-full object-contain p-4" />
+                </figure>
+            )}
+            <div class={`card-body flex-1 ${isCompact ? 'p-4' : 'p-5'}`}>
+                <div class="flex items-start gap-2 mb-1">
+                    {product.taxonomy && (
+                        <span class="badge badge-outline badge-xs shrink-0 mt-0.5">{product.taxonomy}</span>
+                    )}
+                    {product.product_format && (
+                        <span class="badge badge-ghost badge-xs shrink-0 mt-0.5">{product.product_format}</span>
+                    )}
+                </div>
+                <h3 class={`card-title text-base-content leading-snug ${isCompact ? 'text-sm' : 'text-base'}`}>
+                    {product.organism_name}
+                </h3>
+                {product.atcc_designation && (
+                    <p class="text-xs text-base-content/50 font-mono -mt-1">{product.atcc_designation}</p>
+                )}
+                {!isCompact && product.description && (
+                    <p class="text-sm text-base-content/60 mt-1 line-clamp-2">{product.description}</p>
+                )}
+                <div class="card-actions justify-between items-center mt-3">
+                    <span class="text-xs text-base-content/40 font-mono">{product.item_number}</span>
+                    {product.price != null && (
+                        <span class="font-semibold text-base-content text-sm">
+                            {product.currency ?? 'USD'} {Number(product.price).toFixed(2)}
+                        </span>
+                    )}
+                </div>
+            </div>
+        </a>
+    ) : (
+        <div class="card bg-base-200 border border-base-300">
+            <div class="card-body p-4">
+                <p class="text-base-content/40 text-sm">No product selected</p>
+            </div>
+        </div>
+    )}
+</span>

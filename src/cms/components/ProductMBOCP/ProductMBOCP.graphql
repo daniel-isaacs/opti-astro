@@ -1,0 +1,21 @@
+fragment ProductMBOCP on ProductMBOCP {
+    product_id
+    item_number
+    product_name
+    organism_name
+    atcc_designation
+    product_format
+    taxonomy
+    industry
+    test_method
+    standards_guidelines
+    quantity_per_kit
+    storage_temperature
+    shelf_life_months
+    currency
+    price
+    is_active
+    slug
+    image_url
+    description
+}

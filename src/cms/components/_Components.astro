@@ -21,6 +21,7 @@ import Video from './VideoComponent/Video.astro';
 import VideoExternal from './VideoExternalComponent/VideoExternal.astro';
 import OptiForm from '../forms/base/OptiFormsContainerDataComponent/OptiForm.astro';
 import StandardsProduct from './StandardsProductComponent/StandardsProduct.astro';
+import MBProduct from './MBProductComponent/MBProduct.astro';
 
 interface Props {
     contentPayload: ContentPayload;
@@ -244,6 +245,18 @@ const componentType = component._metadata.types[0];
 {
     componentType === 'StandardsProduct' && (
         <StandardsProduct
+            key={data?.key}
+            contentPayload={contentPayload}
+            data={component}
+            displaySettings={displaySettings}
+            displayTemplateKey={displayTemplateKey}
+        />
+    )
+}
+
+{
+    componentType === 'MBProduct' && (
+        <MBProduct
             key={data?.key}
             contentPayload={contentPayload}
             data={component}

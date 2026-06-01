@@ -1,0 +1,19 @@
+fragment MBExperienceProductPageData on MBExperienceProductPage {
+    Product {
+        item {
+            ...ProductMBOCP
+        }
+    }
+    ProductDetailedDescription {
+        html
+    }
+    ExperienceSeoSettings {
+        MetaTitle
+        MetaDescription
+        GraphType
+        Indexing
+    }
+    PageAdminSettings {
+        ...PageAdminSettingsProperty
+    }
+}

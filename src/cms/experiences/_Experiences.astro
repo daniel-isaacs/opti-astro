@@ -5,9 +5,11 @@ import type { ContentPayload } from '../../graphql/shared/ContentPayload';
 import Layout from '../../layouts/Layout.astro';
 import Section from '../compositions/Section/Section.astro';
 import StandardsExperiencePageComp from './StandardsExperiencePage/StandardsExperiencePage.astro';
+import MBExperienceProductPageComp from './MBExperienceProductPage/MBExperienceProductPage.astro';
 
 const previewPayload = Astro.props.data as ContentPayload;
 const isStandardsPage = previewPayload.types.includes('StandardsExperiencePage');
+const isMBProductPage = previewPayload.types.includes('MBExperienceProductPage');
 
 let experience: any = null;
 let metaTitle = '',
@@ -18,7 +20,7 @@ let metaTitle = '',
     defaultUrl = '',
     hierarchicalUrl = '';
 
-if (!isStandardsPage) {
+if (!isStandardsPage && !isMBProductPage) {
     const optiResponse = await getOptimizelySdk(previewPayload).getExperience({
         key: previewPayload.key,
         ver: previewPayload.ver,
@@ -58,7 +60,9 @@ const pageClass = 'page-experience';
 
 {isStandardsPage && <StandardsExperiencePageComp data={previewPayload} />}
 
-{!isStandardsPage && (
+{isMBProductPage && <MBExperienceProductPageComp data={previewPayload} />}
+
+{!isStandardsPage && !isMBProductPage && (
     <Layout
         title={metaTitle}
         description={metaDescription}

@@ -1,0 +1,6 @@
+fragment MBProduct on MBProduct {
+    Product {
+        key
+        url { default }
+    }
+}
