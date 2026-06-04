@@ -1,8 +1,9 @@
 {
 	"key": "Image",
 	"displayName": "Image",
-	"description": "",
-	"baseType": "component",
+	"description": "Displays images with options for captions and links.",
+	"baseType": "_component",
+	"isContract": false,
 	"sortOrder": 0,
 	"mayContainTypes": [],
 	"mediaFileExtensions": [],
@@ -10,70 +11,30 @@
 		"sectionEnabled",
 		"elementEnabled"
 	],
+	"contracts": [],
 	"properties": {
 		"AltText": {
 			"type": "string",
 			"displayName": "Alt Text",
-			"description": "",
-			"localized": false,
-			"required": false,
-			"group": "Information",
-			"sortOrder": -200,
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 10,
 			"indexingType": "searchable",
-			"editorSettings": {}
+			"allowedTypes": [],
+			"restrictedTypes": []
 		},
 		"Image": {
 			"type": "contentReference",
 			"displayName": "Image",
-			"description": "",
-			"localized": false,
-			"required": false,
-			"group": "Information",
-			"sortOrder": -100,
-			"editorSettings": {},
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 20,
 			"allowedTypes": [
-				"Image"
+				"_image"
 			],
 			"restrictedTypes": []
-		},
-		"DamImageRendition": {
-			"type": "string",
-			"format": "selectOne",
-			"displayName": "DAM Image Rendition",
-			"description": "Select the version of the DAM image to be displayed. (NOTE: only applies to images from Optimizely DAM.)",
-			"localized": false,
-			"required": true,
-			"group": "Information",
-			"sortOrder": 20,
-			"editorSettings": {},
-			"enum": {
-				"values": [
-					{
-						"displayName": "Default (selected image)",
-						"value": "default"
-					},
-					{
-						"displayName": "Responsive",
-						"value": "responsive"
-					},
-					{
-						"displayName": "Banner Height Crop",
-						"value": "Banner Height Crop"
-					},
-					{
-						"displayName": "Instagram",
-						"value": "Instagram"
-					},
-					{
-						"displayName": "Logo Smart Focal Point",
-						"value": "Logo Smart Focal Point"
-					},
-					{
-						"displayName": "Small Square",
-						"value": "Small Square"
-					}
-				]
-			}
 		}
 	}
 }

@@ -9,12 +9,15 @@ query searchContent(
         locale: $locale
         orderBy: { _ranking: SEMANTIC, _semanticWeight: $semanticWeight }
         where: {
-            _fulltext: { match: $searchTerm, fuzzy: true }
+            _fulltext: { match: $searchTerm, fuzzy: true, synonyms: ONE }
             _metadata: { url: { base: { eq: $domain } } }
         }
+        pinned: { phrase: $searchTerm }
+        tracking: { phrase: $searchTerm, source: "/search-palette" }
         limit: 20
     ) @include(if: $useSemanticSearch) {
         items {
+            _track
             _metadata {
                 key
                 displayName
@@ -56,13 +59,17 @@ query searchContent(
     }
     regularPages: _Page(
         locale: $locale
+        orderBy: { _ranking: RELEVANCE }
         where: {
-            _fulltext: { match: $searchTerm, fuzzy: true }
+            _fulltext: { match: $searchTerm, fuzzy: true, synonyms: ONE }
             _metadata: { url: { base: { eq: $domain } } }
         }
+        pinned: { phrase: $searchTerm }
+        tracking: { phrase: $searchTerm, source: "/search-palette" }
         limit: 20
     ) @skip(if: $useSemanticSearch) {
         items {
+            _track
             _metadata {
                 key
                 displayName

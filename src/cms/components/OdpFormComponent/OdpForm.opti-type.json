@@ -1,0 +1,51 @@
+{
+	"key": "OdpForm",
+	"displayName": "ODP Form",
+	"description": "Embeds and manages Optimizely Data Platform forms directly in CMS content.",
+	"baseType": "_component",
+	"isContract": false,
+	"sortOrder": 0,
+	"mayContainTypes": [],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [
+		"sectionEnabled",
+		"elementEnabled"
+	],
+	"contracts": [],
+	"properties": {
+		"SelectorType": {
+			"type": "string",
+			"format": "selectOne",
+			"displayName": "Selector Type",
+			"description": "Choose whether to target by ID or CSS class",
+			"isLocalized": false,
+			"isRequired": true,
+			"group": "Content",
+			"sortOrder": 10,
+			"enum": [
+				{
+					"value": "id",
+					"displayName": "ID"
+				},
+				{
+					"value": "class",
+					"displayName": "Class"
+				}
+			],
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
+		"SelectorName": {
+			"type": "string",
+			"format": "shortString",
+			"displayName": "Selector Name",
+			"description": "The ID or class name to target (without # or .)",
+			"isLocalized": false,
+			"isRequired": true,
+			"group": "Content",
+			"sortOrder": 20,
+			"allowedTypes": [],
+			"restrictedTypes": []
+		}
+	}
+}

@@ -6,6 +6,7 @@ fragment AllComponents on _IComponent {
 fragment AllComponentsExceptGrid on _IComponent {
     ...Text
     ...Image
+    ...ImageRendition
     ...CallToAction
     ...Video
     ...Paragraph
@@ -18,4 +19,7 @@ fragment AllComponentsExceptGrid on _IComponent {
     ...Iframe
     ...VideoExternal
     ...Divider
+    ...OdpForm
+    ...FacetedSearch
+    ...DamAssetList
 }

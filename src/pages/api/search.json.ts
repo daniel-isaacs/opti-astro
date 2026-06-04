@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import type { Locales } from '../../../__generated/sdk';
 import { getOptimizelySdk } from '../../graphql/getSdk';
 import type { ContentPayload } from '../../graphql/shared/ContentPayload';
+import { localeToSdkLocale } from '../../lib/locale-helpers';
 
 interface SearchResult {
     id: string;
@@ -10,13 +11,15 @@ interface SearchResult {
     subtitle?: string;
     image?: string;
     url?: string;
+    track?: string;
 }
 
-export const GET: APIRoute = async ({ url, currentLocale, request }) => {
+export const GET: APIRoute = async ({ url, request }) => {
     try {
-        const query = url.searchParams.get('q')?.toLowerCase() || '';
+        const query = (url.searchParams.get('q') || '').trim().toLowerCase().replace(/\s+/g, ' ');
         const useSemanticSearch = url.searchParams.get('semantic') === 'true';
         const semanticWeight = parseFloat(url.searchParams.get('semanticWeight') || '0.3');
+        const locale = url.searchParams.get('locale') || 'en';
 
         if (!query) {
             return new Response(
@@ -38,7 +41,7 @@ export const GET: APIRoute = async ({ url, currentLocale, request }) => {
             ctx: 'view',
             key: '',
             ver: '',
-            loc: currentLocale as Locales || 'en',
+            loc: localeToSdkLocale(locale) as Locales,
             preview_token: '',
             types: [],
         };
@@ -68,12 +71,14 @@ export const GET: APIRoute = async ({ url, currentLocale, request }) => {
                             title: item?._metadata?.displayName || (item as any).Heading || 'Untitled Page',
                             subtitle: (item as any)?.SubHeading || seoSettings?.MetaDescription || item?._metadata?.types?.[0] || undefined,
                             url: item?._metadata?.url?.default || item?._metadata?.url?.hierarchical || '#',
-                            image: (item as any)?.PromoImage?.item?.Url || (item as any)?.PromoImage?.url?.default || 
-                                    seoSettings?.SharingImage?.item?.Url || seoSettings?.SharingImage?.url?.default || undefined
+                            image: (item as any)?.PromoImage?.item?.Url || (item as any)?.PromoImage?.url?.default ||
+                                    seoSettings?.SharingImage?.item?.Url || seoSettings?.SharingImage?.url?.default || undefined,
+                            track: item?._track || undefined
                         };
                         // Remove only optional undefined fields, never remove required fields (id, type, title)
                         if (result.subtitle === undefined) delete result.subtitle;
                         if (result.image === undefined) delete result.image;
+                        if (result.track === undefined) delete result.track;
                         return result;
                     });
                 graphResults.push(...pageResults);

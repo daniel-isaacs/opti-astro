@@ -1,0 +1,7 @@
+fragment ImageRendition on ImageRendition {
+    AltText
+    Image {
+        ...ContentUrl
+    }
+    SelectedRendition
+}

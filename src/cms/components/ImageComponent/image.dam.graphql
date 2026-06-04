@@ -4,5 +4,4 @@ fragment Image on Image {
         ...ContentUrl
         ...ContentReferenceItem
     }
-    DamImageRendition
 }

@@ -25,6 +25,7 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .vscode/
+!.vscode/settings.json
 
 # graphql
 __generated/
@@ -43,4 +44,3 @@ utils/**/temp/
 bun.*
 
 .mcp.json
-CLAUDE.md

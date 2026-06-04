@@ -3,5 +3,4 @@ fragment Image on Image {
     Image {
         ...ContentUrl
     }
-    SelectedRendition
 }

@@ -1,22 +1,46 @@
 {
 	"key": "MenuItem",
 	"displayName": "Menu Item",
-	"description": "",
-	"baseType": "component",
+	"description": "Defines individual navigation menu items with title and link.",
+	"baseType": "_component",
+	"isContract": false,
 	"sortOrder": 0,
 	"mayContainTypes": [],
 	"mediaFileExtensions": [],
 	"compositionBehaviors": [],
+	"contracts": [],
 	"properties": {
+		"Link": {
+			"type": "link",
+			"displayName": "Link",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 10,
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
+		"LinkText": {
+			"type": "string",
+			"format": "shortString",
+			"displayName": "Link Text",
+			"description": "Text for link (if blank, falls back to text on Link Item)",
+			"isLocalized": true,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 20,
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
 		"SubMenuItems": {
 			"type": "array",
 			"displayName": "Sub Menu Items",
-			"description": "",
-			"localized": true,
-			"required": false,
-			"group": "Information",
-			"sortOrder": 0,
-			"editorSettings": {},
+			"isLocalized": true,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 30,
+			"allowedTypes": [],
+			"restrictedTypes": [],
 			"items": {
 				"type": "content",
 				"allowedTypes": [
@@ -24,17 +48,6 @@
 				],
 				"restrictedTypes": []
 			}
-		},
-		"Link": {
-			"type": "component",
-			"contentType": "link",
-			"displayName": "Link",
-			"description": "",
-			"localized": false,
-			"required": false,
-			"group": "Information",
-			"sortOrder": 0,
-			"editorSettings": {}
 		}
 	}
 }

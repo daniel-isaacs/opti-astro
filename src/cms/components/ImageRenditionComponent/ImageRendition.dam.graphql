@@ -1,0 +1,8 @@
+fragment ImageRendition on ImageRendition {
+    AltText
+    Image {
+        ...ContentUrl
+        ...ContentReferenceItem
+    }
+    DamImageRendition
+}

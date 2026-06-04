@@ -1,0 +1,75 @@
+---
+// Using AstroImage alias to avoid naming conflict with ImageFragment type
+import { Image as AstroImage } from 'astro:assets';
+import type { DisplaySettingsFragment, ImageRenditionFragment } from '../../../../__generated/sdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import { getImageRenditionElementStyles } from './ImageRenditionStyling';
+
+
+
+export interface Props {
+    data: ImageRenditionFragment;
+    displaySettings: DisplaySettingsFragment[];
+    contentPayload: ContentPayload;
+}
+const { data, displaySettings } = Astro.props as Props;
+let imageUrl = (data.Image as any)?.item?.Url || data.Image?.url?.default || null;
+
+const isDamImage = (data.Image as any)?.item?.Url?.includes('cmp.optimizely.com') || false;
+
+let selectedRendition = 'default';
+let renditionTabletUrl = null;
+let renditionMobileUrl = null;
+if (isDamImage) {
+    const renditions = (data.Image as any)?.item?.Renditions || [];
+    selectedRendition = data?.DamImageRendition || 'default';
+
+    switch (selectedRendition) {
+        case 'default':
+            break;
+        case 'responsive':
+            var renditionTablet = renditions.find((rendition: any) => rendition.Name === "Instagram");
+            renditionTabletUrl = renditionTablet?.Url;
+            var renditionMobile = renditions.find((rendition: any) => rendition.Name === "Logo Smart Focal Point");
+            renditionMobileUrl = renditionMobile?.Url;
+            break;
+        default:
+            var renditionSelected = renditions.find((rendition: any) => rendition.Name === selectedRendition);
+            if (renditionSelected) imageUrl = renditionSelected?.Url;
+            break;
+    }
+}
+
+---
+
+{imageUrl && !isDamImage &&
+    <AstroImage
+        class:list={getImageRenditionElementStyles(displaySettings)}
+        src={imageUrl || ''}
+        alt={data.AltText || ''}
+        inferSize={true}
+    />
+}
+
+{imageUrl && isDamImage && (selectedRendition === 'responsive') &&
+    <picture class:list={getImageRenditionElementStyles(displaySettings)}>
+        <source media="(max-width: 768px)" srcset={renditionMobileUrl} />
+        <source media="(max-width: 1280px)" srcset={renditionTabletUrl} />
+        <AstroImage
+            class:list={getImageRenditionElementStyles(displaySettings)}
+            src={imageUrl || ''}
+            alt={data.AltText || ''}
+            loading="lazy"
+            inferSize={true}
+        />
+    </picture>
+}
+
+{imageUrl && isDamImage && (selectedRendition !== 'responsive') &&
+    <AstroImage
+        class:list={getImageRenditionElementStyles(displaySettings)}
+        src={imageUrl || ''}
+        alt={data.AltText || ''}
+        inferSize={true}
+    />
+}

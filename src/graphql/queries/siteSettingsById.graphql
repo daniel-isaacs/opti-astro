@@ -14,6 +14,7 @@ query siteSettingsById($key: [String]!, $loc: [Locales]!, $ver: String!) {
                 }
             }
             FooterText
+            TopNavStyle
             HeaderLinks {
                 ... on MenuItem {
                     Link {
@@ -22,6 +23,7 @@ query siteSettingsById($key: [String]!, $loc: [Locales]!, $ver: String!) {
                             default
                         }
                     }
+                    LinkText
                     SubMenuItems {
                         ... on MenuItem {
                             Link {
@@ -30,6 +32,7 @@ query siteSettingsById($key: [String]!, $loc: [Locales]!, $ver: String!) {
                                     default
                                 }
                             }
+                            LinkText
                         }
                     }
                 }
@@ -81,6 +84,7 @@ query siteSettingsById($key: [String]!, $loc: [Locales]!, $ver: String!) {
             SocialTwitter
             SocialTikTok
             SocialGitHub
+            OptiWebProjectId
         }
     }
 }

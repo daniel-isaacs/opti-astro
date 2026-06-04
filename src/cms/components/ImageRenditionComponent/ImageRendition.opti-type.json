@@ -1,0 +1,80 @@
+{
+	"key": "ImageRendition",
+	"displayName": "Image (Renditions)",
+	"description": "Image component with option to select DAM image rendition.",
+	"baseType": "_component",
+	"isContract": false,
+	"sortOrder": 0,
+	"mayContainTypes": [],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [
+		"sectionEnabled",
+		"elementEnabled"
+	],
+	"contracts": [],
+	"createdBy": "daniel.isaacs@optimizely.com",
+	"properties": {
+		"AltText": {
+			"type": "string",
+			"displayName": "Alt Text",
+			"description": "Alternative text for the image, used for accessibility and SEO.",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 100,
+			"indexingType": "searchable",
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
+		"Image": {
+			"type": "contentReference",
+			"displayName": "Image",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 200,
+			"allowedTypes": [
+				"_image"
+			],
+			"restrictedTypes": []
+		},
+		"DamImageRendition": {
+			"type": "string",
+			"format": "selectOne",
+			"displayName": "DAM Image Rendition",
+			"description": "Select the version of the DAM image to be displayed. (NOTE: only applies to images from Optimizely DAM.)",
+			"isLocalized": false,
+			"isRequired": true,
+			"group": "Content",
+			"sortOrder": 300,
+			"enum": [
+				{
+					"value": "default",
+					"displayName": "Default (selected image)"
+				},
+				{
+					"value": "responsive",
+					"displayName": "Responsive"
+				},
+				{
+					"value": "Banner Height Crop",
+					"displayName": "Banner Height Crop"
+				},
+				{
+					"value": "Instagram",
+					"displayName": "Instagram"
+				},
+				{
+					"value": "Logo Smart Focal Point",
+					"displayName": "Logo Smart Focal Point"
+				},
+				{
+					"value": "Small Square",
+					"displayName": "Small Square"
+				}
+			],
+			"allowedTypes": [],
+			"restrictedTypes": []
+		}
+	}
+}
