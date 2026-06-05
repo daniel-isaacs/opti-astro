@@ -9,6 +9,7 @@
 	"mediaFileExtensions": [],
 	"compositionBehaviors": [],
 	"contracts": [],
+	"createdBy": "2013138df8b348b4853784880ea2c689",
 	"properties": {
 		"MetaTitle": {
 			"type": "string",
@@ -32,6 +33,22 @@
 			"indexingType": "searchable",
 			"allowedTypes": [],
 			"restrictedTypes": []
+		},
+		"Schema": {
+			"type": "array",
+			"displayName": "Schema Markup",
+			"description": "Page schema for LLM discovery, etc",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 25,
+			"allowedTypes": [],
+			"restrictedTypes": [],
+			"items": {
+				"type": "string",
+				"allowedTypes": [],
+				"restrictedTypes": []
+			}
 		},
 		"DisplayInMenu": {
 			"type": "boolean",
