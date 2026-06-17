@@ -14,6 +14,13 @@ fragment ArticlePage on ArticlePage {
     Body {
         html
     }
+    BottomContentHeader
+    BottomContent {
+        _metadata {
+            types
+        }
+        ...ContentArea
+    }
     SeoSettings {
         ...PageSeoSettingsProperty
     }
