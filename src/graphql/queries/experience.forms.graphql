@@ -64,6 +64,7 @@ query getExperience($key: [String]!, $ver: String, $loc: [Locales]) {
                                                 }
                                                 component {
                                                     _metadata {
+                                                        key
                                                         types
                                                     }
                                                     ...AllComponents
@@ -89,6 +90,7 @@ query getExperience($key: [String]!, $ver: String, $loc: [Locales]) {
                                                         }
                                                         component {
                                                             _metadata {
+                                                                key
                                                                 types
                                                             }
                                                             ...AllComponents
@@ -112,6 +114,7 @@ query getExperience($key: [String]!, $ver: String, $loc: [Locales]) {
                         }
                         component {
                             _metadata {
+                                key
                                 types
                             }
                             ...AllComponents

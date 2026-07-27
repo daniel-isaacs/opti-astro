@@ -16,6 +16,7 @@ fragment ArticlePage on ArticlePage {
     BottomContentHeader
     BottomContent {
         _metadata {
+            key
             types
         }
         ...ContentArea

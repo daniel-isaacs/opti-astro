@@ -28,7 +28,24 @@ interface Props {
 
 const { contentPayload, data } = Astro.props as Props;
 const { component, displaySettings, displayTemplateKey } = data;
-const componentType = component._metadata.types[0];
+
+// Access gate: Graph inlines referenced blocks into page/experience responses
+// without evaluating per-item read access, so the top-level fetchers resolve
+// the set of readable keys (see src/lib/content-access.ts). A shared block
+// whose key is not in that set must not render. Inline Visual Builder
+// elements have `_metadata.key: null` — they belong to the already-authorized
+// parent experience, so they always render.
+const allowedKeys = Astro.locals?.allowedContentKeys;
+const enforceAccess = contentPayload?.ctx === 'view' && allowedKeys != null;
+const componentKey: string | null | undefined = component?._metadata?.key;
+const isBlocked = enforceAccess && !!componentKey && !allowedKeys.has(componentKey);
+if (isBlocked && import.meta.env.DEV) {
+    console.warn(
+        `[content-access] Skipping component ${componentKey} — not readable by current user`
+    );
+}
+
+const componentType = isBlocked ? null : component._metadata.types[0];
 ---
 
 {

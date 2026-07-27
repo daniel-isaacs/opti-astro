@@ -10,7 +10,7 @@ import Components from './_Components.astro';
 
 const contentPayload = Astro.props.data as ContentPayload;
 
-const optiResponse = await getOptimizelySdk(contentPayload).componentById({
+const optiResponse = await getOptimizelySdk(contentPayload, Astro.locals.user).componentById({
     key: contentPayload.key,
     loc: contentPayload.loc as Locales,
     ver: contentPayload.ver,

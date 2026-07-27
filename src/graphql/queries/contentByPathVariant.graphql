@@ -14,6 +14,9 @@ query contentByPathVariant(
         where: {
             _and: [
                 { _metadata: { url: { base: { eq: $base } } } }
+                # Authenticated (HMAC) requests can see draft/previous versions;
+                # view-mode routing must only ever resolve the published one.
+                { _metadata: { status: { eq: "Published" } } }
                 {
                     _or: [
                         { _metadata: { url: { default: { eq: $url } } } }

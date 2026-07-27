@@ -6,12 +6,14 @@ fragment LandingPage on LandingPage {
     }
     TopContentArea {
         _metadata {
+            key
             types
         }
         ...ContentArea
     }
     MainContentArea {
         _metadata {
+            key
             types
         }
         ...ContentArea

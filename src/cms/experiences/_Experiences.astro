@@ -4,6 +4,7 @@ import { getOptimizelySdk } from '../../graphql/getSdk';
 import type { ContentPayload } from '../../graphql/shared/ContentPayload';
 import Layout from '../../layouts/Layout.astro';
 import Section from '../compositions/Section/Section.astro';
+import { resolveAllowedContentKeys } from '../../lib/content-access';
 const previewPayload = Astro.props.data as ContentPayload;
 
 const optiResponse = await getOptimizelySdk(previewPayload, Astro.locals.user).getExperience({
@@ -16,6 +17,15 @@ const experience = optiResponse?._Experience?.item;
 if (!experience) {
     throw new Error('No experience found');
 }
+
+// Graph inlines composition components at index time without evaluating read
+// access, so re-check every embedded key and let _Components.astro skip the
+// ones the current user may not read.
+Astro.locals.allowedContentKeys = await resolveAllowedContentKeys(
+    previewPayload,
+    Astro.locals.user,
+    experience.composition
+);
 let metaTitle = '',
     metaDescription = '',
     metaIndexing = false,

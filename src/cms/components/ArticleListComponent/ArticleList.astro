@@ -24,7 +24,7 @@ const { key, data, displaySettings, contentPayload } = Astro.props as Props;
 const currentSite = data.IncludeAllSites ? 
     data.ArticleRoot?.url?.base ? data.ArticleRoot.url.base :
     null : Astro.url.origin;
-const articlesList = await getOptimizelySdk(contentPayload).getArticles({
+const articlesList = await getOptimizelySdk(contentPayload, Astro.locals.user).getArticles({
     //@ts-ignore
     loc: contentPayload.loc,
     site: currentSite,

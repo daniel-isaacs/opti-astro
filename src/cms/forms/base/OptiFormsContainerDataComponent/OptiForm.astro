@@ -28,7 +28,7 @@ nodeType && (contentPayload.key = grid.key);
 
 const optiResponse =
     !nodeType &&
-    (await getOptimizelySdk(contentPayload).formById({
+    (await getOptimizelySdk(contentPayload, Astro.locals.user).formById({
         key: contentPayload.key,
         //@ts-ignore
         loc: contentPayload.loc as Locales,

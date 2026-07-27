@@ -4,6 +4,7 @@ fragment Grid on Grid {
     }
     Items {
         _metadata {
+            key
             types
         }
         ...AllComponentsExceptGrid

@@ -1,0 +1,15 @@
+query contentAccess($keys: [String], $limit: Int! = 100) {
+    _Content(
+        ids: $keys
+        limit: $limit
+        variation: { include: ALL }
+        # HMAC requests see drafts; only a published version grants render access
+        where: { _metadata: { status: { eq: "Published" } } }
+    ) {
+        items {
+            _metadata {
+                key
+            }
+        }
+    }
+}
