@@ -95,7 +95,7 @@ export function getOptimizelySdk(contentPayload: ContentPayload, user?: FakeUser
             }
         }
 
-        if (mode === 'edit' && prevToken) {
+        if ((mode === 'edit' || mode === 'preview') && prevToken) {
             client = new GraphQLClient(
                 `${OPTIMIZELY_GRAPH_GATEWAY}/content/v2` + `?stored=true`, // enable cached templates
                 {
