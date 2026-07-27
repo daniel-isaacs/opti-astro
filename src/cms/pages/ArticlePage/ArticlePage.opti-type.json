@@ -104,6 +104,34 @@
 			"editorSettings": {
 				"preset": "expanded"
 			}
+		},
+		"BottomContentHeader": {
+			"type": "string",
+			"format": "shortString",
+			"displayName": "Bottom Content Header",
+			"description": "Header for bottom content area",
+			"isLocalized": true,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 70,
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
+		"BottomContent": {
+			"type": "array",
+			"displayName": "Bottom Content",
+			"description": "Content area for content below main article body",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 80,
+			"allowedTypes": [],
+			"restrictedTypes": [],
+			"items": {
+				"type": "content",
+				"allowedTypes": [],
+				"restrictedTypes": []
+			}
 		}
 	}
 }
