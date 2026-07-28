@@ -69,6 +69,7 @@ const initialSearchTerm = searchParams.get('q') || null;
 const initialAuthors = searchParams.getAll('authors[]');
 const initialTypes = searchParams.getAll('types[]');
 const initialArticleTypes = searchParams.getAll('articleTypes[]');
+const initialArticleCategories = searchParams.getAll('articleCategories[]');
 const initialSort = searchParams.get('sort') || config.defaultSortOrder;
 const initialPage = parseInt(searchParams.get('page') || '1');
 const initialOffset = (initialPage - 1) * config.resultsPerPage;
@@ -95,6 +96,7 @@ const searchResults = await getOptimizelySdk(contentPayload).facetedSearch({
 	authorFilters: initialAuthors.length > 0 ? initialAuthors : null,
 	typeFilters: initialTypes.length > 0 ? initialTypes : null,
 	articleTypeFilters: initialArticleTypes.length > 0 ? initialArticleTypes : null,
+	articleCategoryFilters: initialArticleCategories.length > 0 ? initialArticleCategories : null,
 });
 
 // Extract data
@@ -102,9 +104,12 @@ const articleItems = searchResults.ArticlePage?.items || [];
 const articleTotal = searchResults.ArticlePage?.total || 0;
 const articleFacets = searchResults.ArticlePage?.facets;
 
-// If author or article type filters are applied, skip Experience results
-// (Experiences have neither Author nor ArticleType) — mirrors the API endpoint
-const hideExperiences = initialAuthors.length > 0 || initialArticleTypes.length > 0;
+// If author, article type, or article category filters are applied, skip
+// Experience results (Experiences have none of these fields) — mirrors the API endpoint
+const hideExperiences =
+	initialAuthors.length > 0 ||
+	initialArticleTypes.length > 0 ||
+	initialArticleCategories.length > 0;
 const experienceItems = hideExperiences ? [] : searchResults._Experience?.items || [];
 const experienceTotal = hideExperiences ? 0 : searchResults._Experience?.total || 0;
 const experienceFacets = searchResults._Experience?.facets;

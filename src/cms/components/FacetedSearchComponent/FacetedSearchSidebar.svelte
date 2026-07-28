@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getArticleTypeLabel } from './lib/facetedSearchHelpers';
+	import { getArticleTypeLabel, getArticleCategoryLabel } from './lib/facetedSearchHelpers';
 
 	interface Facet {
 		name: string;
@@ -11,18 +11,20 @@
 			authors: Facet[];
 			types: Facet[];
 			articleTypes?: Facet[];
+			articleCategories?: Facet[];
 		};
 		selectedAuthors: string[];
 		selectedTypes: string[];
 		selectedArticleTypes?: string[];
+		selectedArticleCategories?: string[];
 		searchTerm: string;
 		activeFilterCount: number;
 		showAuthorFacet: boolean;
 		showTypeFacet: boolean;
 		isEditMode?: boolean;
 		onClearAll: () => void;
-		onRemoveFilter: (type: 'author' | 'type' | 'articleType' | 'search', value?: string) => void;
-		onToggleFacet: (type: 'author' | 'type' | 'articleType', value: string) => void;
+		onRemoveFilter: (type: 'author' | 'type' | 'articleType' | 'articleCategory' | 'search', value?: string) => void;
+		onToggleFacet: (type: 'author' | 'type' | 'articleType' | 'articleCategory', value: string) => void;
 	}
 
 	let {
@@ -30,6 +32,7 @@
 		selectedAuthors,
 		selectedTypes,
 		selectedArticleTypes = [],
+		selectedArticleCategories = [],
 		searchTerm,
 		activeFilterCount,
 		showAuthorFacet,
@@ -43,10 +46,11 @@
 	let expandedFacets = $state({
 		authors: true,
 		types: true,
-		articleTypes: true
+		articleTypes: true,
+		articleCategories: true
 	});
 
-	function toggleFacetExpansion(facetName: 'authors' | 'types' | 'articleTypes') {
+	function toggleFacetExpansion(facetName: 'authors' | 'types' | 'articleTypes' | 'articleCategories') {
 		expandedFacets[facetName] = !expandedFacets[facetName];
 	}
 </script>
@@ -117,6 +121,18 @@
 								disabled={isEditMode}
 							>
 								{getArticleTypeLabel(articleType)}
+								<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+								</svg>
+							</button>
+						{/each}
+						{#each selectedArticleCategories as articleCategory}
+							<button
+								class="badge badge-warning gap-2"
+								onclick={() => onRemoveFilter('articleCategory', articleCategory)}
+								disabled={isEditMode}
+							>
+								{getArticleCategoryLabel(articleCategory)}
 								<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
 								</svg>
@@ -195,6 +211,44 @@
 									/>
 									<span class="flex-1 text-sm">{getArticleTypeLabel(articleType.name)}</span>
 									<span class="text-xs text-base-content/50">({articleType.count})</span>
+								</label>
+							{/each}
+						</div>
+					{/if}
+				</div>
+			{/if}
+
+			<!-- Article Category Facet -->
+			{#if facets.articleCategories && facets.articleCategories.length > 0}
+				<div class="mb-4">
+					<button
+						class="flex items-center justify-between w-full text-left font-medium mb-2"
+						onclick={() => toggleFacetExpansion('articleCategories')}
+					>
+						<span>Article Category</span>
+						<svg
+							class="w-4 h-4 transition-transform"
+							class:rotate-180={!expandedFacets.articleCategories}
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+						</svg>
+					</button>
+					{#if expandedFacets.articleCategories}
+						<div class="space-y-2">
+							{#each facets.articleCategories as articleCategory}
+								<label class="flex items-center gap-2 cursor-pointer hover:bg-base-200 p-2 rounded">
+									<input
+										type="checkbox"
+										class="checkbox checkbox-sm"
+										checked={selectedArticleCategories.includes(articleCategory.name)}
+										onchange={() => onToggleFacet('articleCategory', articleCategory.name)}
+										disabled={isEditMode}
+									/>
+									<span class="flex-1 text-sm">{getArticleCategoryLabel(articleCategory.name)}</span>
+									<span class="text-xs text-base-content/50">({articleCategory.count})</span>
 								</label>
 							{/each}
 						</div>

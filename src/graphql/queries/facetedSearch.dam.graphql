@@ -11,6 +11,7 @@ query facetedSearch(
     $authorFilters: [String!]
     $typeFilters: [String!]
     $articleTypeFilters: [String!]
+    $articleCategoryFilters: [String!]
 ) {
     # Main content results - ArticlePage
     ArticlePage(
@@ -33,6 +34,8 @@ query facetedSearch(
             Author: { in: $authorFilters }
             # Article type filter (optional - null value is ignored)
             ArticleType: { in: $articleTypeFilters }
+            # Article category filter (optional - null value is ignored)
+            ArticleCategory: { in: $articleCategoryFilters }
         }
         pinned: { phrase: $searchTerm }
         tracking: { phrase: $trackingPhrase, source: $trackingSource }
@@ -56,6 +59,7 @@ query facetedSearch(
             SubHeading
             Author
             ArticleType
+            ArticleCategory
             PromoImage {
                 ...ContentUrl
                 ...ContentReferenceItem
@@ -78,6 +82,16 @@ query facetedSearch(
             # Article type facet
             ArticleType(
                 filters: $articleTypeFilters
+                orderType: COUNT
+                orderBy: DESC
+                limit: 20
+            ) {
+                name
+                count
+            }
+            # Article category facet
+            ArticleCategory(
+                filters: $articleCategoryFilters
                 orderType: COUNT
                 orderBy: DESC
                 limit: 20

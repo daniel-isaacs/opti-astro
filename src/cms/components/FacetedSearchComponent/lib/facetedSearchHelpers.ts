@@ -20,6 +20,27 @@ export function getArticleTypeLabel(value: string): string {
 }
 
 /**
+ * Display labels for the ArticlePage ArticleCategory enum values
+ * (multi-select array property).
+ */
+export const articleCategoryLabels: Record<string, string> = {
+	actuarial: 'Actuarial',
+	behavioralscience: 'Behavioral Science',
+	claims: 'Claims',
+	datasolutions: 'Data Solutions',
+	financial: 'Financial',
+	medical: 'Medical',
+	productsolutions: 'Product Solutions',
+	responsibility: 'Responsibility',
+	strategy: 'Strategy',
+	underwriting: 'Underwriting',
+};
+
+export function getArticleCategoryLabel(value: string): string {
+	return articleCategoryLabels[value] || value;
+}
+
+/**
  * Sort order mappings for ArticlePage content type
  */
 export const articlePageSortOrderMap: Record<string, any> = {
@@ -150,12 +171,16 @@ export function mergeFacets(
 	authors: Array<{ name: string; count: number }>;
 	types: Array<{ name: string; count: number }>;
 	articleTypes: Array<{ name: string; count: number }>;
+	articleCategories: Array<{ name: string; count: number }>;
 } {
 	// Process author facets (only from ArticlePage)
 	const authorFacets = articleFacets?.Author?.filter((f: any) => f?.name) || [];
 
 	// Process ArticleType field facets (only from ArticlePage)
 	const articleTypeFieldFacets = articleFacets?.ArticleType?.filter((f: any) => f?.name) || [];
+
+	// Process ArticleCategory field facets (only from ArticlePage)
+	const articleCategoryFieldFacets = articleFacets?.ArticleCategory?.filter((f: any) => f?.name) || [];
 
 	// Merge type facets from both queries
 	const articleTypeFacets = articleFacets?._metadata?.types?.filter((f: any) => f?.name) || [];
@@ -175,5 +200,6 @@ export function mergeFacets(
 		authors: authorFacets.map((f: any) => ({ name: f.name, count: f.count })),
 		types: typeFacets,
 		articleTypes: articleTypeFieldFacets.map((f: any) => ({ name: f.name, count: f.count })),
+		articleCategories: articleCategoryFieldFacets.map((f: any) => ({ name: f.name, count: f.count })),
 	};
 }

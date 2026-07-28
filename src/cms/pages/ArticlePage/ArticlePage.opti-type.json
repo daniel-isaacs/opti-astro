@@ -162,6 +162,65 @@
 			],
 			"allowedTypes": [],
 			"restrictedTypes": []
+		},
+		"ArticleCategory": {
+			"type": "array",
+			"format": "selectMany",
+			"displayName": "Article Category",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 100,
+			"indexingType": "queryable",
+			"allowedTypes": [],
+			"restrictedTypes": [],
+			"items": {
+				"type": "string",
+				"enum": [
+					{
+						"value": "actuarial",
+						"displayName": "Actuarial"
+					},
+					{
+						"value": "behavioralscience",
+						"displayName": "Behavioral Science"
+					},
+					{
+						"value": "claims",
+						"displayName": "Claims"
+					},
+					{
+						"value": "datasolutions",
+						"displayName": "Data Solutions"
+					},
+					{
+						"value": "financial",
+						"displayName": "Financial"
+					},
+					{
+						"value": "medical",
+						"displayName": "Medical"
+					},
+					{
+						"value": "productsolutions",
+						"displayName": "Product Solutions"
+					},
+					{
+						"value": "responsibility",
+						"displayName": "Responsibility"
+					},
+					{
+						"value": "strategy",
+						"displayName": "Strategy"
+					},
+					{
+						"value": "underwriting",
+						"displayName": "Underwriting"
+					}
+				],
+				"allowedTypes": [],
+				"restrictedTypes": []
+			}
 		}
 	}
 }
