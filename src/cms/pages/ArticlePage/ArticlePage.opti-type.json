@@ -132,6 +132,36 @@
 				"allowedTypes": [],
 				"restrictedTypes": []
 			}
+		},
+		"ArticleType": {
+			"type": "string",
+			"format": "selectOne",
+			"displayName": "Article Type",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 90,
+			"indexingType": "queryable",
+			"enum": [
+				{
+					"value": "articles",
+					"displayName": "Articles"
+				},
+				{
+					"value": "research",
+					"displayName": "Research and White Papers"
+				},
+				{
+					"value": "publications",
+					"displayName": "Publications"
+				},
+				{
+					"value": "videos",
+					"displayName": "Videos"
+				}
+			],
+			"allowedTypes": [],
+			"restrictedTypes": []
 		}
 	}
 }

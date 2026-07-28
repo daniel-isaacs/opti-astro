@@ -13,6 +13,7 @@
 		initialFacets: {
 			authors: Array<{ name: string; count: number }>;
 			types: Array<{ name: string; count: number }>;
+			articleTypes?: Array<{ name: string; count: number }>;
 		};
 		initialTotal: number;
 		config: {
@@ -59,6 +60,7 @@
 	let searchTerm = $state('');
 	let selectedAuthors = $state<string[]>([]);
 	let selectedTypes = $state<string[]>([]);
+	let selectedArticleTypes = $state<string[]>([]);
 	let sortOrder = $state(config.defaultSortOrder || 'relevance');
 	let currentPage = $state(1);
 	let isLoading = $state(false);
@@ -74,7 +76,7 @@
 
 	// Derived values
 	let activeFilterCount = $derived(
-		selectedAuthors.length + selectedTypes.length + (searchTerm ? 1 : 0)
+		selectedAuthors.length + selectedTypes.length + selectedArticleTypes.length + (searchTerm ? 1 : 0)
 	);
 	let totalPages = $derived(Math.ceil(total / config.resultsPerPage));
 	let offset = $derived((currentPage - 1) * config.resultsPerPage);
@@ -110,6 +112,7 @@
 				searchTerm,
 				selectedAuthors,
 				selectedTypes,
+				selectedArticleTypes,
 				sortOrder,
 				viewMode,
 				filtersVisible,
@@ -137,6 +140,7 @@
 			searchTerm = state.searchTerm || '';
 			selectedAuthors = state.selectedAuthors || [];
 			selectedTypes = state.selectedTypes || [];
+			selectedArticleTypes = state.selectedArticleTypes || [];
 			sortOrder = state.sortOrder || config.defaultSortOrder;
 			viewMode = state.viewMode || config.defaultViewMode;
 			filtersVisible = state.filtersVisible !== undefined ? state.filtersVisible : config.defaultFiltersState === 'show';
@@ -181,6 +185,9 @@
 		if (params.types) {
 			selectedTypes = Array.isArray(params.types) ? params.types : [params.types];
 		}
+		if (params.articleTypes) {
+			selectedArticleTypes = Array.isArray(params.articleTypes) ? params.articleTypes : [params.articleTypes];
+		}
 		if (params.sort && typeof params.sort === 'string') {
 			sortOrder = params.sort;
 		}
@@ -204,6 +211,7 @@
 		if (searchTerm) params.q = searchTerm;
 		if (selectedAuthors.length > 0) params.authors = selectedAuthors;
 		if (selectedTypes.length > 0) params.types = selectedTypes;
+		if (selectedArticleTypes.length > 0) params.articleTypes = selectedArticleTypes;
 		if (sortOrder !== config.defaultSortOrder) params.sort = sortOrder;
 		if (currentPage > 1) params.page = currentPage;
 		// Add view param if different from default
@@ -228,6 +236,7 @@
 		searchTerm;
 		selectedAuthors;
 		selectedTypes;
+		selectedArticleTypes;
 		sortOrder;
 		viewMode;
 		filtersVisible;
@@ -257,11 +266,15 @@
 		fetchResults();
 	}
 
-	function toggleFacet(type: 'author' | 'type', value: string) {
+	function toggleFacet(type: 'author' | 'type' | 'articleType', value: string) {
 		if (type === 'author') {
 			selectedAuthors = selectedAuthors.includes(value)
 				? selectedAuthors.filter(a => a !== value)
 				: [...selectedAuthors, value];
+		} else if (type === 'articleType') {
+			selectedArticleTypes = selectedArticleTypes.includes(value)
+				? selectedArticleTypes.filter(t => t !== value)
+				: [...selectedArticleTypes, value];
 		} else {
 			selectedTypes = selectedTypes.includes(value)
 				? selectedTypes.filter(t => t !== value)
@@ -271,13 +284,15 @@
 		fetchResults();
 	}
 
-	function removeFilter(type: 'author' | 'type' | 'search', value?: string) {
+	function removeFilter(type: 'author' | 'type' | 'articleType' | 'search', value?: string) {
 		if (type === 'search') {
 			searchTerm = '';
 		} else if (type === 'author' && value) {
 			selectedAuthors = selectedAuthors.filter(a => a !== value);
 		} else if (type === 'type' && value) {
 			selectedTypes = selectedTypes.filter(t => t !== value);
+		} else if (type === 'articleType' && value) {
+			selectedArticleTypes = selectedArticleTypes.filter(t => t !== value);
 		}
 		currentPage = 1;
 		fetchResults();
@@ -287,6 +302,7 @@
 		searchTerm = '';
 		selectedAuthors = [];
 		selectedTypes = [];
+		selectedArticleTypes = [];
 		currentPage = 1;
 		sortOrder = config.defaultSortOrder;
 		fetchResults();
@@ -326,6 +342,7 @@
 
 			selectedAuthors.forEach(author => params.append('authors[]', author));
 			selectedTypes.forEach(type => params.append('types[]', type));
+			selectedArticleTypes.forEach(type => params.append('articleTypes[]', type));
 
 			const response = await fetch(`/api/faceted-search.json?${params.toString()}`);
 
@@ -336,7 +353,7 @@
 			const data = await response.json();
 
 			results = data.items || [];
-			facets = data.facets || { authors: [], types: [] };
+			facets = data.facets || { authors: [], types: [], articleTypes: [] };
 			total = data.total || 0;
 		} catch (error) {
 			console.error('Error fetching results:', error);
@@ -354,6 +371,7 @@
 				{facets}
 				{selectedAuthors}
 				{selectedTypes}
+				{selectedArticleTypes}
 				{searchTerm}
 				{activeFilterCount}
 				showAuthorFacet={config.showAuthorFacet}

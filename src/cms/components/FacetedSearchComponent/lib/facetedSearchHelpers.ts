@@ -4,6 +4,22 @@
  */
 
 /**
+ * Display labels for the ArticlePage ArticleType enum values.
+ * Graph facets return the raw stored values; map them to the
+ * displayNames defined in ArticlePage.opti-type.json.
+ */
+export const articleTypeLabels: Record<string, string> = {
+	articles: 'Articles',
+	research: 'Research and White Papers',
+	publications: 'Publications',
+	videos: 'Videos',
+};
+
+export function getArticleTypeLabel(value: string): string {
+	return articleTypeLabels[value] || value;
+}
+
+/**
  * Sort order mappings for ArticlePage content type
  */
 export const articlePageSortOrderMap: Record<string, any> = {
@@ -133,9 +149,13 @@ export function mergeFacets(
 ): {
 	authors: Array<{ name: string; count: number }>;
 	types: Array<{ name: string; count: number }>;
+	articleTypes: Array<{ name: string; count: number }>;
 } {
 	// Process author facets (only from ArticlePage)
 	const authorFacets = articleFacets?.Author?.filter((f: any) => f?.name) || [];
+
+	// Process ArticleType field facets (only from ArticlePage)
+	const articleTypeFieldFacets = articleFacets?.ArticleType?.filter((f: any) => f?.name) || [];
 
 	// Merge type facets from both queries
 	const articleTypeFacets = articleFacets?._metadata?.types?.filter((f: any) => f?.name) || [];
@@ -154,5 +174,6 @@ export function mergeFacets(
 	return {
 		authors: authorFacets.map((f: any) => ({ name: f.name, count: f.count })),
 		types: typeFacets,
+		articleTypes: articleTypeFieldFacets.map((f: any) => ({ name: f.name, count: f.count })),
 	};
 }

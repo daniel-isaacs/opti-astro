@@ -21,6 +21,7 @@ export const GET: APIRoute = async ({ url }) => {
 		// Parse array parameters
 		const authorFilters = url.searchParams.getAll('authors[]');
 		const typeFilters = url.searchParams.getAll('types[]');
+		const articleTypeFilters = url.searchParams.getAll('articleTypes[]');
 
 		// Build orderBy with optional semantic weight using shared helper
 		const { articlePageOrderBy: orderBy, experienceOrderBy: orderByExperience } = getSortOrderBy(
@@ -58,6 +59,7 @@ export const GET: APIRoute = async ({ url }) => {
 			orderByExperience: orderByExperience,
 			authorFilters: authorFilters.length > 0 ? authorFilters : null,
 			typeFilters: typeFilters.length > 0 ? typeFilters : null,
+			articleTypeFilters: articleTypeFilters.length > 0 ? articleTypeFilters : null,
 		});
 
 		// Extract data
@@ -65,9 +67,11 @@ export const GET: APIRoute = async ({ url }) => {
 		const articleTotal = searchResults.ArticlePage?.total || 0;
 		const articleFacets = searchResults.ArticlePage?.facets;
 
-		// If author filters are applied, skip Experience results (no authors on Experiences)
-		const experienceItems = authorFilters.length > 0 ? [] : searchResults._Experience?.items || [];
-		const experienceTotal = authorFilters.length > 0 ? 0 : searchResults._Experience?.total || 0;
+		// If author or article type filters are applied, skip Experience results
+		// (Experiences have neither Author nor ArticleType)
+		const hideExperiences = authorFilters.length > 0 || articleTypeFilters.length > 0;
+		const experienceItems = hideExperiences ? [] : searchResults._Experience?.items || [];
+		const experienceTotal = hideExperiences ? 0 : searchResults._Experience?.total || 0;
 		const experienceFacets = searchResults._Experience?.facets;
 
 		// Merge and sort ALL results using shared helper

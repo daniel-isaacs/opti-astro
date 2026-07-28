@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { getArticleTypeLabel } from './lib/facetedSearchHelpers';
+
 	interface Facet {
 		name: string;
 		count: number;
@@ -8,23 +10,26 @@
 		facets: {
 			authors: Facet[];
 			types: Facet[];
+			articleTypes?: Facet[];
 		};
 		selectedAuthors: string[];
 		selectedTypes: string[];
+		selectedArticleTypes?: string[];
 		searchTerm: string;
 		activeFilterCount: number;
 		showAuthorFacet: boolean;
 		showTypeFacet: boolean;
 		isEditMode?: boolean;
 		onClearAll: () => void;
-		onRemoveFilter: (type: 'author' | 'type' | 'search', value?: string) => void;
-		onToggleFacet: (type: 'author' | 'type', value: string) => void;
+		onRemoveFilter: (type: 'author' | 'type' | 'articleType' | 'search', value?: string) => void;
+		onToggleFacet: (type: 'author' | 'type' | 'articleType', value: string) => void;
 	}
 
 	let {
 		facets,
 		selectedAuthors,
 		selectedTypes,
+		selectedArticleTypes = [],
 		searchTerm,
 		activeFilterCount,
 		showAuthorFacet,
@@ -37,10 +42,11 @@
 
 	let expandedFacets = $state({
 		authors: true,
-		types: true
+		types: true,
+		articleTypes: true
 	});
 
-	function toggleFacetExpansion(facetName: 'authors' | 'types') {
+	function toggleFacetExpansion(facetName: 'authors' | 'types' | 'articleTypes') {
 		expandedFacets[facetName] = !expandedFacets[facetName];
 	}
 </script>
@@ -104,6 +110,18 @@
 								</svg>
 							</button>
 						{/each}
+						{#each selectedArticleTypes as articleType}
+							<button
+								class="badge badge-info gap-2"
+								onclick={() => onRemoveFilter('articleType', articleType)}
+								disabled={isEditMode}
+							>
+								{getArticleTypeLabel(articleType)}
+								<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+								</svg>
+							</button>
+						{/each}
 					</div>
 				</div>
 			{/if}
@@ -139,6 +157,44 @@
 									/>
 									<span class="flex-1 text-sm">{author.name}</span>
 									<span class="text-xs text-base-content/50">({author.count})</span>
+								</label>
+							{/each}
+						</div>
+					{/if}
+				</div>
+			{/if}
+
+			<!-- Article Type Facet -->
+			{#if facets.articleTypes && facets.articleTypes.length > 0}
+				<div class="mb-4">
+					<button
+						class="flex items-center justify-between w-full text-left font-medium mb-2"
+						onclick={() => toggleFacetExpansion('articleTypes')}
+					>
+						<span>Article Type</span>
+						<svg
+							class="w-4 h-4 transition-transform"
+							class:rotate-180={!expandedFacets.articleTypes}
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+						</svg>
+					</button>
+					{#if expandedFacets.articleTypes}
+						<div class="space-y-2">
+							{#each facets.articleTypes as articleType}
+								<label class="flex items-center gap-2 cursor-pointer hover:bg-base-200 p-2 rounded">
+									<input
+										type="checkbox"
+										class="checkbox checkbox-sm"
+										checked={selectedArticleTypes.includes(articleType.name)}
+										onchange={() => onToggleFacet('articleType', articleType.name)}
+										disabled={isEditMode}
+									/>
+									<span class="flex-1 text-sm">{getArticleTypeLabel(articleType.name)}</span>
+									<span class="text-xs text-base-content/50">({articleType.count})</span>
 								</label>
 							{/each}
 						</div>
