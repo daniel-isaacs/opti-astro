@@ -12,6 +12,26 @@ import { loadI18nConfig } from './src/config/i18n.config.ts';
 const multiAdapter = await adapter();
 const i18nConfig = loadI18nConfig();
 
+/**
+ * Astrobook injects its routes with `prerender: true`. With an i18n `fallback`
+ * map configured, Astro builds a fallback copy of every prerendered route for
+ * every locale (e.g. /nl/component-preview/...), running middleware at build
+ * time with locales the CMS Graph schema doesn't have. Forcing the injected
+ * routes to be server-rendered keeps component-preview at its unprefixed URL
+ * only.
+ */
+function astrobookServerRendered(options) {
+    const integration = astrobook(options);
+    const originalSetup = integration.hooks['astro:config:setup'];
+    integration.hooks['astro:config:setup'] = (params) =>
+        originalSetup({
+            ...params,
+            injectRoute: (route) =>
+                params.injectRoute({ ...route, prerender: false }),
+        });
+    return integration;
+}
+
 // https://astro.build/config
 export default defineConfig({
     devToolbar: {
@@ -54,7 +74,7 @@ export default defineConfig({
     integrations: [
         alpinejs(),
         svelte(),
-        astrobook({
+        astrobookServerRendered({
             subpath: '/component-preview',
             directory: './src/stories',
             css: ['./src/styles/global.css'],

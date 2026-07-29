@@ -12,6 +12,12 @@ const placeholderCache = new Map<string, Map<string, string>>();
 const CACHE_DURATION = 60000; // 1 minute
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  // Prerendered pages are built at build time: request headers/cookies are
+  // unavailable and per-request work (auth, redirects, placeholders) doesn't apply.
+  if (context.isPrerendered) {
+    return next();
+  }
+
   // Resolve fake auth session
   const authCookieValue = context.cookies.get(AUTH_COOKIE_NAME)?.value;
   context.locals.user = authCookieValue ? getUserFromCookieValue(authCookieValue) : null;
@@ -38,8 +44,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
     // Extract domain from URL
     const domain = context.url.host;
-    // Use Astro's current locale
-    const locale = localeToSdkLocale(context.currentLocale) as Locales;
+    // Use Astro's current locale; fall back to English when the locale isn't
+    // part of the Graph schema (i18n config can list locales the CMS lacks)
+    const sdkLocale = localeToSdkLocale(context.currentLocale ?? 'en');
+    const locale = (Object.values(Locales) as string[]).includes(sdkLocale)
+      ? (sdkLocale as Locales)
+      : Locales.En;
     
     try {
       // Get placeholders from GraphQL
