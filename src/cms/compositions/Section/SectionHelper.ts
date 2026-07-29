@@ -32,6 +32,9 @@ export function getSectionStyles(grid: CompositionStructureNode): string[] {
                 case 'large':
                     cssClasses.push('py-8 md:py-16 lg:py-24');
                     break;
+                case 'none':
+                    cssClasses.push('py-0');
+                    break;
             }
             // Background color is now handled by globalStylesHelper
             break;

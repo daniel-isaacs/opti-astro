@@ -43,6 +43,10 @@
 				"large": {
 					"displayName": "Large",
 					"sortOrder": 30
+				},
+				"none": {
+					"displayName": "None",
+					"sortOrder": 40
 				}
 			}
 		},
