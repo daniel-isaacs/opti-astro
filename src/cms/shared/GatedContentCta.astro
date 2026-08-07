@@ -1,0 +1,40 @@
+---
+// Login call-to-action shown in place of gated content (Article body teaser,
+// gated Experience sections). Sends the visitor to the login page and back.
+export interface Props {
+    headline?: string;
+    subtext?: string;
+}
+const {
+    headline = 'Log in to view the full content',
+    subtext = 'This content is available to signed-in members.',
+} = Astro.props as Props;
+const loginUrl = `/login?redirect=${encodeURIComponent(Astro.url.pathname)}`;
+---
+
+<div class="mx-auto mb-16 max-w-screen-xl px-4 2xl:px-0">
+    <div class="mx-auto max-w-xl rounded-2xl border border-base-300 bg-base-200 p-8 text-center">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="mx-auto mb-3 h-8 w-8 text-base-content/60"
+            aria-hidden="true"
+        >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
+            />
+        </svg>
+        <p class="mb-1 text-lg font-semibold text-base-content">
+            {headline}
+        </p>
+        <p class="mb-4 text-sm text-base-content/60">
+            {subtext}
+        </p>
+        <a href={loginUrl} class="btn btn-primary">Log in</a>
+    </div>
+</div>

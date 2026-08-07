@@ -376,3 +376,38 @@ export const TwoRowsStacked = {
         ], [ds('gridWidth', 'default'), ds('sectionColor', 'base_200'), ds('vSpacing', 'default')]),
     },
 };
+
+// ── Gated content setting ─────────────────────────────────────────────────
+// The gatedContent setting is enforced by _Experiences.astro (page level),
+// not by Section.astro, so these stories render like normal sections. They
+// exist to cover the DefaultSection.opti-style.json choices: on a published
+// experience, anonymous visitors see sections above the first "gate" section,
+// then a login CTA in its place; later sections are hidden unless marked
+// "always_show".
+
+export const GatedDefault = {
+    args: {
+        ...base,
+        grid: section([
+            row([contentCol('Ungated section', 'Renders for everyone — the default choice changes nothing.')]),
+        ], [ds('gridWidth', 'default'), ds('gatedContent', 'default')]),
+    },
+};
+
+export const GatedGateHere = {
+    args: {
+        ...base,
+        grid: section([
+            row([contentCol('Gate marker section', 'On a published experience, anonymous visitors see the login CTA instead of this section, and nothing below it.')]),
+        ], [ds('gridWidth', 'default'), ds('gatedContent', 'gate')]),
+    },
+};
+
+export const GatedAlwaysShow = {
+    args: {
+        ...base,
+        grid: section([
+            row([contentCol('Always visible section', 'Renders below the gate even for anonymous visitors — e.g. a public contact or footer band.')]),
+        ], [ds('gridWidth', 'default'), ds('gatedContent', 'always_show')]),
+    },
+};

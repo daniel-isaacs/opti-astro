@@ -4,7 +4,9 @@ import { getOptimizelySdk } from '../../graphql/getSdk';
 import type { ContentPayload } from '../../graphql/shared/ContentPayload';
 import Layout from '../../layouts/Layout.astro';
 import Section from '../compositions/Section/Section.astro';
+import GatedContentCta from '../shared/GatedContentCta.astro';
 import { resolveAllowedContentKeys } from '../../lib/content-access';
+import { getDictionaryFromDisplaySettings } from '../../graphql/shared/displaySettingsHelpers';
 const previewPayload = Astro.props.data as ContentPayload;
 
 const optiResponse = await getOptimizelySdk(previewPayload, Astro.locals.user).getExperience({
@@ -47,6 +49,20 @@ if (experience?._metadata?.types?.includes('BlankExperience')) {
         blankExperience.PageAdminSettings?.EnableExternalPreview ?? false;
 }
 
+// Gated content: a section styled "Gate content here" marks the fold for
+// anonymous visitors. Sections above it render, the login CTA replaces it,
+// and everything below stays on the server unless styled "always_show".
+// Only the published view is gated — edit/preview/ext_preview never are.
+const grids: any[] = experience?.composition?.grids ?? [];
+const gatedSettingFor = (grid: any): string =>
+    getDictionaryFromDisplaySettings(grid?.displaySettings ?? [])?.[
+        'gatedContent'
+    ] ?? 'default';
+const canGate = previewPayload.ctx === 'view' && !Astro.locals.user;
+const gateIndex = canGate
+    ? grids.findIndex((grid) => gatedSettingFor(grid) === 'gate')
+    : -1;
+
 const defaultUrl = experience?._metadata?.url?.default || '';
 const hierarchicalUrl =
     experience?._metadata?.url?.type === 'SIMPLE'
@@ -68,9 +84,22 @@ const pageClass = 'page-experience';
 >
     <div class={`vb:outline relative w-full flex-1 ${pageClass}`}>
         {
-            experience?.composition?.grids?.map((grid: any) => (
-                <Section contentPayload={previewPayload} grid={grid} />
-            ))
+            grids.map((grid: any, index: number) => {
+                if (gateIndex !== -1) {
+                    if (index === gateIndex) {
+                        return <GatedContentCta />;
+                    }
+                    if (
+                        index > gateIndex &&
+                        gatedSettingFor(grid) !== 'always_show'
+                    ) {
+                        return null;
+                    }
+                }
+                return (
+                    <Section contentPayload={previewPayload} grid={grid} />
+                );
+            })
         }
     </div>
 </Layout>

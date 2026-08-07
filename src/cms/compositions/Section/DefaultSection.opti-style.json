@@ -105,6 +105,25 @@
 				}
 			}
 		},
+		"gatedContent": {
+			"displayName": "Gated Content",
+			"editor": "select",
+			"sortOrder": 60,
+			"choices": {
+				"default": {
+					"displayName": "Default",
+					"sortOrder": 10
+				},
+				"gate": {
+					"displayName": "Gate content here",
+					"sortOrder": 20
+				},
+				"always_show": {
+					"displayName": "Always visible (even when gated)",
+					"sortOrder": 30
+				}
+			}
+		},
         "aosAnimation": {
             "displayName": "Section Animation",
             "editor": "select",
