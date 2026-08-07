@@ -27,4 +27,5 @@ fragment ArticlePage on ArticlePage {
     PageAdminSettings {
         ...PageAdminSettingsProperty
     }
+    GatedContent
 }

@@ -11,7 +11,20 @@
 	"mediaFileExtensions": [],
 	"compositionBehaviors": [],
 	"contracts": [],
+	"createdBy": "59b5423d512147278453c121c4093396",
 	"properties": {
+		"GatedContent": {
+			"type": "boolean",
+			"displayName": "Gated Content",
+			"description": "Only show full article content to authenticated visitors",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "AdminSettings",
+			"sortOrder": 5,
+			"indexingType": "queryable",
+			"allowedTypes": [],
+			"restrictedTypes": []
+		},
 		"PromoImage": {
 			"type": "contentReference",
 			"displayName": "Promo Image",

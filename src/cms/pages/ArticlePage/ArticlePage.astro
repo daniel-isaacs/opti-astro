@@ -25,13 +25,27 @@ const optiResponse = await getOptimizelySdk(contentPayload, Astro.locals.user).p
 });
 const post = optiResponse?._Page?.item as ArticlePageFragment;
 
+// Gated content: anonymous visitors get only a teaser — everything up to the
+// end of the first paragraph — so the rest of the body never leaves the server.
+// CMS edit/preview context is never gated so editors can work on the full body.
+const isGated =
+    post?.GatedContent === true && !Astro.locals.user && !isCmsEdit;
+const fullBodyHtml = post?.Body?.html ?? '';
+const teaserEnd = fullBodyHtml.indexOf('</p>');
+const bodyHtml = isGated
+    ? teaserEnd === -1
+        ? ''
+        : fullBodyHtml.slice(0, teaserEnd + '</p>'.length)
+    : fullBodyHtml;
+const loginUrl = `/login?redirect=${encodeURIComponent(Astro.url.pathname)}`;
+
 // Content area items are inlined by Graph without per-item access checks;
 // resolve which embedded keys the current user may read so _Components.astro
 // can skip the rest.
 Astro.locals.allowedContentKeys = await resolveAllowedContentKeys(
     contentPayload,
     Astro.locals.user,
-    post?.BottomContent
+    isGated ? undefined : post?.BottomContent
 );
 const publishedDate = format(
     new Date(post?._metadata?.published ?? Date.now()),
@@ -104,14 +118,50 @@ const pageClass = 'page-article';
                 </div>
             </div>
 
-            <article
-                class="prose dark:prose-invert md:prose-lg lg:prose-xl mx-auto mt-4 mb-12 max-w-screen-xl px-4 2xl:px-0 prose-img:rounded-[2rem] prose-img:p-4"
-                data-epi-edit={isCmsEdit ? "Body" : undefined}
-                set:html={post.Body?.html}
-            />
+            <div class={isGated ? 'relative' : undefined}>
+                <article
+                    class="prose dark:prose-invert md:prose-lg lg:prose-xl mx-auto mt-4 mb-12 max-w-screen-xl px-4 2xl:px-0 prose-img:rounded-[2rem] prose-img:p-4"
+                    data-epi-edit={isCmsEdit ? "Body" : undefined}
+                    set:html={bodyHtml}
+                />
+                { isGated && bodyHtml &&
+                    <div
+                        class="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-base-100 to-transparent"
+                        aria-hidden="true"
+                    ></div>
+                }
+            </div>
+            { isGated &&
+                <div class="mx-auto mb-16 max-w-screen-xl px-4 2xl:px-0">
+                    <div class="mx-auto max-w-xl rounded-2xl border border-base-300 bg-base-200 p-8 text-center">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="mx-auto mb-3 h-8 w-8 text-base-content/60"
+                            aria-hidden="true"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
+                            />
+                        </svg>
+                        <p class="mb-1 text-lg font-semibold text-base-content">
+                            Log in to view the full article
+                        </p>
+                        <p class="mb-4 text-sm text-base-content/60">
+                            This article is available to signed-in members.
+                        </p>
+                        <a href={loginUrl} class="btn btn-primary">Log in</a>
+                    </div>
+                </div>
+            }
         </main>
-        <!--Bottom content area-->
-        { post?.BottomContentHeader &&
+        <!--Bottom content area (withheld on gated articles for anonymous visitors)-->
+        { !isGated && post?.BottomContentHeader &&
             <div class="mx-auto max-w-screen-xl px-4 2xl:px-0 mt-12 mb-4">
                 <h2
                     class="text-2xl lg:text-3xl font-semibold text-base-content"
@@ -123,7 +173,7 @@ const pageClass = 'page-article';
         }
         <div class="mx-auto max-w-screen-xl px-4 2xl:px-0 justify-center p-2 sm:p-3 md:p-4 flex gap-8 overflow-x-auto flex-wrap">
             {
-                post?.BottomContent?.map((contentAreaItem: any) => {
+                !isGated && post?.BottomContent?.map((contentAreaItem: any) => {
                     const types: string[] = contentAreaItem?._metadata?.types ?? [];
                     const isFullWidth = types.some(t => t === 'Text' || t === 'Paragraph');
                     return (
