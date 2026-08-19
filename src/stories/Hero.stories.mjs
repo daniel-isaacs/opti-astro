@@ -367,3 +367,73 @@ export const HoverNone = {
         ],
     },
 };
+
+// ── Callout width ─────────────────────────────────────────────────────────
+
+export const CalloutWidthFull = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: 'Full-width callout', SubHeading: 'Content spans the full hero width', Image: mockImageRef(IMAGES.landscape), Video: null, Body: { __typename: 'SearchableRichText', html: '<p>This callout stretches edge-to-edge across the hero.</p>' }, Links: [mockLink('Get started', '/start')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'center'),
+            ds('text_color', 'white'),
+            ds('background_tint_level', 'o_50'),
+            ds('image_fit', 'object_cover'),
+            ds('calloutWidth', 'full'),
+            ds('buttonStyle', 'standard'),
+            ds('buttonType', 'primary'),
+        ],
+    },
+};
+
+export const CalloutWidthThreeQuarter = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: '3/4-width callout', SubHeading: 'Content wraps at 75% of the hero width', Image: mockImageRef(IMAGES.abstract), Video: null, Body: { __typename: 'SearchableRichText', html: '<p>A slightly narrowed callout to keep long copy readable without going full edge-to-edge.</p>' }, Links: [mockLink('Learn more', '/learn')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'center'),
+            ds('text_color', 'white'),
+            ds('background_tint_level', 'o_50'),
+            ds('image_fit', 'object_cover'),
+            ds('calloutWidth', 'three_quarter'),
+            ds('buttonStyle', 'standard'),
+            ds('buttonType', 'primary'),
+        ],
+    },
+};
+
+export const CalloutWidthHalf = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: '1/2-width callout', SubHeading: 'Content wraps at 50% of the hero width', Image: mockImageRef(IMAGES.office), Video: null, Body: { __typename: 'SearchableRichText', html: '<p>A half-width callout works well for left- or right-aligned layouts with a visual on the other side.</p>' }, Links: [mockLink('Request a demo', '/demo')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'left'),
+            ds('text_color', 'white'),
+            ds('background_tint_level', 'o_50'),
+            ds('image_fit', 'object_cover'),
+            ds('calloutWidth', 'half'),
+            ds('buttonStyle', 'standard'),
+            ds('buttonType', 'primary'),
+        ],
+    },
+};
+
+export const CalloutWidthQuarter = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: '1/4-width callout', SubHeading: 'Compact column', Image: mockImageRef(IMAGES.nature), Video: null, Body: null, Links: [mockLink('Explore', '/explore')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'left'),
+            ds('text_color', 'white'),
+            ds('background_tint_level', 'o_40'),
+            ds('image_fit', 'object_cover'),
+            ds('calloutWidth', 'quarter'),
+            ds('buttonStyle', 'standard'),
+            ds('buttonType', 'primary'),
+        ],
+    },
+};

@@ -116,6 +116,29 @@
         }
       }
     },
+	"calloutWidth": {
+		"displayName": "Callout Width",
+		"editor": "select",
+		"sortOrder": 50,
+		"choices": {
+			"full": {
+				"displayName": "Full Width (Default)",
+				"sortOrder": 10
+			},
+			"three_quarter": {
+				"displayName": "3/4 Width",
+				"sortOrder": 20
+			},
+			"half": {
+				"displayName": "1/2 Width",
+				"sortOrder": 30
+			},
+			"quarter": {
+				"displayName": "1/4 Width",
+				"sortOrder": 40
+			}
+		}
+	},
     "background_tint_level": {
       "displayName": "Background Tint Level",
       "editor": "select",

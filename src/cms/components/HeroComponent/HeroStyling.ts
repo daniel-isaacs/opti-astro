@@ -7,6 +7,7 @@ export function getHeroStyles(displaySettings: DisplaySettingsFragment[]): {
     justifyClass: string;
     heightClass: string;
     imageFitClass: string;
+    calloutWidthClass: string;
 } {
     const settings: Record<string, string> =
         getDictionaryFromDisplaySettings(displaySettings);
@@ -144,5 +145,22 @@ export function getHeroStyles(displaySettings: DisplaySettingsFragment[]): {
             break;
     }
     
-    return { backgroundOpacityClass, textClasses, justifyClass, heightClass, imageFitClass };
+    const calloutWidth = settings['calloutWidth'] ?? 'full';
+    let calloutWidthClass = '';
+    switch (calloutWidth) {
+        case 'three_quarter':
+            calloutWidthClass = 'w-3/4';
+            break;
+        case 'half':
+            calloutWidthClass = 'w-1/2';
+            break;
+        case 'quarter':
+            calloutWidthClass = 'w-1/4';
+            break;
+        default:
+            calloutWidthClass = 'w-full';
+            break;
+    }
+
+    return { backgroundOpacityClass, textClasses, justifyClass, heightClass, imageFitClass, calloutWidthClass };
 }
