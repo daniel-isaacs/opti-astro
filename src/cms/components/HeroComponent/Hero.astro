@@ -31,7 +31,7 @@ const imageAltText = (data.Image as any)?.item?.AltText || (data.Image as any)?.
 const videoUrl = (data?.Video as any)?.item?.Url || data?.Video?.url?.default || null;
 const hasVideo = videoUrl !== null;
 
-const { justifyClass, backgroundOpacityClass, textClasses, heightClass, imageFitClass, calloutWidthClass } =
+const { justifyClass, backgroundOpacityClass, textClasses, heightClass, imageFitClass, calloutWidthClass, imageContainerClass } =
     getHeroStyles(displaySettings);
 const globalStyles = getGlobalStyles(displaySettings);
 
@@ -71,13 +71,15 @@ const componentClass = 'component-hero';
 
     {
         !hasVideo && imageUrl && (
-            <AstroImage
-                src={imageUrl}
-                alt={imageAltText}
-                class={`absolute inset-0 h-full w-full ${imageFitClass}`}
-                id="hero-image"
-                inferSize={true}
-            />
+            <div class={imageContainerClass}>
+                <AstroImage
+                    src={imageUrl}
+                    alt={imageAltText}
+                    class={`h-full w-full ${imageFitClass}`}
+                    id="hero-image"
+                    inferSize={true}
+                />
+            </div>
         )
     }
 

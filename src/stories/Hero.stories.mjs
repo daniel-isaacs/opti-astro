@@ -368,6 +368,169 @@ export const HoverNone = {
     },
 };
 
+// ── Image width & placement ───────────────────────────────────────────────
+
+export const ImageWidthFull = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: 'Full-size image', SubHeading: 'Image fills the entire hero', Image: mockImageRef(IMAGES.landscape), Video: null, Body: null, Links: [mockLink('Explore', '/explore')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'center'),
+            ds('text_color', 'white'),
+            ds('background_tint_level', 'o_40'),
+            ds('image_fit', 'object_cover'),
+            ds('imageWidth', 'full'),
+        ],
+    },
+};
+
+export const ImageWidthThreeQuarterStart = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: '3/4 image, start', SubHeading: 'Image anchored to the left', Image: mockImageRef(IMAGES.office), Video: null, Body: null, Links: [mockLink('Learn more', '/learn')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'right'),
+            ds('text_color', 'white'),
+            ds('background_tint_level', 'o_0'),
+            ds('image_fit', 'object_cover'),
+            ds('imageWidth', 'three_quarter'),
+            ds('imagePlacement', 'start'),
+        ],
+    },
+};
+
+export const ImageWidthThreeQuarterCenter = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: '3/4 image, center', SubHeading: 'Image centered with equal gaps', Image: mockImageRef(IMAGES.landscape), Video: null, Body: null, Links: [mockLink('Learn more', '/learn')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'center'),
+            ds('text_color', 'white'),
+            ds('background_tint_level', 'o_40'),
+            ds('image_fit', 'object_cover'),
+            ds('imageWidth', 'three_quarter'),
+            ds('imagePlacement', 'center'),
+        ],
+    },
+};
+
+export const ImageWidthThreeQuarterEnd = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: '3/4 image, end', SubHeading: 'Image anchored to the right', Image: mockImageRef(IMAGES.city), Video: null, Body: null, Links: [mockLink('Learn more', '/learn')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'left'),
+            ds('text_color', 'white'),
+            ds('background_tint_level', 'o_0'),
+            ds('image_fit', 'object_cover'),
+            ds('imageWidth', 'three_quarter'),
+            ds('imagePlacement', 'end'),
+        ],
+    },
+};
+
+export const ImageWidthHalfStart = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: '1/2 image, start', SubHeading: 'Split layout with text on the right', Image: mockImageRef(IMAGES.abstract), Video: null, Body: { __typename: 'SearchableRichText', html: '<p>Image takes the left half; content lives on the right.</p>' }, Links: [mockLink('Get started', '/start')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'right'),
+            ds('text_color', 'white'),
+            ds('background_tint_level', 'o_0'),
+            ds('image_fit', 'object_cover'),
+            ds('imageWidth', 'half'),
+            ds('imagePlacement', 'start'),
+            ds('calloutWidth', 'half'),
+        ],
+    },
+};
+
+export const ImageWidthHalfCenter = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: '1/2 image, center', SubHeading: 'Centered panel with exposed background on both sides', Image: mockImageRef(IMAGES.portrait), Video: null, Body: null, Links: [mockLink('View gallery', '/gallery')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'center'),
+            ds('text_color', 'default'),
+            ds('backgroundColor', 'base_200'),
+            ds('image_fit', 'object_cover'),
+            ds('imageWidth', 'half'),
+            ds('imagePlacement', 'center'),
+        ],
+    },
+};
+
+export const ImageWidthHalfEnd = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: '1/2 image, end', SubHeading: 'Split layout with text on the left', Image: mockImageRef(IMAGES.nature), Video: null, Body: { __typename: 'SearchableRichText', html: '<p>Image takes the right half; content lives on the left.</p>' }, Links: [mockLink('Explore', '/explore')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'left'),
+            ds('text_color', 'white'),
+            ds('background_tint_level', 'o_0'),
+            ds('image_fit', 'object_cover'),
+            ds('imageWidth', 'half'),
+            ds('imagePlacement', 'end'),
+            ds('calloutWidth', 'half'),
+        ],
+    },
+};
+
+export const ImageWidthQuarterStart = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: '1/4 image, start', SubHeading: 'Narrow accent image on the left edge', Image: mockImageRef(IMAGES.portrait), Video: null, Body: null, Links: [mockLink('Learn more', '/learn')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'right'),
+            ds('text_color', 'default'),
+            ds('backgroundColor', 'base_100'),
+            ds('image_fit', 'object_cover'),
+            ds('imageWidth', 'quarter'),
+            ds('imagePlacement', 'start'),
+        ],
+    },
+};
+
+export const ImageWidthQuarterCenter = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: '1/4 image, center', SubHeading: 'Narrow centered accent image', Image: mockImageRef(IMAGES.portrait), Video: null, Body: null, Links: [mockLink('Learn more', '/learn')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'center'),
+            ds('text_color', 'default'),
+            ds('backgroundColor', 'base_200'),
+            ds('image_fit', 'object_cover'),
+            ds('imageWidth', 'quarter'),
+            ds('imagePlacement', 'center'),
+        ],
+    },
+};
+
+export const ImageWidthQuarterEnd = {
+    args: {
+        ...base,
+        data: { __typename: 'Hero', Heading: '1/4 image, end', SubHeading: 'Narrow accent image on the right edge', Image: mockImageRef(IMAGES.portrait), Video: null, Body: null, Links: [mockLink('Learn more', '/learn')] },
+        displaySettings: [
+            ds('hero_height', 'h_38rem'),
+            ds('text_placement', 'left'),
+            ds('text_color', 'default'),
+            ds('backgroundColor', 'base_100'),
+            ds('image_fit', 'object_cover'),
+            ds('imageWidth', 'quarter'),
+            ds('imagePlacement', 'end'),
+        ],
+    },
+};
+
 // ── Callout width ─────────────────────────────────────────────────────────
 
 export const CalloutWidthFull = {

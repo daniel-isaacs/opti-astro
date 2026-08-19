@@ -245,6 +245,48 @@
 			}
 		}
 	},
+		"imageWidth": {
+			"displayName": "Image Width",
+			"editor": "select",
+			"sortOrder": 85,
+			"choices": {
+				"full": {
+					"displayName": "Full Size (Default)",
+					"sortOrder": 10
+				},
+				"three_quarter": {
+					"displayName": "3/4 Width",
+					"sortOrder": 20
+				},
+				"half": {
+					"displayName": "1/2 Width",
+					"sortOrder": 30
+				},
+				"quarter": {
+					"displayName": "1/4 Width",
+					"sortOrder": 40
+				}
+			}
+		},
+		"imagePlacement": {
+			"displayName": "Image Placement",
+			"editor": "select",
+			"sortOrder": 90,
+			"choices": {
+				"center": {
+					"displayName": "Center (Default)",
+					"sortOrder": 10
+				},
+				"start": {
+					"displayName": "Start (Left)",
+					"sortOrder": 20
+				},
+				"end": {
+					"displayName": "End (Right)",
+					"sortOrder": 30
+				}
+			}
+		},
     "image_fit": {
       "displayName": "Image Fit",
       "editor": "select",

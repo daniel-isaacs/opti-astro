@@ -8,6 +8,7 @@ export function getHeroStyles(displaySettings: DisplaySettingsFragment[]): {
     heightClass: string;
     imageFitClass: string;
     calloutWidthClass: string;
+    imageContainerClass: string;
 } {
     const settings: Record<string, string> =
         getDictionaryFromDisplaySettings(displaySettings);
@@ -162,5 +163,53 @@ export function getHeroStyles(displaySettings: DisplaySettingsFragment[]): {
             break;
     }
 
-    return { backgroundOpacityClass, textClasses, justifyClass, heightClass, imageFitClass, calloutWidthClass };
+    const imageWidth = settings['imageWidth'] ?? 'full';
+    const imagePlacement = settings['imagePlacement'] ?? 'center';
+    let imageContainerClass = 'absolute inset-0';
+
+    if (imageWidth !== 'full') {
+        switch (imageWidth) {
+            case 'three_quarter':
+                switch (imagePlacement) {
+                    case 'start':
+                        imageContainerClass = 'absolute top-0 bottom-0 h-full w-3/4 left-0';
+                        break;
+                    case 'end':
+                        imageContainerClass = 'absolute top-0 bottom-0 h-full w-3/4 right-0';
+                        break;
+                    default:
+                        imageContainerClass = 'absolute top-0 bottom-0 h-full w-3/4 left-[12.5%]';
+                        break;
+                }
+                break;
+            case 'half':
+                switch (imagePlacement) {
+                    case 'start':
+                        imageContainerClass = 'absolute top-0 bottom-0 h-full w-1/2 left-0';
+                        break;
+                    case 'end':
+                        imageContainerClass = 'absolute top-0 bottom-0 h-full w-1/2 right-0';
+                        break;
+                    default:
+                        imageContainerClass = 'absolute top-0 bottom-0 h-full w-1/2 left-1/4';
+                        break;
+                }
+                break;
+            case 'quarter':
+                switch (imagePlacement) {
+                    case 'start':
+                        imageContainerClass = 'absolute top-0 bottom-0 h-full w-1/4 left-0';
+                        break;
+                    case 'end':
+                        imageContainerClass = 'absolute top-0 bottom-0 h-full w-1/4 right-0';
+                        break;
+                    default:
+                        imageContainerClass = 'absolute top-0 bottom-0 h-full w-1/4 left-[37.5%]';
+                        break;
+                }
+                break;
+        }
+    }
+
+    return { backgroundOpacityClass, textClasses, justifyClass, heightClass, imageFitClass, calloutWidthClass, imageContainerClass };
 }
