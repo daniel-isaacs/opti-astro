@@ -8,6 +8,7 @@ export function getHeroStyles(displaySettings: DisplaySettingsFragment[]): {
     heightClass: string;
     imageFitClass: string;
     calloutWidthClass: string;
+    calloutPaddingClass: string;
     imageContainerClass: string;
 } {
     const settings: Record<string, string> =
@@ -56,18 +57,22 @@ export function getHeroStyles(displaySettings: DisplaySettingsFragment[]): {
     const textPlacemenTintLevel = settings['text_placement'] ?? 'center';
     let justifyClass = '';
     let textClasses = [];
+    let calloutPaddingClass = '';
     switch (textPlacemenTintLevel) {
         case 'left':
             textClasses.push('text-left');
             justifyClass = 'justify-start';
+            calloutPaddingClass = 'pl-16 pr-6';
             break;
         case 'right':
             textClasses.push('text-right');
             justifyClass = 'justify-end';
+            calloutPaddingClass = 'pl-6 pr-16';
             break;
         default:
             textClasses.push('text-center');
             justifyClass = 'justify-center';
+            calloutPaddingClass = 'px-6';
             break;
     }
 
@@ -211,5 +216,5 @@ export function getHeroStyles(displaySettings: DisplaySettingsFragment[]): {
         }
     }
 
-    return { backgroundOpacityClass, textClasses, justifyClass, heightClass, imageFitClass, calloutWidthClass, imageContainerClass };
+    return { backgroundOpacityClass, textClasses, justifyClass, heightClass, imageFitClass, calloutWidthClass, calloutPaddingClass, imageContainerClass };
 }

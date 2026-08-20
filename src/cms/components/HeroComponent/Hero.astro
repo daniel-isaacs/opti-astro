@@ -31,7 +31,7 @@ const imageAltText = (data.Image as any)?.item?.AltText || (data.Image as any)?.
 const videoUrl = (data?.Video as any)?.item?.Url || data?.Video?.url?.default || null;
 const hasVideo = videoUrl !== null;
 
-const { justifyClass, backgroundOpacityClass, textClasses, heightClass, imageFitClass, calloutWidthClass, imageContainerClass } =
+const { justifyClass, backgroundOpacityClass, textClasses, heightClass, imageFitClass, calloutWidthClass, calloutPaddingClass, imageContainerClass } =
     getHeroStyles(displaySettings);
 const globalStyles = getGlobalStyles(displaySettings);
 
@@ -87,7 +87,7 @@ const componentClass = 'component-hero';
     <div class="absolute inset-0" class:list={backgroundOpacityClass}></div>
 
     <!-- Content -->
-    <div class="relative z-10 px-6" class:list={[textClasses, calloutWidthClass]}>
+    <div class="relative z-10" class:list={[calloutPaddingClass, textClasses, calloutWidthClass]}>
         <h1 class="text-5xl font-bold md:text-6xl" class:list={textClasses}>{data?.Heading}</h1>
         <p class="mx-auto mt-4 text-xl" class:list={textClasses}>
             {data?.SubHeading}
