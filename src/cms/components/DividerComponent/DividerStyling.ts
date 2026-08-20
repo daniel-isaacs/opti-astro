@@ -34,6 +34,18 @@ export function getDividerElementStyles(
         case 'info':
             cssClasses.push('divider-info');
             break;
+        case 'error':
+            cssClasses.push('divider-error');
+            break;
+        case 'base100':
+            cssClasses.push('before:border-base-100 after:border-base-100');
+            break;
+        case 'base200':
+            cssClasses.push('before:border-base-200 after:border-base-200');
+            break;
+        case 'base300':
+            cssClasses.push('before:border-base-300 after:border-base-300');
+            break;
         default:
             break;
     }
@@ -62,6 +74,18 @@ export function getDividerElementStyles(
             break;
         case 'info':
             cssClasses.push('text-info');
+            break;
+        case 'error':
+            cssClasses.push('text-error');
+            break;
+        case 'base100':
+            cssClasses.push('text-base-100');
+            break;
+        case 'base200':
+            cssClasses.push('text-base-200');
+            break;
+        case 'base300':
+            cssClasses.push('text-base-300');
             break;
         default:
             break;
@@ -169,10 +193,36 @@ export function getDividerElementStyles(
         length_16: 'h-1/6'
     }
     if(settings['dividerLineLength'] && settings['dividerLineLength'] !== 'default' && settings['dividerLineLength'] !== '') {
-        const dividerLineLengthClass = direction === 'horizontal' ? 
-            `mx-auto ${allLengthsHorizontal[settings['dividerLineLength']]}` :
-            `my-auto ${allLengthsVertical[settings['dividerLineLength']]}`;
+        const dividerLineLengthClass = direction === 'horizontal' ?
+            `${allLengthsHorizontal[settings['dividerLineLength']]}` :
+            `${allLengthsVertical[settings['dividerLineLength']]}`;
         cssClasses.push(`${dividerLineLengthClass}`);
+    }
+
+    if (direction === 'horizontal') {
+        switch (settings['dividerPosition']) {
+            case 'left':
+                cssClasses.push('mr-auto');
+                break;
+            case 'right':
+                cssClasses.push('ml-auto');
+                break;
+            default:
+                cssClasses.push('mx-auto');
+                break;
+        }
+    } else {
+        switch (settings['dividerPosition']) {
+            case 'left':
+                cssClasses.push('mb-auto');
+                break;
+            case 'right':
+                cssClasses.push('mt-auto');
+                break;
+            default:
+                cssClasses.push('my-auto');
+                break;
+        }
     }
 
     return cssClasses;

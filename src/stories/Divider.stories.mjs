@@ -140,6 +140,17 @@ export const ColorAccent    = { args: { ...base, data: { __typename: 'Divider', 
 export const ColorSuccess   = { args: { ...base, data: { __typename: 'Divider', DividerText: null, DividerDirection: 'horizontal' }, displaySettings: [ds('dividerColor', 'success'),   ds('dividerLineThickness', 'thickness_2')] } };
 export const ColorWarning   = { args: { ...base, data: { __typename: 'Divider', DividerText: null, DividerDirection: 'horizontal' }, displaySettings: [ds('dividerColor', 'warning'),   ds('dividerLineThickness', 'thickness_2')] } };
 export const ColorInfo      = { args: { ...base, data: { __typename: 'Divider', DividerText: null, DividerDirection: 'horizontal' }, displaySettings: [ds('dividerColor', 'info'),      ds('dividerLineThickness', 'thickness_2')] } };
+export const ColorError     = { args: { ...base, data: { __typename: 'Divider', DividerText: null, DividerDirection: 'horizontal' }, displaySettings: [ds('dividerColor', 'error'),     ds('dividerLineThickness', 'thickness_2')] } };
+export const ColorBase100   = { args: { ...base, data: { __typename: 'Divider', DividerText: null, DividerDirection: 'horizontal' }, displaySettings: [ds('dividerColor', 'base100'),   ds('dividerLineThickness', 'thickness_2')] } };
+export const ColorBase200   = { args: { ...base, data: { __typename: 'Divider', DividerText: null, DividerDirection: 'horizontal' }, displaySettings: [ds('dividerColor', 'base200'),   ds('dividerLineThickness', 'thickness_2')] } };
+export const ColorBase300   = { args: { ...base, data: { __typename: 'Divider', DividerText: null, DividerDirection: 'horizontal' }, displaySettings: [ds('dividerColor', 'base300'),   ds('dividerLineThickness', 'thickness_2')] } };
+
+// ── Text Colors ───────────────────────────────────────────────────────────
+
+export const TextColorError  = { args: { ...base, data: { __typename: 'Divider', DividerText: 'error label', DividerDirection: 'horizontal' }, displaySettings: [ds('dividerColor', 'error'),   ds('textColor', 'error'),   ds('textPosition', 'middle'), ds('dividerLineThickness', 'thickness_2')] } };
+export const TextColorBase100 = { args: { ...base, data: { __typename: 'Divider', DividerText: 'base 100',   DividerDirection: 'horizontal' }, displaySettings: [ds('dividerColor', 'base100'), ds('textColor', 'base100'), ds('textPosition', 'middle'), ds('dividerLineThickness', 'thickness_2')] } };
+export const TextColorBase200 = { args: { ...base, data: { __typename: 'Divider', DividerText: 'base 200',   DividerDirection: 'horizontal' }, displaySettings: [ds('dividerColor', 'base200'), ds('textColor', 'base200'), ds('textPosition', 'middle'), ds('dividerLineThickness', 'thickness_2')] } };
+export const TextColorBase300 = { args: { ...base, data: { __typename: 'Divider', DividerText: 'base 300',   DividerDirection: 'horizontal' }, displaySettings: [ds('dividerColor', 'base300'), ds('textColor', 'base300'), ds('textPosition', 'middle'), ds('dividerLineThickness', 'thickness_2')] } };
 
 // ── Thickness ─────────────────────────────────────────────────────────────
 
@@ -195,6 +206,47 @@ export const VerticalPrimary = {
         displaySettings: [
             ds('dividerColor', 'primary'),
             ds('dividerLineThickness', 'thickness_4'),
+        ],
+    },
+};
+
+// ── Divider Position ──────────────────────────────────────────────────────
+
+export const PositionCenter = {
+    args: {
+        ...base,
+        data: { __typename: 'Divider', DividerText: null, DividerDirection: 'horizontal' },
+        displaySettings: [
+            ds('dividerColor', 'primary'),
+            ds('dividerLineThickness', 'thickness_3'),
+            ds('dividerLineLength', 'length_12'),
+            ds('dividerPosition', 'center'),
+        ],
+    },
+};
+
+export const PositionLeft = {
+    args: {
+        ...base,
+        data: { __typename: 'Divider', DividerText: null, DividerDirection: 'horizontal' },
+        displaySettings: [
+            ds('dividerColor', 'primary'),
+            ds('dividerLineThickness', 'thickness_3'),
+            ds('dividerLineLength', 'length_12'),
+            ds('dividerPosition', 'left'),
+        ],
+    },
+};
+
+export const PositionRight = {
+    args: {
+        ...base,
+        data: { __typename: 'Divider', DividerText: null, DividerDirection: 'horizontal' },
+        displaySettings: [
+            ds('dividerColor', 'primary'),
+            ds('dividerLineThickness', 'thickness_3'),
+            ds('dividerLineLength', 'length_12'),
+            ds('dividerPosition', 'right'),
         ],
     },
 };
