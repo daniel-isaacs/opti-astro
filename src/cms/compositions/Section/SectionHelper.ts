@@ -24,7 +24,7 @@ export function getSectionStyles(grid: CompositionStructureNode): string[] {
             }
             switch (dictionary['vSpacing']) {
                 case 'default':
-                    cssClasses.push('my-8');
+                    cssClasses.push('py-1');
                     break;
                 case 'small':
                     cssClasses.push('py-4 md:py-8 lg:py-12');
