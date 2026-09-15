@@ -32,7 +32,10 @@
 			"sortOrder": 20,
 			"indexingType": "searchable",
 			"allowedTypes": [],
-			"restrictedTypes": []
+			"restrictedTypes": [],
+			"editorSettings": {
+				"preset": "expanded"
+			}
 		}
 	}
 }

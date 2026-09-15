@@ -25,7 +25,7 @@
 		"MetaDescription": {
 			"type": "string",
 			"displayName": "Meta description",
-			"isLocalized": false,
+			"isLocalized": true,
 			"isRequired": false,
 			"group": "Content",
 			"sortOrder": 20,
@@ -83,6 +83,22 @@
 			],
 			"allowedTypes": [],
 			"restrictedTypes": []
+		},
+		"Schema": {
+			"type": "array",
+			"displayName": "Schema Markup",
+			"description": "JSON-LD schema markup for SEO and AI visibility",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 70,
+			"allowedTypes": [],
+			"restrictedTypes": [],
+			"items": {
+				"type": "json",
+				"allowedTypes": [],
+				"restrictedTypes": []
+			}
 		}
 	}
 }
