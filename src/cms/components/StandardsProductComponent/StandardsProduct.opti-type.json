@@ -1,0 +1,28 @@
+{
+	"key": "StandardsProduct",
+	"displayName": "Standards Product",
+	"baseType": "_component",
+	"isContract": false,
+	"sortOrder": 0,
+	"mayContainTypes": [],
+	"mediaFileExtensions": [],
+	"compositionBehaviors": [
+		"sectionEnabled",
+		"elementEnabled"
+	],
+	"contracts": [],
+	"createdBy": "daniel.isaacs@optimizely.com",
+	"properties": {
+		"Product": {
+			"type": "contentReference",
+			"contentType": "StandardsExperiencePage",
+			"displayName": "Product",
+			"isLocalized": false,
+			"isRequired": false,
+			"group": "Content",
+			"sortOrder": 10,
+			"allowedTypes": [],
+			"restrictedTypes": []
+		}
+	}
+}

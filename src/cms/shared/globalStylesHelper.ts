@@ -39,6 +39,18 @@ export function getBackgroundColorClass(dictionary: Record<string, string>): str
             return 'bg-warning';
         case 'error':
             return 'bg-error';
+        case 'blue1':
+            return 'bg-blue1';
+        case 'blue2':
+            return 'bg-blue2';
+        case 'blue3':
+            return 'bg-blue3';
+        case 'blue4':
+            return 'bg-blue4';
+        case 'blue5':
+            return 'bg-blue5';
+        case 'blue6':
+            return 'bg-blue6';
         default:
             return ''; // No background color applied
     }
@@ -71,6 +83,14 @@ export function getTextColorClass(dictionary: Record<string, string>): string {
         case 'base_100':
         case 'base_200':
         case 'base_300':
+            return 'text-base-content';
+        case 'blue1':
+        case 'blue2':
+        case 'blue3':
+            return 'text-white';
+        case 'blue4':
+        case 'blue5':
+        case 'blue6':
             return 'text-base-content';
         default:
             return ''; // No text color override

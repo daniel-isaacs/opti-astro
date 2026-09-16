@@ -1,0 +1,15 @@
+fragment StandardsProductOCP on StandardsProductOCP {
+    product_name
+    product_code
+    product_edition
+    isbn
+    format
+    publisher
+    publication_year
+    currency
+    price
+    category
+    subcategory
+    availability
+    is_active
+}

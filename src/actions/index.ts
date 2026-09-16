@@ -60,7 +60,7 @@ export async function submitFormData(method: string, submitUrl: string, body?: a
     const url = new URL(submitUrl);
     const headers: HeadersInit = {};
     let requestBody: BodyInit | null = null;
-    const isOdpEvent = ODP_EVENT_ENDPOINT && submitUrl === ODP_EVENT_ENDPOINT;
+    const isOdpEvent = ODP_EVENT_ENDPOINT && (submitUrl === ODP_EVENT_ENDPOINT || submitUrl.replace(/\/$/, '') === ODP_EVENT_ENDPOINT.replace(/\/$/, ''));
 
     if (isOdpEvent) {
         headers['Content-Type'] = 'application/json';

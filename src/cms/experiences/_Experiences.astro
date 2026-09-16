@@ -7,46 +7,64 @@ import Section from '../compositions/Section/Section.astro';
 import GatedContentCta from '../shared/GatedContentCta.astro';
 import { resolveAllowedContentKeys } from '../../lib/content-access';
 import { getDictionaryFromDisplaySettings } from '../../graphql/shared/displaySettingsHelpers';
+import StandardsExperiencePageComp from './StandardsExperiencePage/StandardsExperiencePage.astro';
+import MBExperienceProductPageComp from './MBExperienceProductPage/MBExperienceProductPage.astro';
+
 const previewPayload = Astro.props.data as ContentPayload;
+const isStandardsPage = previewPayload.types.includes('StandardsExperiencePage');
+const isMBProductPage = previewPayload.types.includes('MBExperienceProductPage');
 
-const optiResponse = await getOptimizelySdk(previewPayload, Astro.locals.user).getExperience({
-    key: previewPayload.key,
-    ver: previewPayload.ver,
-    loc: previewPayload.loc as Locales,
-});
-
-const experience = optiResponse?._Experience?.item;
-if (!experience) {
-    throw new Error('No experience found');
-}
-
-// Graph inlines composition components at index time without evaluating read
-// access, so re-check every embedded key and let _Components.astro skip the
-// ones the current user may not read.
-Astro.locals.allowedContentKeys = await resolveAllowedContentKeys(
-    previewPayload,
-    Astro.locals.user,
-    experience.composition
-);
+let experience: any = null;
 let metaTitle = '',
     metaDescription = '',
     metaIndexing = false,
     metaGraphType = 'website',
-    extPreviewEnabled = false;
-if (experience?._metadata?.types?.includes('BlankExperience')) {
-    const blankExperience = experience as BlankExperience;
-    metaTitle =
-        blankExperience.BlankExperienceSeoSettings?.MetaTitle ||
-        experience?._metadata?.displayName ||
-        '';
-    metaDescription =
-        blankExperience.BlankExperienceSeoSettings?.MetaDescription || '';
-    metaIndexing =
-        blankExperience.BlankExperienceSeoSettings?.Indexing || false;
-    metaGraphType =
-        blankExperience.BlankExperienceSeoSettings?.GraphType || 'website';
-    extPreviewEnabled =
-        blankExperience.PageAdminSettings?.EnableExternalPreview ?? false;
+    extPreviewEnabled = false,
+    defaultUrl = '',
+    hierarchicalUrl = '';
+
+if (!isStandardsPage && !isMBProductPage) {
+    const optiResponse = await getOptimizelySdk(previewPayload, Astro.locals.user).getExperience({
+        key: previewPayload.key,
+        ver: previewPayload.ver,
+        loc: previewPayload.loc as Locales,
+    });
+
+    experience = optiResponse?._Experience?.item;
+    if (!experience) {
+        throw new Error('No experience found');
+    }
+
+    // Graph inlines composition components at index time without evaluating read
+    // access, so re-check every embedded key and let _Components.astro skip the
+    // ones the current user may not read.
+    Astro.locals.allowedContentKeys = await resolveAllowedContentKeys(
+        previewPayload,
+        Astro.locals.user,
+        experience.composition
+    );
+
+    if (experience?._metadata?.types?.includes('BlankExperience')) {
+        const blankExperience = experience as BlankExperience;
+        metaTitle =
+            blankExperience.BlankExperienceSeoSettings?.MetaTitle ||
+            experience?._metadata?.displayName ||
+            '';
+        metaDescription =
+            blankExperience.BlankExperienceSeoSettings?.MetaDescription || '';
+        metaIndexing =
+            blankExperience.BlankExperienceSeoSettings?.Indexing || false;
+        metaGraphType =
+            blankExperience.BlankExperienceSeoSettings?.GraphType || 'website';
+        extPreviewEnabled =
+            blankExperience.PageAdminSettings?.EnableExternalPreview ?? false;
+    }
+
+    defaultUrl = experience?._metadata?.url?.default || '';
+    hierarchicalUrl =
+        experience?._metadata?.url?.type === 'SIMPLE'
+            ? experience?._metadata?.url?.hierarchical ?? ''
+            : '';
 }
 
 // Gated content: a section styled "Gate content here" marks the fold for
@@ -63,43 +81,43 @@ const gateIndex = canGate
     ? grids.findIndex((grid) => gatedSettingFor(grid) === 'gate')
     : -1;
 
-const defaultUrl = experience?._metadata?.url?.default || '';
-const hierarchicalUrl =
-    experience?._metadata?.url?.type === 'SIMPLE'
-        ? experience?._metadata?.url?.hierarchical
-        : '';
-        
 const pageClass = 'page-experience';
 ---
 
-<Layout
-    title={metaTitle}
-    description={metaDescription}
-    indexing={metaIndexing}
-    graphtype={metaGraphType}
-    contentPayload={previewPayload}
-    defaultUrl={defaultUrl}
-    hierarchicalUrl={hierarchicalUrl ?? ''}
-    extPreviewEnabled={extPreviewEnabled}
->
-    <div class={`vb:outline relative w-full flex-1 ${pageClass}`}>
-        {
-            grids.map((grid: any, index: number) => {
-                if (gateIndex !== -1) {
-                    if (index === gateIndex) {
-                        return <GatedContentCta />;
+{isStandardsPage && <StandardsExperiencePageComp data={previewPayload} />}
+
+{isMBProductPage && <MBExperienceProductPageComp data={previewPayload} />}
+
+{!isStandardsPage && !isMBProductPage && (
+    <Layout
+        title={metaTitle}
+        description={metaDescription}
+        indexing={metaIndexing}
+        graphtype={metaGraphType}
+        contentPayload={previewPayload}
+        defaultUrl={defaultUrl}
+        hierarchicalUrl={hierarchicalUrl}
+        extPreviewEnabled={extPreviewEnabled}
+    >
+        <div class={`vb:outline relative w-full flex-1 ${pageClass}`}>
+            {
+                grids.map((grid: any, index: number) => {
+                    if (gateIndex !== -1) {
+                        if (index === gateIndex) {
+                            return <GatedContentCta />;
+                        }
+                        if (
+                            index > gateIndex &&
+                            gatedSettingFor(grid) !== 'always_show'
+                        ) {
+                            return null;
+                        }
                     }
-                    if (
-                        index > gateIndex &&
-                        gatedSettingFor(grid) !== 'always_show'
-                    ) {
-                        return null;
-                    }
-                }
-                return (
-                    <Section contentPayload={previewPayload} grid={grid} />
-                );
-            })
-        }
-    </div>
-</Layout>
+                    return (
+                        <Section contentPayload={previewPayload} grid={grid} />
+                    );
+                })
+            }
+        </div>
+    </Layout>
+)}

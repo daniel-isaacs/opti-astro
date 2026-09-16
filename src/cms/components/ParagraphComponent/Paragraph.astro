@@ -19,6 +19,6 @@ const paragraphStyles = getParagraphStyleConfig(displaySettings);
 const componentClass = 'component-paragraph';
 ---
 
-<div class={`${paragraphStyles.paragraphAlignment} ${componentClass}`}
+<div class={`${paragraphStyles.paragraphAlignment} ${paragraphStyles.textColor} ${componentClass}`}
     data-epi-block-id={isCmsEdit && key || undefined}
     set:html={data.Text?.html} />

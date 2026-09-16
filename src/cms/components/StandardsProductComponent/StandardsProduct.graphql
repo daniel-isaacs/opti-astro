@@ -1,0 +1,6 @@
+fragment StandardsProduct on StandardsProduct {
+    Product {
+        key
+        url { default }
+    }
+}

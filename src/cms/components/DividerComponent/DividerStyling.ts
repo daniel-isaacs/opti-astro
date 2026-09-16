@@ -38,13 +38,13 @@ export function getDividerElementStyles(
             cssClasses.push('divider-error');
             break;
         case 'base100':
-            cssClasses.push('before:border-base-100 after:border-base-100');
+            cssClasses.push('before:bg-base-100 after:bg-base-100');
             break;
         case 'base200':
-            cssClasses.push('before:border-base-200 after:border-base-200');
+            cssClasses.push('before:bg-base-200 after:bg-base-200');
             break;
         case 'base300':
-            cssClasses.push('before:border-base-300 after:border-base-300');
+            cssClasses.push('before:bg-base-300 after:bg-base-300');
             break;
         default:
             break;
@@ -66,18 +66,6 @@ export function getDividerElementStyles(
         case 'accent':
             cssClasses.push('text-accent');
             break;
-        case 'success':
-            cssClasses.push('text-success');
-            break;
-        case 'warning':
-            cssClasses.push('text-warning');
-            break;
-        case 'info':
-            cssClasses.push('text-info');
-            break;
-        case 'error':
-            cssClasses.push('text-error');
-            break;
         case 'base100':
             cssClasses.push('text-base-100');
             break;
@@ -86,6 +74,18 @@ export function getDividerElementStyles(
             break;
         case 'base300':
             cssClasses.push('text-base-300');
+            break;
+        case 'info':
+            cssClasses.push('text-info');
+            break;
+        case 'success':
+            cssClasses.push('text-success');
+            break;
+        case 'warning':
+            cssClasses.push('text-warning');
+            break;
+        case 'error':
+            cssClasses.push('text-error');
             break;
         default:
             break;
@@ -194,9 +194,9 @@ export function getDividerElementStyles(
     }
     if(settings['dividerLineLength'] && settings['dividerLineLength'] !== 'default' && settings['dividerLineLength'] !== '') {
         const dividerLineLengthClass = direction === 'horizontal' ?
-            `${allLengthsHorizontal[settings['dividerLineLength']]}` :
-            `${allLengthsVertical[settings['dividerLineLength']]}`;
-        cssClasses.push(`${dividerLineLengthClass}`);
+            allLengthsHorizontal[settings['dividerLineLength']] :
+            allLengthsVertical[settings['dividerLineLength']];
+        cssClasses.push(dividerLineLengthClass);
     }
 
     if (direction === 'horizontal') {

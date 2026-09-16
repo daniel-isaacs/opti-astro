@@ -1,0 +1,371 @@
+---
+import type { StandardsExperiencePage, Locales } from '../../../../__generated/sdk';
+import { getOptimizelySdk } from '../../../graphql/getSdk';
+import type { ContentPayload } from '../../../graphql/shared/ContentPayload';
+import Layout from '../../../layouts/Layout.astro';
+import Section from '../../compositions/Section/Section.astro';
+
+const previewPayload = Astro.props.data as ContentPayload;
+
+const optiResponse = await getOptimizelySdk(previewPayload).getExperience({
+    key: previewPayload.key,
+    ver: previewPayload.ver,
+    loc: previewPayload.loc as Locales,
+});
+
+const experience = optiResponse?._Experience?.item;
+if (!experience) throw new Error('No experience found');
+
+const page = experience as StandardsExperiencePage;
+
+const metaTitle = page.ExperienceSeoSettings?.MetaTitle || experience._metadata?.displayName || '';
+const metaDescription = page.ExperienceSeoSettings?.MetaDescription || '';
+const metaIndexing = page.ExperienceSeoSettings?.Indexing || false;
+const metaGraphType = page.ExperienceSeoSettings?.GraphType || 'website';
+const extPreviewEnabled = page.PageAdminSettings?.EnableExternalPreview ?? false;
+
+const defaultUrl = experience._metadata?.url?.default || '';
+const hierarchicalUrl =
+    experience._metadata?.url?.type === 'SIMPLE'
+        ? experience._metadata?.url?.hierarchical
+        : '';
+
+const product = (page as any).Product?.item;
+const productDescription = page.ProductDescription?.html;
+
+let variants: any[] = [];
+if (product?.product_name) {
+    const variantsResponse = await getOptimizelySdk(previewPayload).getStandardsProductVariants({
+        productName: product.product_name,
+    });
+    variants = (variantsResponse?.StandardsProductOCP?.items ?? []).filter(Boolean);
+}
+
+// Sort: newest edition first, then alphabetically by format
+variants.sort((a, b) => {
+    const ed = (b.product_edition || '').localeCompare(a.product_edition || '');
+    return ed !== 0 ? ed : (a.format || '').localeCompare(b.format || '');
+});
+
+if (variants.length === 0 && product) {
+    variants = [product];
+}
+
+const variantsJson = JSON.stringify(variants);
+const initialIsbn = product?.isbn || '';
+const initialFormat = product?.format || '';
+---
+
+<Layout
+    title={metaTitle}
+    description={metaDescription}
+    indexing={metaIndexing}
+    graphtype={metaGraphType}
+    contentPayload={previewPayload}
+    defaultUrl={defaultUrl}
+    hierarchicalUrl={hierarchicalUrl ?? ''}
+    extPreviewEnabled={extPreviewEnabled}
+>
+    {product && (
+        <>
+            <script is:inline>
+                function standardsProduct() {
+                    return {
+                        variants: [],
+                        selectedEdition: '',
+                        selectedFormat: '',
+
+                        get editions() {
+                            var seen = {};
+                            return this.variants
+                                .map(function(v) { return v.product_edition; })
+                                .filter(function(e) {
+                                    if (!e || seen[e]) return false;
+                                    seen[e] = true;
+                                    return true;
+                                })
+                                .sort()
+                                .reverse();
+                        },
+
+                        get formatsForEdition() {
+                            var sel = this.selectedEdition;
+                            return this.variants.filter(function(v) { return v.product_edition === sel; });
+                        },
+
+                        get activeVariant() {
+                            var sel = this.selectedFormat;
+                            var fmts = this.formatsForEdition;
+                            return fmts.find(function(v) { return v.format === sel; }) || fmts[0];
+                        },
+
+                        onEditionChange: function(edition) {
+                            this.selectedEdition = edition;
+                            var first = this.variants.find(function(v) { return v.product_edition === edition; });
+                            this.selectedFormat = first ? (first.format || '') : '';
+                        },
+
+                        selectVariant: function(v) {
+                            this.selectedEdition = v.product_edition || '';
+                            this.selectedFormat = v.format || '';
+                        },
+
+                        isSelected: function(v) {
+                            return v.product_edition === this.selectedEdition && v.format === this.selectedFormat;
+                        },
+
+                        price: function(p) {
+                            if (p == null) return '';
+                            var n = +p;
+                            return '$' + (n % 1 === 0 ? n : n.toFixed(2));
+                        },
+
+                        init: function() {
+                            var el = this.$el;
+                            this.variants = JSON.parse(el.dataset.variants || '[]');
+                            var isbn = el.dataset.isbn || '';
+                            var format = el.dataset.format || '';
+                            var seed = this.variants.find(function(v) {
+                                return v.isbn === isbn && v.format === format;
+                            }) || this.variants[0];
+                            if (seed) {
+                                this.selectedEdition = seed.product_edition || '';
+                                this.selectedFormat = seed.format || '';
+                            }
+                        }
+                    };
+                }
+            </script>
+
+            <div
+                x-data="standardsProduct()"
+                data-variants={variantsJson}
+                data-isbn={initialIsbn}
+                data-format={initialFormat}
+            >
+
+                <!-- Blue Hero -->
+                <div class="bg-[#003087] text-white">
+                    <div class="max-w-7xl mx-auto px-6 py-10">
+                        <div class="flex flex-col lg:flex-row gap-10">
+
+                            <!-- Left: product details -->
+                            <div class="flex-1 min-w-0">
+                                <!-- Breadcrumb -->
+                                <nav class="flex items-center flex-wrap gap-1 text-sm text-blue-200 mb-5">
+                                    {product.category && (
+                                        <a href="#" class="hover:text-white underline">{product.category}</a>
+                                    )}
+                                    {product.category && <span>›</span>}
+                                    <a href="#" class="hover:text-white underline">Find Codes &amp; Standards</a>
+                                    <span>›</span>
+                                    <span class="text-white/80 truncate max-w-xs">{product.product_name}</span>
+                                </nav>
+
+                                <!-- Tag -->
+                                <div class="mb-4">
+                                    <span class="inline-block border border-white/50 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                                        Standards
+                                    </span>
+                                </div>
+
+                                <!-- Product Name -->
+                                <h1 class="text-3xl lg:text-4xl font-extrabold leading-tight mb-4">
+                                    {product.product_name}
+                                </h1>
+
+                                <!-- Product Code + Edition (reactive) -->
+                                <p class="text-xl font-bold mb-8">
+                                    {product.product_code} - <span x-text="activeVariant?.product_edition || ''"></span>
+                                </p>
+
+                                <!-- Metadata row -->
+                                <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+                                    {product.publisher && (
+                                        <>
+                                            <div>
+                                                <span class="font-semibold">Publisher:</span>{' '}{product.publisher}
+                                            </div>
+                                            <span class="text-white/30 hidden sm:inline">|</span>
+                                        </>
+                                    )}
+                                    <div>
+                                        <span class="font-semibold">Language:</span>{' '}EN
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: purchase widget -->
+                            <div class="lg:w-80 xl:w-96 flex-shrink-0">
+                                <div class="sticky top-4 bg-white text-gray-900 rounded-xl shadow-2xl p-6">
+
+                                    <!-- Truncated product name -->
+                                    <h2
+                                        class="font-bold text-sm leading-snug mb-5 line-clamp-2"
+                                        x-text="activeVariant?.product_name || ''"
+                                    ></h2>
+
+                                    <!-- Edition -->
+                                    <div class="mb-4">
+                                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Edition</label>
+                                        <div class="relative">
+                                            <select
+                                                class="w-full border border-gray-300 rounded px-3 py-2.5 pr-9 text-sm appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                :value="selectedEdition"
+                                                @change="onEditionChange($event.target.value)"
+                                            >
+                                                <template x-for="ed in editions" :key="ed">
+                                                    <option :value="ed" :selected="ed === selectedEdition" x-text="ed"></option>
+                                                </template>
+                                            </select>
+                                            <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-400">
+                                                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Format -->
+                                    <div class="mb-4">
+                                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Format</label>
+                                        <div class="relative">
+                                            <select
+                                                class="w-full border border-gray-300 rounded px-3 py-2.5 pr-9 text-sm appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                x-model="selectedFormat"
+                                            >
+                                                <template x-for="v in formatsForEdition" :key="v.format">
+                                                    <option :value="v.format" x-text="v.format"></option>
+                                                </template>
+                                            </select>
+                                            <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-400">
+                                                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Quantity -->
+                                    <div class="mb-5">
+                                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Quantity</label>
+                                        <div class="flex items-start gap-3">
+                                            <input
+                                                type="number"
+                                                value="1"
+                                                min="1"
+                                                max="1"
+                                                class="w-16 border border-gray-300 rounded px-2 py-2 text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            >
+                                            <p class="text-xs text-gray-500 leading-snug pt-1.5">
+                                                Digital products are restricted to one per purchase.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Price -->
+                                    <div class="mb-5">
+                                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Price</p>
+                                        <p class="text-2xl font-bold text-gray-900" x-text="price(activeVariant?.price)"></p>
+                                    </div>
+
+                                    <!-- Add to Cart -->
+                                    <button class="w-full bg-gray-900 hover:bg-gray-700 text-white font-semibold py-3 px-4 rounded-lg text-sm transition-colors mb-3">
+                                        Add to Cart
+                                    </button>
+
+                                    <!-- Tax note -->
+                                    <p class="text-xs text-gray-400 text-center mb-4">
+                                        Final invoices will include applicable sales and use tax.
+                                    </p>
+
+                                    <!-- Print or Share -->
+                                    <div class="text-center">
+                                        <p class="text-xs text-gray-500 mb-2">Print or Share</p>
+                                        <div class="flex justify-center gap-2">
+                                            <button class="w-9 h-9 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-50 transition-colors" aria-label="Share on LinkedIn">
+                                                <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                                </svg>
+                                            </button>
+                                            <button class="w-9 h-9 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-50 transition-colors" aria-label="Share on Facebook">
+                                                <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                                </svg>
+                                            </button>
+                                            <button class="w-9 h-9 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-50 transition-colors" aria-label="Share via Email">
+                                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                                </svg>
+                                            </button>
+                                            <button class="w-9 h-9 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-50 transition-colors" aria-label="Print" onclick="window.print()">
+                                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Options Table -->
+                <div class="bg-white py-10 border-b border-gray-200">
+                    <div class="max-w-7xl mx-auto px-6">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Product Options</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b-2 border-gray-200">
+                                        <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide pb-3 pr-8">Format</th>
+                                        <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide pb-3 pr-8">Availability</th>
+                                        <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide pb-3 pr-8">Order No.</th>
+                                        <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide pb-3 pr-8">Price</th>
+                                        <th class="pb-3"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template x-for="(v, i) in variants" :key="i">
+                                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                            <td class="py-4 pr-8 font-semibold text-gray-900" x-text="v.format"></td>
+                                            <td class="py-4 pr-8 text-gray-600" x-text="v.availability"></td>
+                                            <td class="py-4 pr-8 text-gray-600" x-text="v.isbn"></td>
+                                            <td class="py-4 pr-8 font-semibold text-gray-900" x-text="price(v.price)"></td>
+                                            <td class="py-4">
+                                                <button
+                                                    @click="selectVariant(v)"
+                                                    class="px-5 py-2 rounded text-sm font-semibold bg-gray-900 text-white hover:bg-gray-700 transition-colors min-w-[100px]"
+                                                    :class="isSelected(v) ? 'bg-gray-900' : 'bg-gray-900'"
+                                                >
+                                                    <span x-show="isSelected(v)">&#10003;&nbsp;Selected</span>
+                                                    <span x-show="!isSelected(v)">Select</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </>
+    )}
+
+    {productDescription && (
+        <div class="max-w-7xl mx-auto px-6 py-10">
+            <div class="prose max-w-none" set:html={productDescription}></div>
+        </div>
+    )}
+
+    <!-- Visual Builder content -->
+    <div class="vb:outline relative w-full flex-1 page-experience">
+        {experience?.composition?.grids?.map((grid: any) => (
+            <Section contentPayload={previewPayload} grid={grid} />
+        ))}
+    </div>
+</Layout>

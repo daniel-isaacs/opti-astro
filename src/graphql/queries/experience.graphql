@@ -18,6 +18,8 @@ query getExperience($key: [String]!, $ver: String, $loc: [Locales]) {
                 displayName
             }
             ...BlankExperienceSeo
+            ...StandardsExperiencePageData
+            ...MBExperienceProductPageData
             composition {
                 grids: nodes {
                     key

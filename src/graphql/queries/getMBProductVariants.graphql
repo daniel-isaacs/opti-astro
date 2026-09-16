@@ -1,0 +1,9 @@
+query getMBProductVariants($organismName: String!) {
+    ProductMBOCP(
+        where: { organism_name: { eq: $organismName } }
+    ) {
+        items {
+            ...ProductMBOCP
+        }
+    }
+}
